@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stainless-sdks/dedalus-typescript.git"
+    "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
   },
-  "homepage": "https://github.com/stainless-sdks/dedalus-typescript/tree/main/packages/mcp-server#readme",
+  "homepage": "https://github.com/dedalus-labs/dedalus-typescript/tree/main/packages/mcp-server#readme",
   "server": {
     "type": "node",
     "entry_point": "index.js",
