@@ -7,10 +7,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": "./",
     "paths": {
-      "dedalus-mcp/*": ["src/*"],
-      "dedalus-mcp": ["src/index.ts"]
+      "dedalus-mcp/*": ["./src/*"],
+      "dedalus-mcp": ["./src/index.ts"]
     },
     "noEmit": true,
 

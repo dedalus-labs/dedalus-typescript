@@ -5,8 +5,8 @@
   "compilerOptions": {
     "rootDir": "./dist/src",
     "paths": {
-      "dedalus/*": ["dist/src/*"],
-      "dedalus": ["dist/src/index.ts"]
+      "dedalus/*": ["./dist/src/*"],
+      "dedalus": ["./dist/src/index.ts"]
     },
     "noEmit": false,
     "declaration": true,
