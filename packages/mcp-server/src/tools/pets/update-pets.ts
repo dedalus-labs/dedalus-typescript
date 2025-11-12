@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { maybeFilter } from 'dedalus-mcp/filtering';
-import { Metadata, asTextContentResult } from 'dedalus-mcp/tools/types';
+import { isJqError, maybeFilter } from 'dedalus-mcp/filtering';
+import { Metadata, asErrorResult, asTextContentResult } from 'dedalus-mcp/tools/types';
 
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import Dedalus from 'dedalus';
@@ -85,7 +85,14 @@ export const tool: Tool = {
 
 export const handler = async (client: Dedalus, args: Record<string, unknown> | undefined) => {
   const { jq_filter, ...body } = args as any;
-  return asTextContentResult(await maybeFilter(jq_filter, await client.pets.update(body)));
+  try {
+    return asTextContentResult(await maybeFilter(jq_filter, await client.pets.update(body)));
+  } catch (error) {
+    if (isJqError(error)) {
+      return asErrorResult(error.message);
+    }
+    throw error;
+  }
 };
 
 export default { metadata, tool, handler };
