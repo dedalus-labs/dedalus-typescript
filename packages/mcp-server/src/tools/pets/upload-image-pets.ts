@@ -51,7 +51,7 @@ export const handler = async (client: Dedalus, args: Record<string, unknown> | u
       await maybeFilter(jq_filter, await client.pets.uploadImage(petId, image, body)),
     );
   } catch (error) {
-    if (isJqError(error)) {
+    if (error instanceof Dedalus.APIError || isJqError(error)) {
       return asErrorResult(error.message);
     }
     throw error;

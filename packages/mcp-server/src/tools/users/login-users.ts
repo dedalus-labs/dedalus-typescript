@@ -49,7 +49,7 @@ export const handler = async (client: Dedalus, args: Record<string, unknown> | u
   try {
     return asTextContentResult(await maybeFilter(jq_filter, await client.users.login(body)));
   } catch (error) {
-    if (isJqError(error)) {
+    if (error instanceof Dedalus.APIError || isJqError(error)) {
       return asErrorResult(error.message);
     }
     throw error;
