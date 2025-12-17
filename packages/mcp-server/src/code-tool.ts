@@ -35,7 +35,10 @@ export async function codeTool() {
       headers: {
         ...(stainlessAPIKey && { Authorization: stainlessAPIKey }),
         'Content-Type': 'application/json',
-        client_envs: JSON.stringify({ PETSTORE_API_KEY: readEnv('PETSTORE_API_KEY') }),
+        client_envs: JSON.stringify({
+          PETSTORE_API_KEY: readEnv('PETSTORE_API_KEY'),
+          DEDALUS_BASE_URL: readEnv('DEDALUS_BASE_URL'),
+        }),
       },
       body: JSON.stringify({
         project_name: 'dedalus',
