@@ -38,7 +38,11 @@ const client = new Dedalus({
   apiKey: process.env['PETSTORE_API_KEY'], // This is the default and can be omitted
 });
 
-const order = await client.store.orders.create({ petId: 1, quantity: 1, status: 'placed' });
+const order = await client.store.orders.create({
+  petId: 1,
+  quantity: 1,
+  status: 'placed',
+});
 
 console.log(order.id);
 ```
