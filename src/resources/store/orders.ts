@@ -7,6 +7,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Access to Petstore orders
+ */
 export class Orders extends APIResource {
   /**
    * Place a new order in the store

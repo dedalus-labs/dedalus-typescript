@@ -6,6 +6,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Everything about your Pets
+ */
 export class Pets extends APIResource {
   /**
    * Add a new pet to the store

@@ -6,6 +6,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Operations about user
+ */
 export class Users extends APIResource {
   /**
    * This can only be done by the logged in user.
