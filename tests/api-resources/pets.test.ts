@@ -144,7 +144,7 @@ describe('resource pets', () => {
   test.skip('uploadImage', async () => {
     const responsePromise = client.pets.uploadImage(
       0,
-      await toFile(Buffer.from('# my file contents'), 'README.md'),
+      await toFile(Buffer.from('Example data'), 'README.md'),
     );
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -161,7 +161,7 @@ describe('resource pets', () => {
     await expect(
       client.pets.uploadImage(
         0,
-        await toFile(Buffer.from('# my file contents'), 'README.md'),
+        await toFile(Buffer.from('Example data'), 'README.md'),
         { additionalMetadata: 'additionalMetadata' },
         { path: '/_stainless_unknown_path' },
       ),
