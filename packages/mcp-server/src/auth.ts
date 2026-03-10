@@ -5,8 +5,28 @@ import { ClientOptions } from 'dedalus';
 import { McpOptions } from './options';
 
 export const parseClientAuthHeaders = (req: IncomingMessage, required?: boolean): Partial<ClientOptions> => {
-  const apiKey = Array.isArray(req.headers['api_key']) ? req.headers['api_key'][0] : req.headers['api_key'];
-  return { apiKey };
+  if (req.headers.authorization) {
+    const scheme = req.headers.authorization.split(' ')[0]!;
+    const value = req.headers.authorization.slice(scheme.length + 1);
+    switch (scheme) {
+      case 'Bearer':
+        return { apiKey: req.headers.authorization.slice('Bearer '.length) };
+      default:
+        throw new Error(
+          'Unsupported authorization scheme. Expected the "Authorization" header to be a supported scheme (Bearer).',
+        );
+    }
+  } else if (required) {
+    throw new Error('Missing required Authorization header; see WWW-Authenticate header for details.');
+  }
+
+  const xAPIKey =
+    Array.isArray(req.headers['x-api-key']) ? req.headers['x-api-key'][0] : req.headers['x-api-key'];
+  const apiKey =
+    Array.isArray(req.headers['x-dedalus-api-key']) ?
+      req.headers['x-dedalus-api-key'][0]
+    : req.headers['x-dedalus-api-key'];
+  return { xAPIKey, apiKey };
 };
 
 export const getStainlessApiKey = (req: IncomingMessage, mcpOptions: McpOptions): string | undefined => {
