@@ -4,31 +4,18 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
-### Building
+### Direct invocation
 
-Because it's not published yet, clone the repo and build it:
-
-```sh
-git clone git@github.com:dedalus-labs/dedalus-typescript.git
-cd dedalus-typescript
-./scripts/bootstrap
-./scripts/build
-```
-
-### Running
+You can run the MCP Server directly via `npx`:
 
 ```sh
-# set env vars as needed
-export PETSTORE_API_KEY="My API Key"
-node ./packages/mcp-server/dist/index.js
+export DEDALUS_API_KEY="My API Key"
+export DEDALUS_X_API_KEY="My X API Key"
+export DEDALUS_ORG_ID="My Dedalus Org ID"
+npx -y dedalus-mcp@latest
 ```
-
-> [!NOTE]
-> Once this package is [published to npm](https://www.stainless.com/docs/guides/publish), this will become: `npx -y dedalus-mcp`
 
 ### Via MCP Client
-
-[Build the project](#building) as mentioned above.
 
 There is a partial list of existing clients at [modelcontextprotocol.io](https://modelcontextprotocol.io/clients). If you already
 have a client, consult their documentation to install the MCP server.
@@ -39,14 +26,39 @@ For clients with a configuration JSON, it might look something like this:
 {
   "mcpServers": {
     "dedalus_api": {
-      "command": "node",
-      "args": ["/path/to/local/dedalus-typescript/packages/mcp-server"],
+      "command": "npx",
+      "args": ["-y", "dedalus-mcp"],
       "env": {
-        "PETSTORE_API_KEY": "My API Key"
+        "DEDALUS_API_KEY": "My API Key",
+        "DEDALUS_X_API_KEY": "My X API Key",
+        "DEDALUS_ORG_ID": "My Dedalus Org ID"
       }
     }
   }
 }
+```
+
+### Cursor
+
+If you use Cursor, you can install the MCP server by using the button below. You will need to set your environment variables
+in Cursor's `mcp.json`, which can be found in Cursor Settings > Tools & MCP > New MCP Server.
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=dedalus-mcp&config=eyJuYW1lIjoiZGVkYWx1cy1tY3AiLCJ0cmFuc3BvcnQiOiJodHRwIiwidXJsIjoiaHR0cHM6Ly9kZWRhbHVzLnN0bG1jcC5jb20iLCJoZWFkZXJzIjp7IngtYXBpLWtleSI6Ik15IFggQVBJIEtleSIsIngtZGVkYWx1cy1hcGkta2V5IjoiTXkgQVBJIEtleSJ9fQ)
+
+### VS Code
+
+If you use MCP, you can install the MCP server by clicking the link below. You will need to set your environment variables
+in VS Code's `mcp.json`, which can be found via Command Palette > MCP: Open User Configuration.
+
+[Open VS Code](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22dedalus-mcp%22%2C%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fdedalus.stlmcp.com%22%2C%22headers%22%3A%7B%22x-api-key%22%3A%22My%20X%20API%20Key%22%2C%22x-dedalus-api-key%22%3A%22My%20API%20Key%22%7D%7D)
+
+### Claude Code
+
+If you use Claude Code, you can install the MCP server by running the command below in your terminal. You will need to set your
+environment variables in Claude Code's `.claude.json`, which can be found in your home directory.
+
+```
+claude mcp add dedalus_mcp_api --header "x-api-key: My X API Key" --header "x-dedalus-api-key: My API Key" --transport http https://dedalus.stlmcp.com
 ```
 
 ## Code Mode
@@ -70,10 +82,13 @@ and repeatably.
 
 Launching the client with `--transport=http` launches the server as a remote server using Streamable HTTP transport. The `--port` setting can choose the port it will run on, and the `--socket` setting allows it to run on a Unix socket.
 
-Authorization can be provided via the following headers:
+Authorization can be provided via the `Authorization` header using the Bearer scheme.
+
+Additionally, authorization can be provided via the following headers:
 | Header | Equivalent client option | Security scheme |
-| --------- | ------------------------ | --------------- |
-| `api_key` | `apiKey` | api_key |
+| ------------------- | ------------------------ | --------------- |
+| `x-api-key` | `xAPIKey` | ApiKeyAuth |
+| `x-dedalus-api-key` | `apiKey` | BearerAuth |
 
 A configuration JSON for this server might look like this, assuming the server is hosted at `http://localhost:3000`:
 
@@ -83,7 +98,7 @@ A configuration JSON for this server might look like this, assuming the server i
     "dedalus_api": {
       "url": "http://localhost:3000",
       "headers": {
-        "api_key": "My API Key"
+        "Authorization": "Bearer <auth value>"
       }
     }
   }

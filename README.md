@@ -4,7 +4,7 @@
 
 This library provides convenient access to the Dedalus REST API from server-side TypeScript or JavaScript.
 
-The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [docs.dedaluslabs.ai](https://docs.dedaluslabs.ai). The full API of this library can be found in [api.md](api.md).
 
 It is generated with [Stainless](https://www.stainless.com/).
 
@@ -12,19 +12,16 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 Use the Dedalus MCP Server to enable AI assistants to interact with this API, allowing them to explore endpoints, make test requests, and use documentation to help integrate this SDK into your application.
 
-[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=dedalus-mcp&config=eyJuYW1lIjoiZGVkYWx1cy1tY3AiLCJ0cmFuc3BvcnQiOiJodHRwIiwidXJsIjoiaHR0cHM6Ly9kZWRhbHVzLnN0bG1jcC5jb20iLCJoZWFkZXJzIjp7ImFwaV9rZXkiOiJNeSBBUEkgS2V5In19)
-[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22dedalus-mcp%22%2C%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fdedalus.stlmcp.com%22%2C%22headers%22%3A%7B%22api_key%22%3A%22My%20API%20Key%22%7D%7D)
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=dedalus-mcp&config=eyJuYW1lIjoiZGVkYWx1cy1tY3AiLCJ0cmFuc3BvcnQiOiJodHRwIiwidXJsIjoiaHR0cHM6Ly9kZWRhbHVzLnN0bG1jcC5jb20iLCJoZWFkZXJzIjp7IngtYXBpLWtleSI6Ik15IFggQVBJIEtleSIsIngtZGVkYWx1cy1hcGkta2V5IjoiTXkgQVBJIEtleSJ9fQ)
+[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22dedalus-mcp%22%2C%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fdedalus.stlmcp.com%22%2C%22headers%22%3A%7B%22x-api-key%22%3A%22My%20X%20API%20Key%22%2C%22x-dedalus-api-key%22%3A%22My%20API%20Key%22%7D%7D)
 
 > Note: You may need to set environment variables in your MCP client.
 
 ## Installation
 
 ```sh
-npm install git+ssh://git@github.com:dedalus-labs/dedalus-typescript.git
+npm install dedalus
 ```
-
-> [!NOTE]
-> Once this package is [published to npm](https://www.stainless.com/docs/guides/publish), this will become: `npm install dedalus`
 
 ## Usage
 
@@ -35,16 +32,17 @@ The full API of this library can be found in [api.md](api.md).
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['PETSTORE_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted
 });
 
-const order = await client.store.orders.create({
-  petId: 1,
-  quantity: 1,
-  status: 'placed',
+const workspace = await client.workspaces.create({
+  cpus: 1,
+  image_version: 'noble@2026-03-01.1',
+  memory_mib: 2048,
+  storage_gib: 20,
 });
 
-console.log(order.id);
+console.log(workspace.workspace_id);
 ```
 
 ### Request & Response types
@@ -56,10 +54,16 @@ This library includes TypeScript definitions for all request params and response
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['PETSTORE_API_KEY'], // This is the default and can be omitted
+  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted
 });
 
-const response: Dedalus.StoreListInventoryResponse = await client.store.listInventory();
+const params: Dedalus.WorkspaceCreateParams = {
+  cpus: 1,
+  image_version: 'noble@2026-03-01.1',
+  memory_mib: 2048,
+  storage_gib: 20,
+};
+const workspace: Dedalus.Workspace = await client.workspaces.create(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -72,15 +76,25 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const response = await client.store.listInventory().catch(async (err) => {
-  if (err instanceof Dedalus.APIError) {
-    console.log(err.status); // 400
-    console.log(err.name); // BadRequestError
-    console.log(err.headers); // {server: 'nginx', ...}
-  } else {
-    throw err;
-  }
-});
+const workspace = await client.workspaces
+  .create({
+    cpus: 1,
+    image_version: 'noble@2026-03-01.1',
+    memory_mib: 2048,
+    storage_gib: 20,
+  })
+  .catch(async (err) => {
+    if (err instanceof Dedalus.APIError) {
+      console.log(err.status); // 400
+      console.log(err.name); // BadRequestError
+      console.log(err.error?.error_code); // IDEMPOTENCY_KEY_REUSED
+      console.log(err.error?.message); // idempotency key reused with different request parameters
+      console.log(err.error?.retryable); // false
+      console.log(err.headers); // {server: 'nginx', ...}
+    } else {
+      throw err;
+    }
+  });
 ```
 
 Error codes are as follows:
@@ -112,7 +126,12 @@ const client = new Dedalus({
 });
 
 // Or, configure per-request:
-await client.store.listInventory({
+await client.workspaces.create({
+  cpus: 1,
+  image_version: 'noble@2026-03-01.1',
+  memory_mib: 2048,
+  storage_gib: 20,
+}, {
   maxRetries: 5,
 });
 ```
@@ -129,7 +148,12 @@ const client = new Dedalus({
 });
 
 // Override per-request:
-await client.store.listInventory({
+await client.workspaces.create({
+  cpus: 1,
+  image_version: 'noble@2026-03-01.1',
+  memory_mib: 2048,
+  storage_gib: 20,
+}, {
   timeout: 5 * 1000,
 });
 ```
@@ -137,6 +161,37 @@ await client.store.listInventory({
 On timeout, an `APIConnectionTimeoutError` is thrown.
 
 Note that requests which time out will be [retried twice by default](#retries).
+
+## Auto-pagination
+
+List methods in the Dedalus API are paginated.
+You can use the `for await … of` syntax to iterate through items across all pages:
+
+```ts
+async function fetchAllWorkspaces(params) {
+  const allWorkspaces = [];
+  // Automatically fetches more pages as needed.
+  for await (const workspace of client.workspaces.list()) {
+    allWorkspaces.push(workspace);
+  }
+  return allWorkspaces;
+}
+```
+
+Alternatively, you can request a single page at a time:
+
+```ts
+let page = await client.workspaces.list();
+for (const workspace of page.items) {
+  console.log(workspace);
+}
+
+// Convenience methods are provided for manually paginating:
+while (page.hasNextPage()) {
+  page = await page.getNextPage();
+  // ...
+}
+```
 
 ## Advanced Usage
 
@@ -152,13 +207,27 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 ```ts
 const client = new Dedalus();
 
-const response = await client.store.listInventory().asResponse();
+const response = await client.workspaces
+  .create({
+    cpus: 1,
+    image_version: 'noble@2026-03-01.1',
+    memory_mib: 2048,
+    storage_gib: 20,
+  })
+  .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: response, response: raw } = await client.store.listInventory().withResponse();
+const { data: workspace, response: raw } = await client.workspaces
+  .create({
+    cpus: 1,
+    image_version: 'noble@2026-03-01.1',
+    memory_mib: 2048,
+    storage_gib: 20,
+  })
+  .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(response);
+console.log(workspace.workspace_id);
 ```
 
 ### Logging
@@ -238,7 +307,7 @@ parameter. This library doesn't validate at runtime that the request matches the
 send will be sent as-is.
 
 ```ts
-client.store.orders.create({
+client.workspaces.create({
   // ...
   // @ts-expect-error baz is not yet public
   baz: 'undocumented option',

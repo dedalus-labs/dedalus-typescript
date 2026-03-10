@@ -59,11 +59,11 @@
       "hidden": true
     }
   ],
+  "reviewers": ["@windsornguyen"],
   "release-type": "node",
   "extra-files": [
     "src/version.ts",
     "README.md",
-    "packages/mcp-server/yarn.lock",
     {
       "type": "json",
       "path": "packages/mcp-server/package.json",

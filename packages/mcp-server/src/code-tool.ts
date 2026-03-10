@@ -15,7 +15,7 @@ import {
   asTextContentResult,
 } from './types';
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { readEnv, requireValue } from './util';
+import { readEnv } from './util';
 import { WorkerInput, WorkerOutput } from './code-tool-types';
 import { getLogger } from './logger';
 import { SdkMethod } from './methods';
@@ -30,13 +30,14 @@ For example:
 
 \`\`\`
 async function run(client) {
-  const order = await client.store.orders.create({
-    petId: 1,
-    quantity: 1,
-    status: 'placed',
+  const workspace = await client.workspaces.create({
+    cpus: 1,
+    image_version: 'noble@2026-03-01.1',
+    memory_mib: 2048,
+    storage_gib: 20,
   });
 
-  console.log(order.id);
+  console.log(workspace.workspace_id);
 }
 \`\`\`
 
@@ -160,10 +161,9 @@ const remoteStainlessHandler = async ({
       ...(reqContext.stainlessApiKey && { Authorization: reqContext.stainlessApiKey }),
       'Content-Type': 'application/json',
       'x-stainless-mcp-client-envs': JSON.stringify({
-        PETSTORE_API_KEY: requireValue(
-          readEnv('PETSTORE_API_KEY') ?? client.apiKey,
-          'set PETSTORE_API_KEY environment variable or provide apiKey client option',
-        ),
+        DEDALUS_API_KEY: readEnv('DEDALUS_API_KEY') ?? client.apiKey ?? undefined,
+        DEDALUS_X_API_KEY: readEnv('DEDALUS_X_API_KEY') ?? client.xAPIKey ?? undefined,
+        DEDALUS_ORG_ID: readEnv('DEDALUS_ORG_ID') ?? client.dedalusOrgID ?? undefined,
         DEDALUS_BASE_URL: readEnv('DEDALUS_BASE_URL') ?? client.baseURL ?? undefined,
       }),
     },
@@ -281,6 +281,8 @@ const localDenoHandler = async ({
       const opts: ClientOptions = {
         baseURL: client.baseURL,
         apiKey: client.apiKey,
+        xAPIKey: client.xAPIKey,
+        dedalusOrgID: client.dedalusOrgID,
         defaultHeaders: {
           'X-Stainless-MCP': 'true',
         },
