@@ -126,7 +126,6 @@ const fuse = new Fuse(
     'client.workspaces.executions.list',
     'client.workspaces.executions.output',
     'client.workspaces.executions.retrieve',
-    'client.workspaces.terminals.connect',
     'client.workspaces.terminals.create',
     'client.workspaces.terminals.delete',
     'client.workspaces.terminals.list',

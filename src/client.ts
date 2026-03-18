@@ -15,23 +15,7 @@ import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Pagination from './core/pagination';
-import {
-  AbstractPage,
-  type ArtifactListParams,
-  ArtifactListResponse,
-  type ExecutionEventsParams,
-  ExecutionEventsResponse,
-  type ExecutionListParams,
-  ExecutionListResponse,
-  type PreviewListParams,
-  PreviewListResponse,
-  type SSHSessionListParams,
-  SSHSessionListResponse,
-  type TerminalListParams,
-  TerminalListResponse,
-  type WorkspaceListParams,
-  WorkspaceListResponse,
-} from './core/pagination';
+import { AbstractPage, type CursorPageParams, CursorPageResponse } from './core/pagination';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
@@ -42,9 +26,9 @@ import {
   Workspace,
   WorkspaceCreateParams,
   WorkspaceDeleteParams,
-  WorkspaceList as WorkspacesAPIWorkspaceList,
-  WorkspaceListItemsWorkspaceList,
-  WorkspaceListParams as WorkspacesAPIWorkspaceListParams,
+  WorkspaceList,
+  WorkspaceListItemsCursorPage,
+  WorkspaceListParams,
   WorkspaceUpdateParams,
   Workspaces,
 } from './resources/workspaces/workspaces';
@@ -828,38 +812,8 @@ Dedalus.Workspaces = Workspaces;
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
 
-  export import WorkspaceList = Pagination.WorkspaceList;
-  export {
-    type WorkspaceListParams as WorkspaceListParams,
-    type WorkspaceListResponse as WorkspaceListResponse,
-  };
-
-  export import SSHSessionList = Pagination.SSHSessionList;
-  export {
-    type SSHSessionListParams as SSHSessionListParams,
-    type SSHSessionListResponse as SSHSessionListResponse,
-  };
-
-  export import ExecutionList = Pagination.ExecutionList;
-  export {
-    type ExecutionListParams as ExecutionListParams,
-    type ExecutionListResponse as ExecutionListResponse,
-  };
-
-  export import ExecutionEvents = Pagination.ExecutionEvents;
-  export {
-    type ExecutionEventsParams as ExecutionEventsParams,
-    type ExecutionEventsResponse as ExecutionEventsResponse,
-  };
-
-  export import ArtifactList = Pagination.ArtifactList;
-  export { type ArtifactListParams as ArtifactListParams, type ArtifactListResponse as ArtifactListResponse };
-
-  export import PreviewList = Pagination.PreviewList;
-  export { type PreviewListParams as PreviewListParams, type PreviewListResponse as PreviewListResponse };
-
-  export import TerminalList = Pagination.TerminalList;
-  export { type TerminalListParams as TerminalListParams, type TerminalListResponse as TerminalListResponse };
+  export import CursorPage = Pagination.CursorPage;
+  export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
   export {
     Workspaces as Workspaces,
@@ -867,11 +821,11 @@ export declare namespace Dedalus {
     type LifecycleStatus as LifecycleStatus,
     type UpdateParams as UpdateParams,
     type Workspace as Workspace,
-    type WorkspacesAPIWorkspaceList as WorkspaceList,
-    type WorkspaceListItemsWorkspaceList as WorkspaceListItemsWorkspaceList,
+    type WorkspaceList as WorkspaceList,
+    type WorkspaceListItemsCursorPage as WorkspaceListItemsCursorPage,
     type WorkspaceCreateParams as WorkspaceCreateParams,
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
-    type WorkspacesAPIWorkspaceListParams as WorkspaceListParams,
+    type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
   };
 }
