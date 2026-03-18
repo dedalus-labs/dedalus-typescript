@@ -7,7 +7,7 @@ export {
   type ArtifactRetrieveParams,
   type ArtifactListParams,
   type ArtifactDeleteParams,
-  type ArtifactsArtifactList,
+  type ArtifactsCursorPage,
 } from './artifacts';
 export {
   Executions,
@@ -23,8 +23,8 @@ export {
   type ExecutionDeleteParams,
   type ExecutionEventsParams,
   type ExecutionOutputParams,
-  type ExecutionsExecutionList,
-  type ExecutionEventsExecutionEvents,
+  type ExecutionsCursorPage,
+  type ExecutionEventsCursorPage,
 } from './executions';
 export {
   Previews,
@@ -34,7 +34,7 @@ export {
   type PreviewRetrieveParams,
   type PreviewListParams,
   type PreviewDeleteParams,
-  type PreviewsPreviewList,
+  type PreviewsCursorPage,
 } from './previews';
 export {
   SSH,
@@ -47,7 +47,7 @@ export {
   type SSHRetrieveParams,
   type SSHListParams,
   type SSHDeleteParams,
-  type SSHSessionsSSHSessionList,
+  type SSHSessionsCursorPage,
 } from './ssh';
 export {
   Terminals,
@@ -64,7 +64,7 @@ export {
   type TerminalRetrieveParams,
   type TerminalListParams,
   type TerminalDeleteParams,
-  type TerminalsTerminalList,
+  type TerminalsCursorPage,
 } from './terminals';
 export {
   Workspaces,
@@ -77,5 +77,5 @@ export {
   type WorkspaceUpdateParams,
   type WorkspaceListParams,
   type WorkspaceDeleteParams,
-  type WorkspaceListItemsWorkspaceList,
+  type WorkspaceListItemsCursorPage,
 } from './workspaces';

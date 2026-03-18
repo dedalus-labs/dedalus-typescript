@@ -2,11 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import {
-  PagePromise,
-  PreviewList as PaginationPreviewList,
-  type PreviewListParams as PaginationPreviewListParams,
-} from '../../core/pagination';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
@@ -33,12 +29,11 @@ export class Previews extends APIResource {
     workspaceID: string,
     query: PreviewListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<PreviewsPreviewList, Preview> {
-    return this._client.getAPIList(
-      path`/v1/workspaces/${workspaceID}/previews`,
-      PaginationPreviewList<Preview>,
-      { query, ...options },
-    );
+  ): PagePromise<PreviewsCursorPage, Preview> {
+    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/previews`, CursorPage<Preview>, {
+      query,
+      ...options,
+    });
   }
 
   /**
@@ -50,7 +45,7 @@ export class Previews extends APIResource {
   }
 }
 
-export type PreviewsPreviewList = PaginationPreviewList<Preview>;
+export type PreviewsCursorPage = CursorPage<Preview>;
 
 export interface Preview {
   created_at: string;
@@ -104,7 +99,7 @@ export interface PreviewRetrieveParams {
   workspace_id: string;
 }
 
-export interface PreviewListParams extends PaginationPreviewListParams {}
+export interface PreviewListParams extends CursorPageParams {}
 
 export interface PreviewDeleteParams {
   workspace_id: string;
@@ -115,7 +110,7 @@ export declare namespace Previews {
     type Preview as Preview,
     type PreviewCreateParams as PreviewCreateParams,
     type PreviewList as PreviewList,
-    type PreviewsPreviewList as PreviewsPreviewList,
+    type PreviewsCursorPage as PreviewsCursorPage,
     type PreviewRetrieveParams as PreviewRetrieveParams,
     type PreviewListParams as PreviewListParams,
     type PreviewDeleteParams as PreviewDeleteParams,
