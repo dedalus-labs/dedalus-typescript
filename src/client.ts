@@ -11,36 +11,43 @@ import type { APIResponseProps } from './internal/parse';
 import { getPlatformHeaders } from './internal/detect-platform';
 import * as Shims from './internal/shims';
 import * as Opts from './internal/request-options';
-import * as qs from './internal/qs';
+import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
+import * as Pagination from './core/pagination';
+import {
+  AbstractPage,
+  type ArtifactListParams,
+  ArtifactListResponse,
+  type ExecutionEventsParams,
+  ExecutionEventsResponse,
+  type ExecutionListParams,
+  ExecutionListResponse,
+  type PreviewListParams,
+  PreviewListResponse,
+  type SSHSessionListParams,
+  SSHSessionListResponse,
+  type TerminalListParams,
+  TerminalListResponse,
+  type WorkspaceListParams,
+  WorkspaceListResponse,
+} from './core/pagination';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  Category,
-  Pet,
-  PetCreateParams,
-  PetFindByStatusParams,
-  PetFindByStatusResponse,
-  PetFindByTagsParams,
-  PetFindByTagsResponse,
-  PetUpdateByIDParams,
-  PetUpdateParams,
-  PetUploadImageParams,
-  PetUploadImageResponse,
-  Pets,
-} from './resources/pets';
-import {
-  User,
-  UserCreateParams,
-  UserCreateWithListParams,
-  UserLoginParams,
-  UserLoginResponse,
-  UserUpdateParams,
-  Users,
-} from './resources/users';
-import { Store, StoreListInventoryResponse } from './resources/store/store';
+  CreateParams,
+  LifecycleStatus,
+  UpdateParams,
+  Workspace,
+  WorkspaceCreateParams,
+  WorkspaceDeleteParams,
+  WorkspaceList as WorkspacesAPIWorkspaceList,
+  WorkspaceListItemsWorkspaceList,
+  WorkspaceListParams as WorkspacesAPIWorkspaceListParams,
+  WorkspaceUpdateParams,
+  Workspaces,
+} from './resources/workspaces/workspaces';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -56,9 +63,19 @@ import { isEmptyObj } from './internal/utils/values';
 
 export interface ClientOptions {
   /**
-   * Defaults to process.env['PETSTORE_API_KEY'].
+   * Dedalus API key sent as Authorization: Bearer <key>.
    */
-  apiKey?: string | undefined;
+  apiKey?: string | null | undefined;
+
+  /**
+   * Dedalus API key sent as x-api-key.
+   */
+  xAPIKey?: string | null | undefined;
+
+  /**
+   * Organization ID header applied to all DCS requests.
+   */
+  dedalusOrgID?: string | null | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -133,12 +150,14 @@ export interface ClientOptions {
  * API Client for interfacing with the Dedalus API.
  */
 export class Dedalus {
-  apiKey: string;
+  apiKey: string | null;
+  xAPIKey: string | null;
+  dedalusOrgID: string | null;
 
   baseURL: string;
   maxRetries: number;
   timeout: number;
-  logger: Logger | undefined;
+  logger: Logger;
   logLevel: LogLevel | undefined;
   fetchOptions: MergedRequestInit | undefined;
 
@@ -150,8 +169,10 @@ export class Dedalus {
   /**
    * API Client for interfacing with the Dedalus API.
    *
-   * @param {string | undefined} [opts.apiKey=process.env['PETSTORE_API_KEY'] ?? undefined]
-   * @param {string} [opts.baseURL=process.env['DEDALUS_BASE_URL'] ?? https://petstore3.swagger.io/api/v3] - Override the default base URL for the API.
+   * @param {string | null | undefined} [opts.apiKey=process.env['DEDALUS_API_KEY'] ?? null]
+   * @param {string | null | undefined} [opts.xAPIKey=process.env['DEDALUS_X_API_KEY'] ?? null]
+   * @param {string | null | undefined} [opts.dedalusOrgID=process.env['DEDALUS_ORG_ID'] ?? null]
+   * @param {string} [opts.baseURL=process.env['DEDALUS_BASE_URL'] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -161,19 +182,17 @@ export class Dedalus {
    */
   constructor({
     baseURL = readEnv('DEDALUS_BASE_URL'),
-    apiKey = readEnv('PETSTORE_API_KEY'),
+    apiKey = readEnv('DEDALUS_API_KEY') ?? null,
+    xAPIKey = readEnv('DEDALUS_X_API_KEY') ?? null,
+    dedalusOrgID = readEnv('DEDALUS_ORG_ID') ?? null,
     ...opts
   }: ClientOptions = {}) {
-    if (apiKey === undefined) {
-      throw new Errors.DedalusError(
-        "The PETSTORE_API_KEY environment variable is missing or empty; either provide it, or instantiate the Dedalus client with an apiKey option, like new Dedalus({ apiKey: 'My API Key' }).",
-      );
-    }
-
     const options: ClientOptions = {
       apiKey,
+      xAPIKey,
+      dedalusOrgID,
       ...opts,
-      baseURL: baseURL || `https://petstore3.swagger.io/api/v3`,
+      baseURL: baseURL || `https://dcs.dedaluslabs.ai`,
     };
 
     this.baseURL = options.baseURL!;
@@ -192,8 +211,11 @@ export class Dedalus {
     this.#encoder = Opts.FallbackEncoder;
 
     this._options = options;
+    this.idempotencyHeader = 'Idempotency-Key';
 
     this.apiKey = apiKey;
+    this.xAPIKey = xAPIKey;
+    this.dedalusOrgID = dedalusOrgID;
   }
 
   /**
@@ -210,6 +232,8 @@ export class Dedalus {
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
+      xAPIKey: this.xAPIKey,
+      dedalusOrgID: this.dedalusOrgID,
       ...options,
     });
     return client;
@@ -219,7 +243,7 @@ export class Dedalus {
    * Check whether the base URL is set to its default.
    */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://petstore3.swagger.io/api/v3';
+    return this.baseURL !== 'https://dcs.dedaluslabs.ai';
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
@@ -227,15 +251,48 @@ export class Dedalus {
   }
 
   protected validateHeaders({ values, nulls }: NullableHeaders) {
-    return;
+    if (this.xAPIKey && values.get('x-api-key')) {
+      return;
+    }
+    if (nulls.has('x-api-key')) {
+      return;
+    }
+
+    if (this.apiKey && values.get('authorization')) {
+      return;
+    }
+    if (nulls.has('authorization')) {
+      return;
+    }
+
+    throw new Error(
+      'Could not resolve authentication method. Expected either xAPIKey or apiKey to be set. Or for one of the "x-api-key" or "Authorization" headers to be explicitly omitted',
+    );
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([{ api_key: this.apiKey }]);
+    return buildHeaders([await this.apiKeyAuth(opts), await this.bearerAuth(opts)]);
   }
 
-  protected stringifyQuery(query: Record<string, unknown>): string {
-    return qs.stringify(query, { arrayFormat: 'comma' });
+  protected async apiKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    if (this.xAPIKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ 'x-api-key': this.xAPIKey }]);
+  }
+
+  protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    if (this.apiKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
+  }
+
+  /**
+   * Basic re-implementation of `qs.stringify` for primitive types.
+   */
+  protected stringifyQuery(query: object | Record<string, unknown>): string {
+    return stringifyQuery(query);
   }
 
   private getUserAgent(): string {
@@ -267,12 +324,13 @@ export class Dedalus {
       : new URL(baseURL + (baseURL.endsWith('/') && path.startsWith('/') ? path.slice(1) : path));
 
     const defaultQuery = this.defaultQuery();
-    if (!isEmptyObj(defaultQuery)) {
-      query = { ...defaultQuery, ...query };
+    const pathQuery = Object.fromEntries(url.searchParams);
+    if (!isEmptyObj(defaultQuery) || !isEmptyObj(pathQuery)) {
+      query = { ...pathQuery, ...defaultQuery, ...query };
     }
 
     if (typeof query === 'object' && query && !Array.isArray(query)) {
-      url.search = this.stringifyQuery(query as Record<string, unknown>);
+      url.search = this.stringifyQuery(query);
     }
 
     return url.toString();
@@ -456,7 +514,7 @@ export class Dedalus {
       loggerFor(this).info(`${responseInfo} - ${retryMessage}`);
 
       const errText = await response.text().catch((err: any) => castToError(err).message);
-      const errJSON = safeJSON(errText);
+      const errJSON = safeJSON(errText) as any;
       const errMessage = errJSON ? undefined : errText;
 
       loggerFor(this).debug(
@@ -490,6 +548,30 @@ export class Dedalus {
     return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
   }
 
+  getAPIList<Item, PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>>(
+    path: string,
+    Page: new (...args: any[]) => PageClass,
+    opts?: PromiseOrValue<RequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    return this.requestAPIList(
+      Page,
+      opts && 'then' in opts ?
+        opts.then((opts) => ({ method: 'get', path, ...opts }))
+      : { method: 'get', path, ...opts },
+    );
+  }
+
+  requestAPIList<
+    Item = unknown,
+    PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>,
+  >(
+    Page: new (...args: ConstructorParameters<typeof Pagination.AbstractPage>) => PageClass,
+    options: PromiseOrValue<FinalRequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    const request = this.makeRequest(options, null, undefined);
+    return new Pagination.PagePromise<PageClass, Item>(this as any as Dedalus, request, Page);
+  }
+
   async fetchWithTimeout(
     url: RequestInfo,
     init: RequestInit | undefined,
@@ -497,9 +579,10 @@ export class Dedalus {
     controller: AbortController,
   ): Promise<Response> {
     const { signal, method, ...options } = init || {};
-    if (signal) signal.addEventListener('abort', () => controller.abort());
+    const abort = this._makeAbort(controller);
+    if (signal) signal.addEventListener('abort', abort, { once: true });
 
-    const timeout = setTimeout(() => controller.abort(), ms);
+    const timeout = setTimeout(abort, ms);
 
     const isReadableBody =
       ((globalThis as any).ReadableStream && options.body instanceof (globalThis as any).ReadableStream) ||
@@ -576,9 +659,9 @@ export class Dedalus {
       }
     }
 
-    // If the API asks us to wait a certain amount of time (and it's a reasonable amount),
-    // just do what it says, but otherwise calculate a default
-    if (!(timeoutMillis && 0 <= timeoutMillis && timeoutMillis < 60 * 1000)) {
+    // If the API asks us to wait a certain amount of time, just do what it
+    // says, but otherwise calculate a default
+    if (timeoutMillis === undefined) {
       const maxRetries = options.maxRetries ?? this.maxRetries;
       timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
     }
@@ -654,6 +737,7 @@ export class Dedalus {
         'X-Stainless-Retry-Count': String(retryCount),
         ...(options.timeout ? { 'X-Stainless-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
+        'X-Dedalus-Org-Id': this.dedalusOrgID,
       },
       await this.authHeaders(options),
       this._options.defaultHeaders,
@@ -664,6 +748,12 @@ export class Dedalus {
     this.validateHeaders(headers);
 
     return headers.values;
+  }
+
+  private _makeAbort(controller: AbortController) {
+    // note: we can't just inline this method inside `fetchWithTimeout()` because then the closure
+    //       would capture all request options, and cause a memory leak.
+    return () => controller.abort();
   }
 
   private buildBody({ options: { body, headers: rawHeaders } }: { options: FinalRequestOptions }): {
@@ -698,6 +788,14 @@ export class Dedalus {
         (Symbol.iterator in body && 'next' in body && typeof body.next === 'function'))
     ) {
       return { bodyHeaders: undefined, body: Shims.ReadableStreamFrom(body as AsyncIterable<Uint8Array>) };
+    } else if (
+      typeof body === 'object' &&
+      headers.values.get('content-type') === 'application/x-www-form-urlencoded'
+    ) {
+      return {
+        bodyHeaders: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: this.stringifyQuery(body),
+      };
     } else {
       return this.#encoder({ body, headers });
     }
@@ -722,44 +820,58 @@ export class Dedalus {
 
   static toFile = Uploads.toFile;
 
-  pets: API.Pets = new API.Pets(this);
-  store: API.Store = new API.Store(this);
-  users: API.Users = new API.Users(this);
+  workspaces: API.Workspaces = new API.Workspaces(this);
 }
 
-Dedalus.Pets = Pets;
-Dedalus.Store = Store;
-Dedalus.Users = Users;
+Dedalus.Workspaces = Workspaces;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
 
+  export import WorkspaceList = Pagination.WorkspaceList;
   export {
-    Pets as Pets,
-    type Category as Category,
-    type Pet as Pet,
-    type PetFindByStatusResponse as PetFindByStatusResponse,
-    type PetFindByTagsResponse as PetFindByTagsResponse,
-    type PetUploadImageResponse as PetUploadImageResponse,
-    type PetCreateParams as PetCreateParams,
-    type PetUpdateParams as PetUpdateParams,
-    type PetFindByStatusParams as PetFindByStatusParams,
-    type PetFindByTagsParams as PetFindByTagsParams,
-    type PetUpdateByIDParams as PetUpdateByIDParams,
-    type PetUploadImageParams as PetUploadImageParams,
+    type WorkspaceListParams as WorkspaceListParams,
+    type WorkspaceListResponse as WorkspaceListResponse,
   };
 
-  export { Store as Store, type StoreListInventoryResponse as StoreListInventoryResponse };
-
+  export import SSHSessionList = Pagination.SSHSessionList;
   export {
-    Users as Users,
-    type User as User,
-    type UserLoginResponse as UserLoginResponse,
-    type UserCreateParams as UserCreateParams,
-    type UserUpdateParams as UserUpdateParams,
-    type UserCreateWithListParams as UserCreateWithListParams,
-    type UserLoginParams as UserLoginParams,
+    type SSHSessionListParams as SSHSessionListParams,
+    type SSHSessionListResponse as SSHSessionListResponse,
   };
 
-  export type Order = API.Order;
+  export import ExecutionList = Pagination.ExecutionList;
+  export {
+    type ExecutionListParams as ExecutionListParams,
+    type ExecutionListResponse as ExecutionListResponse,
+  };
+
+  export import ExecutionEvents = Pagination.ExecutionEvents;
+  export {
+    type ExecutionEventsParams as ExecutionEventsParams,
+    type ExecutionEventsResponse as ExecutionEventsResponse,
+  };
+
+  export import ArtifactList = Pagination.ArtifactList;
+  export { type ArtifactListParams as ArtifactListParams, type ArtifactListResponse as ArtifactListResponse };
+
+  export import PreviewList = Pagination.PreviewList;
+  export { type PreviewListParams as PreviewListParams, type PreviewListResponse as PreviewListResponse };
+
+  export import TerminalList = Pagination.TerminalList;
+  export { type TerminalListParams as TerminalListParams, type TerminalListResponse as TerminalListResponse };
+
+  export {
+    Workspaces as Workspaces,
+    type CreateParams as CreateParams,
+    type LifecycleStatus as LifecycleStatus,
+    type UpdateParams as UpdateParams,
+    type Workspace as Workspace,
+    type WorkspacesAPIWorkspaceList as WorkspaceList,
+    type WorkspaceListItemsWorkspaceList as WorkspaceListItemsWorkspaceList,
+    type WorkspaceCreateParams as WorkspaceCreateParams,
+    type WorkspaceUpdateParams as WorkspaceUpdateParams,
+    type WorkspacesAPIWorkspaceListParams as WorkspaceListParams,
+    type WorkspaceDeleteParams as WorkspaceDeleteParams,
+  };
 }

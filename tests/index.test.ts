@@ -87,7 +87,11 @@ describe('instantiate client', () => {
         error: jest.fn(),
       };
 
-      const client = new Dedalus({ logger: logger, logLevel: 'debug', apiKey: 'My API Key' });
+      const client = new Dedalus({
+        logger: logger,
+        logLevel: 'debug',
+        apiKey: 'My API Key',
+      });
 
       await forceAPIResponseForClient(client);
       expect(debugMock).toHaveBeenCalled();
@@ -107,7 +111,11 @@ describe('instantiate client', () => {
         error: jest.fn(),
       };
 
-      const client = new Dedalus({ logger: logger, logLevel: 'info', apiKey: 'My API Key' });
+      const client = new Dedalus({
+        logger: logger,
+        logLevel: 'info',
+        apiKey: 'My API Key',
+      });
 
       await forceAPIResponseForClient(client);
       expect(debugMock).not.toHaveBeenCalled();
@@ -157,7 +165,11 @@ describe('instantiate client', () => {
       };
 
       process.env['DEDALUS_LOG'] = 'debug';
-      const client = new Dedalus({ logger: logger, logLevel: 'off', apiKey: 'My API Key' });
+      const client = new Dedalus({
+        logger: logger,
+        logLevel: 'off',
+        apiKey: 'My API Key',
+      });
 
       await forceAPIResponseForClient(client);
       expect(debugMock).not.toHaveBeenCalled();
@@ -173,7 +185,11 @@ describe('instantiate client', () => {
       };
 
       process.env['DEDALUS_LOG'] = 'not a log level';
-      const client = new Dedalus({ logger: logger, logLevel: 'debug', apiKey: 'My API Key' });
+      const client = new Dedalus({
+        logger: logger,
+        logLevel: 'debug',
+        apiKey: 'My API Key',
+      });
       expect(client.logLevel).toBe('debug');
       expect(warnMock).not.toHaveBeenCalled();
     });
@@ -267,7 +283,11 @@ describe('instantiate client', () => {
       return new Response(JSON.stringify({}), { headers: { 'Content-Type': 'application/json' } });
     };
 
-    const client = new Dedalus({ baseURL: 'http://localhost:5000/', apiKey: 'My API Key', fetch: testFetch });
+    const client = new Dedalus({
+      baseURL: 'http://localhost:5000/',
+      apiKey: 'My API Key',
+      fetch: testFetch,
+    });
 
     await client.patch('/foo');
     expect(capturedRequest?.method).toEqual('PATCH');
@@ -302,13 +322,13 @@ describe('instantiate client', () => {
     test('empty env variable', () => {
       process.env['DEDALUS_BASE_URL'] = ''; // empty
       const client = new Dedalus({ apiKey: 'My API Key' });
-      expect(client.baseURL).toEqual('https://petstore3.swagger.io/api/v3');
+      expect(client.baseURL).toEqual('https://dcs.dedaluslabs.ai');
     });
 
     test('blank env variable', () => {
       process.env['DEDALUS_BASE_URL'] = '  '; // blank
       const client = new Dedalus({ apiKey: 'My API Key' });
-      expect(client.baseURL).toEqual('https://petstore3.swagger.io/api/v3');
+      expect(client.baseURL).toEqual('https://dcs.dedaluslabs.ai');
     });
 
     test('in request options', () => {
@@ -345,7 +365,11 @@ describe('instantiate client', () => {
 
   describe('withOptions', () => {
     test('creates a new client with overridden options', async () => {
-      const client = new Dedalus({ baseURL: 'http://localhost:5000/', maxRetries: 3, apiKey: 'My API Key' });
+      const client = new Dedalus({
+        baseURL: 'http://localhost:5000/',
+        maxRetries: 3,
+        apiKey: 'My API Key',
+      });
 
       const newClient = client.withOptions({
         maxRetries: 5,
@@ -385,7 +409,11 @@ describe('instantiate client', () => {
     });
 
     test('respects runtime property changes when creating new client', () => {
-      const client = new Dedalus({ baseURL: 'http://localhost:5000/', timeout: 1000, apiKey: 'My API Key' });
+      const client = new Dedalus({
+        baseURL: 'http://localhost:5000/',
+        timeout: 1000,
+        apiKey: 'My API Key',
+      });
 
       // Modify the client properties directly after creation
       client.baseURL = 'http://localhost:6000/';
@@ -413,16 +441,33 @@ describe('instantiate client', () => {
 
   test('with environment variable arguments', () => {
     // set options via env var
-    process.env['PETSTORE_API_KEY'] = 'My API Key';
+    process.env['DEDALUS_API_KEY'] = 'My API Key';
     const client = new Dedalus();
     expect(client.apiKey).toBe('My API Key');
   });
 
   test('with overridden environment variable arguments', () => {
     // set options via env var
-    process.env['PETSTORE_API_KEY'] = 'another My API Key';
+    process.env['DEDALUS_API_KEY'] = 'another My API Key';
     const client = new Dedalus({ apiKey: 'My API Key' });
     expect(client.apiKey).toBe('My API Key');
+  });
+});
+
+describe('idempotency', () => {
+  test('key can be set per-request', async () => {
+    const client = new Dedalus({
+      baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+      apiKey: 'My API Key',
+    });
+    await client.workspaces.create(
+      {
+        memory_mib: 0,
+        storage_gib: 0,
+        vcpu: 0,
+      },
+      { idempotencyKey: 'my-idempotency-key' },
+    );
   });
 });
 
@@ -531,7 +576,11 @@ describe('retries', () => {
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
 
-    const client = new Dedalus({ apiKey: 'My API Key', timeout: 10, fetch: testFetch });
+    const client = new Dedalus({
+      apiKey: 'My API Key',
+      timeout: 10,
+      fetch: testFetch,
+    });
 
     expect(await client.request({ path: '/foo', method: 'get' })).toEqual({ a: 1 });
     expect(count).toEqual(2);
@@ -561,7 +610,11 @@ describe('retries', () => {
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
 
-    const client = new Dedalus({ apiKey: 'My API Key', fetch: testFetch, maxRetries: 4 });
+    const client = new Dedalus({
+      apiKey: 'My API Key',
+      fetch: testFetch,
+      maxRetries: 4,
+    });
 
     expect(await client.request({ path: '/foo', method: 'get' })).toEqual({ a: 1 });
 
@@ -585,7 +638,11 @@ describe('retries', () => {
       capturedRequest = init;
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
-    const client = new Dedalus({ apiKey: 'My API Key', fetch: testFetch, maxRetries: 4 });
+    const client = new Dedalus({
+      apiKey: 'My API Key',
+      fetch: testFetch,
+      maxRetries: 4,
+    });
 
     expect(
       await client.request({
@@ -647,7 +704,11 @@ describe('retries', () => {
       capturedRequest = init;
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
-    const client = new Dedalus({ apiKey: 'My API Key', fetch: testFetch, maxRetries: 4 });
+    const client = new Dedalus({
+      apiKey: 'My API Key',
+      fetch: testFetch,
+      maxRetries: 4,
+    });
 
     expect(
       await client.request({
