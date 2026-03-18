@@ -163,11 +163,6 @@ export interface CreateParams {
    * CPU in vCPUs.
    */
   vcpu: number;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 }
 
 export interface LifecycleStatus {
@@ -196,11 +191,6 @@ export interface LifecycleStatus {
 }
 
 export interface UpdateParams {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   /**
    * Memory in MiB.
    */
@@ -232,20 +222,10 @@ export interface Workspace {
   vcpu: number;
 
   workspace_id: string;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 }
 
 export interface WorkspaceList {
   items: Array<WorkspaceList.Item> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }

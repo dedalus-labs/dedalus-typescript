@@ -63,11 +63,6 @@ export interface Preview {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   error_code?: string;
 
   error_message?: string;
@@ -86,11 +81,6 @@ export interface Preview {
 export interface PreviewCreateParams {
   port: number;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   protocol?: 'http' | 'https';
 
   wake_if_needed?: boolean;
@@ -98,11 +88,6 @@ export interface PreviewCreateParams {
 
 export interface PreviewList {
   items: Array<Preview> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }

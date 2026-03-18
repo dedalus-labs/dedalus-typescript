@@ -109,11 +109,6 @@ export interface Execution {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   artifacts?: Array<ArtifactRef> | null;
 
   completed_at?: string;
@@ -147,11 +142,6 @@ export interface Execution {
 
 export interface ExecutionCreateParams {
   command: Array<string> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   cwd?: string;
 
@@ -187,32 +177,17 @@ export interface ExecutionEvent {
 export interface ExecutionEvents {
   items: Array<ExecutionEvent> | null;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   next_cursor?: string;
 }
 
 export interface ExecutionList {
   items: Array<Execution> | null;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   next_cursor?: string;
 }
 
 export interface ExecutionOutput {
   execution_id: string;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   stderr?: string;
 
