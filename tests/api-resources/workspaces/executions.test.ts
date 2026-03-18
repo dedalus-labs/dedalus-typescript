@@ -22,7 +22,6 @@ describe('resource executions', () => {
   test('create: required and optional params', async () => {
     const response = await client.workspaces.executions.create('workspace_id', {
       command: ['string'],
-      capture_paths: ['string'],
       cwd: 'cwd',
       env: { foo: 'string' },
       stdin: 'stdin',

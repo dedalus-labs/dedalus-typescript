@@ -26,7 +26,6 @@ For example:
 \`\`\`
 async function run(client) {
   const workspace = await client.workspaces.create({
-    image_version: 'noble@golden',
     memory_mib: 2048,
     storage_gib: 10,
     vcpu: 1,
