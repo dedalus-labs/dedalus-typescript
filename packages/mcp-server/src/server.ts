@@ -20,7 +20,7 @@ export const newMcpServer = async (stainlessApiKey: string | undefined) =>
   new McpServer(
     {
       name: 'dedalus_api',
-      version: '0.0.1',
+      version: '0.0.2',
     },
     {
       instructions: await getInstructions(stainlessApiKey),
