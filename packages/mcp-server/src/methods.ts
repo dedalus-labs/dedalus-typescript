@@ -166,10 +166,6 @@ export const sdkMethods: SdkMethod[] = [
     httpMethod: 'delete',
     httpPath: '/v1/workspaces/{workspace_id}/terminals/{terminal_id}',
   },
-  {
-    clientCallName: 'client.workspaces.terminals.connect',
-    fullyQualifiedName: 'workspaces.terminals.connect',
-  },
 ];
 
 function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[] | undefined {

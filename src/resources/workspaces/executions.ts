@@ -2,13 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import {
-  ExecutionEvents as PaginationExecutionEvents,
-  type ExecutionEventsParams as PaginationExecutionEventsParams,
-  ExecutionList as PaginationExecutionList,
-  type ExecutionListParams as PaginationExecutionListParams,
-  PagePromise,
-} from '../../core/pagination';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
@@ -39,12 +33,11 @@ export class Executions extends APIResource {
     workspaceID: string,
     query: ExecutionListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<ExecutionsExecutionList, Execution> {
-    return this._client.getAPIList(
-      path`/v1/workspaces/${workspaceID}/executions`,
-      PaginationExecutionList<Execution>,
-      { query, ...options },
-    );
+  ): PagePromise<ExecutionsCursorPage, Execution> {
+    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/executions`, CursorPage<Execution>, {
+      query,
+      ...options,
+    });
   }
 
   /**
@@ -66,11 +59,11 @@ export class Executions extends APIResource {
     executionID: string,
     params: ExecutionEventsParams,
     options?: RequestOptions,
-  ): PagePromise<ExecutionEventsExecutionEvents, ExecutionEvent> {
+  ): PagePromise<ExecutionEventsCursorPage, ExecutionEvent> {
     const { workspace_id, ...query } = params;
     return this._client.getAPIList(
       path`/v1/workspaces/${workspace_id}/executions/${executionID}/events`,
-      PaginationExecutionEvents<ExecutionEvent>,
+      CursorPage<ExecutionEvent>,
       { query, ...options },
     );
   }
@@ -88,9 +81,9 @@ export class Executions extends APIResource {
   }
 }
 
-export type ExecutionsExecutionList = PaginationExecutionList<Execution>;
+export type ExecutionsCursorPage = CursorPage<Execution>;
 
-export type ExecutionEventsExecutionEvents = PaginationExecutionEvents<ExecutionEvent>;
+export type ExecutionEventsCursorPage = CursorPage<ExecutionEvent>;
 
 export interface ArtifactRef {
   artifact_id: string;
@@ -108,11 +101,6 @@ export interface Execution {
   status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired';
 
   workspace_id: string;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   artifacts?: Array<ArtifactRef> | null;
 
@@ -148,11 +136,6 @@ export interface Execution {
 export interface ExecutionCreateParams {
   command: Array<string> | null;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   cwd?: string;
 
   env?: { [key: string]: string };
@@ -187,32 +170,17 @@ export interface ExecutionEvent {
 export interface ExecutionEvents {
   items: Array<ExecutionEvent> | null;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   next_cursor?: string;
 }
 
 export interface ExecutionList {
   items: Array<Execution> | null;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   next_cursor?: string;
 }
 
 export interface ExecutionOutput {
   execution_id: string;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   stderr?: string;
 
@@ -245,13 +213,13 @@ export interface ExecutionRetrieveParams {
   workspace_id: string;
 }
 
-export interface ExecutionListParams extends PaginationExecutionListParams {}
+export interface ExecutionListParams extends CursorPageParams {}
 
 export interface ExecutionDeleteParams {
   workspace_id: string;
 }
 
-export interface ExecutionEventsParams extends PaginationExecutionEventsParams {
+export interface ExecutionEventsParams extends CursorPageParams {
   /**
    * Path param
    */
@@ -271,8 +239,8 @@ export declare namespace Executions {
     type ExecutionEvents as ExecutionEvents,
     type ExecutionList as ExecutionList,
     type ExecutionOutput as ExecutionOutput,
-    type ExecutionsExecutionList as ExecutionsExecutionList,
-    type ExecutionEventsExecutionEvents as ExecutionEventsExecutionEvents,
+    type ExecutionsCursorPage as ExecutionsCursorPage,
+    type ExecutionEventsCursorPage as ExecutionEventsCursorPage,
     type ExecutionRetrieveParams as ExecutionRetrieveParams,
     type ExecutionListParams as ExecutionListParams,
     type ExecutionDeleteParams as ExecutionDeleteParams,

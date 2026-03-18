@@ -10,7 +10,7 @@ import {
   ArtifactListParams,
   ArtifactRetrieveParams,
   Artifacts,
-  ArtifactsArtifactList,
+  ArtifactsCursorPage,
 } from './artifacts';
 import * as ExecutionsAPI from './executions';
 import {
@@ -20,7 +20,7 @@ import {
   ExecutionDeleteParams,
   ExecutionEvent,
   ExecutionEvents,
-  ExecutionEventsExecutionEvents,
+  ExecutionEventsCursorPage,
   ExecutionEventsParams,
   ExecutionList,
   ExecutionListParams,
@@ -28,7 +28,7 @@ import {
   ExecutionOutputParams,
   ExecutionRetrieveParams,
   Executions,
-  ExecutionsExecutionList,
+  ExecutionsCursorPage,
 } from './executions';
 import * as PreviewsAPI from './previews';
 import {
@@ -39,7 +39,7 @@ import {
   PreviewListParams,
   PreviewRetrieveParams,
   Previews,
-  PreviewsPreviewList,
+  PreviewsCursorPage,
 } from './previews';
 import * as SSHAPI from './ssh';
 import {
@@ -53,9 +53,9 @@ import {
   SSHSession,
   SSHSessionCreateParams,
   SSHSessionList,
-  SSHSessionsSSHSessionList,
+  SSHSessionsCursorPage,
 } from './ssh';
-import * as TerminalsAPI from './terminals/terminals';
+import * as TerminalsAPI from './terminals';
 import {
   Terminal,
   TerminalClientEvent,
@@ -71,14 +71,10 @@ import {
   TerminalRetrieveParams,
   TerminalServerEvent,
   Terminals,
-  TerminalsTerminalList,
-} from './terminals/terminals';
+  TerminalsCursorPage,
+} from './terminals';
 import { APIPromise } from '../../core/api-promise';
-import {
-  PagePromise,
-  WorkspaceList as PaginationWorkspaceList,
-  type WorkspaceListParams as PaginationWorkspaceListParams,
-} from '../../core/pagination';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
@@ -126,11 +122,8 @@ export class Workspaces extends APIResource {
   list(
     query: WorkspaceListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<WorkspaceListItemsWorkspaceList, WorkspaceList.Item> {
-    return this._client.getAPIList('/v1/workspaces', PaginationWorkspaceList<WorkspaceList.Item>, {
-      query,
-      ...options,
-    });
+  ): PagePromise<WorkspaceListItemsCursorPage, WorkspaceList.Item> {
+    return this._client.getAPIList('/v1/workspaces', CursorPage<WorkspaceList.Item>, { query, ...options });
   }
 
   /**
@@ -149,7 +142,7 @@ export class Workspaces extends APIResource {
   }
 }
 
-export type WorkspaceListItemsWorkspaceList = PaginationWorkspaceList<WorkspaceList.Item>;
+export type WorkspaceListItemsCursorPage = CursorPage<WorkspaceList.Item>;
 
 export interface CreateParams {
   /**
@@ -163,11 +156,6 @@ export interface CreateParams {
    * CPU in vCPUs.
    */
   vcpu: number;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 }
 
 export interface LifecycleStatus {
@@ -196,11 +184,6 @@ export interface LifecycleStatus {
 }
 
 export interface UpdateParams {
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   /**
    * Memory in MiB.
    */
@@ -232,20 +215,10 @@ export interface Workspace {
   vcpu: number;
 
   workspace_id: string;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 }
 
 export interface WorkspaceList {
   items: Array<WorkspaceList.Item> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }
@@ -310,7 +283,7 @@ export interface WorkspaceUpdateParams {
   vcpu?: number;
 }
 
-export interface WorkspaceListParams extends PaginationWorkspaceListParams {}
+export interface WorkspaceListParams extends CursorPageParams {}
 
 export interface WorkspaceDeleteParams {
   'If-Match': string;
@@ -329,7 +302,7 @@ export declare namespace Workspaces {
     type UpdateParams as UpdateParams,
     type Workspace as Workspace,
     type WorkspaceList as WorkspaceList,
-    type WorkspaceListItemsWorkspaceList as WorkspaceListItemsWorkspaceList,
+    type WorkspaceListItemsCursorPage as WorkspaceListItemsCursorPage,
     type WorkspaceCreateParams as WorkspaceCreateParams,
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
@@ -340,7 +313,7 @@ export declare namespace Workspaces {
     Artifacts as Artifacts,
     type Artifact as Artifact,
     type ArtifactList as ArtifactList,
-    type ArtifactsArtifactList as ArtifactsArtifactList,
+    type ArtifactsCursorPage as ArtifactsCursorPage,
     type ArtifactRetrieveParams as ArtifactRetrieveParams,
     type ArtifactListParams as ArtifactListParams,
     type ArtifactDeleteParams as ArtifactDeleteParams,
@@ -351,7 +324,7 @@ export declare namespace Workspaces {
     type Preview as Preview,
     type PreviewCreateParams as PreviewCreateParams,
     type PreviewList as PreviewList,
-    type PreviewsPreviewList as PreviewsPreviewList,
+    type PreviewsCursorPage as PreviewsCursorPage,
     type PreviewRetrieveParams as PreviewRetrieveParams,
     type PreviewListParams as PreviewListParams,
     type PreviewDeleteParams as PreviewDeleteParams,
@@ -364,7 +337,7 @@ export declare namespace Workspaces {
     type SSHSession as SSHSession,
     type SSHSessionCreateParams as SSHSessionCreateParams,
     type SSHSessionList as SSHSessionList,
-    type SSHSessionsSSHSessionList as SSHSessionsSSHSessionList,
+    type SSHSessionsCursorPage as SSHSessionsCursorPage,
     type SSHCreateParams as SSHCreateParams,
     type SSHRetrieveParams as SSHRetrieveParams,
     type SSHListParams as SSHListParams,
@@ -380,8 +353,8 @@ export declare namespace Workspaces {
     type ExecutionEvents as ExecutionEvents,
     type ExecutionList as ExecutionList,
     type ExecutionOutput as ExecutionOutput,
-    type ExecutionsExecutionList as ExecutionsExecutionList,
-    type ExecutionEventsExecutionEvents as ExecutionEventsExecutionEvents,
+    type ExecutionsCursorPage as ExecutionsCursorPage,
+    type ExecutionEventsCursorPage as ExecutionEventsCursorPage,
     type ExecutionRetrieveParams as ExecutionRetrieveParams,
     type ExecutionListParams as ExecutionListParams,
     type ExecutionDeleteParams as ExecutionDeleteParams,
@@ -401,7 +374,7 @@ export declare namespace Workspaces {
     type TerminalOutputEvent as TerminalOutputEvent,
     type TerminalResizeEvent as TerminalResizeEvent,
     type TerminalServerEvent as TerminalServerEvent,
-    type TerminalsTerminalList as TerminalsTerminalList,
+    type TerminalsCursorPage as TerminalsCursorPage,
     type TerminalRetrieveParams as TerminalRetrieveParams,
     type TerminalListParams as TerminalListParams,
     type TerminalDeleteParams as TerminalDeleteParams,

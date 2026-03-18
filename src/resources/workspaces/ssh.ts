@@ -2,11 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import {
-  PagePromise,
-  SSHSessionList as PaginationSSHSessionList,
-  type SSHSessionListParams,
-} from '../../core/pagination';
+import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
@@ -33,12 +29,11 @@ export class SSH extends APIResource {
     workspaceID: string,
     query: SSHListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<SSHSessionsSSHSessionList, SSHSession> {
-    return this._client.getAPIList(
-      path`/v1/workspaces/${workspaceID}/ssh`,
-      PaginationSSHSessionList<SSHSession>,
-      { query, ...options },
-    );
+  ): PagePromise<SSHSessionsCursorPage, SSHSession> {
+    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/ssh`, CursorPage<SSHSession>, {
+      query,
+      ...options,
+    });
   }
 
   /**
@@ -50,7 +45,7 @@ export class SSH extends APIResource {
   }
 }
 
-export type SSHSessionsSSHSessionList = PaginationSSHSessionList<SSHSession>;
+export type SSHSessionsCursorPage = CursorPage<SSHSession>;
 
 export interface SSHConnection {
   endpoint: string;
@@ -81,11 +76,6 @@ export interface SSHSession {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   connection?: SSHConnection;
 
   error_code?: string;
@@ -102,21 +92,11 @@ export interface SSHSession {
 export interface SSHSessionCreateParams {
   public_key: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   wake_if_needed?: boolean;
 }
 
 export interface SSHSessionList {
   items: Array<SSHSession> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }
@@ -131,7 +111,7 @@ export interface SSHRetrieveParams {
   workspace_id: string;
 }
 
-export interface SSHListParams extends SSHSessionListParams {}
+export interface SSHListParams extends CursorPageParams {}
 
 export interface SSHDeleteParams {
   workspace_id: string;
@@ -144,7 +124,7 @@ export declare namespace SSH {
     type SSHSession as SSHSession,
     type SSHSessionCreateParams as SSHSessionCreateParams,
     type SSHSessionList as SSHSessionList,
-    type SSHSessionsSSHSessionList as SSHSessionsSSHSessionList,
+    type SSHSessionsCursorPage as SSHSessionsCursorPage,
     type SSHCreateParams as SSHCreateParams,
     type SSHRetrieveParams as SSHRetrieveParams,
     type SSHListParams as SSHListParams,

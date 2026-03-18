@@ -4,6 +4,19 @@
 
 Full Changelog: [v0.0.1...v0.0.1](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.1...v0.0.1)
 
+### Bug Fixes
+
+* **api:** consolidate pagination & disable websockets ([614a252](https://github.com/dedalus-labs/dedalus-typescript/commit/614a25276391ada8ab5dba80b0c7f1aac61f0818))
+
+
+### Chores
+
+* **api:** update homebrew tap and code samples ([679aee0](https://github.com/dedalus-labs/dedalus-typescript/commit/679aee010e8c875d8d1789d0253883f65f3050b4))
+
+## 0.0.1 (2026-03-18)
+
+Full Changelog: [v0.0.1...v0.0.1](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.1...v0.0.1)
+
 ### ⚠ BREAKING CHANGES
 
 * **mcp:** remove deprecated tool schemes
