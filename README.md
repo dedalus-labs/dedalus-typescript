@@ -36,7 +36,6 @@ const client = new Dedalus({
 });
 
 const workspace = await client.workspaces.create({
-  image_version: 'noble@golden',
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -58,7 +57,6 @@ const client = new Dedalus({
 });
 
 const params: Dedalus.WorkspaceCreateParams = {
-  image_version: 'noble@golden',
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -78,7 +76,6 @@ a subclass of `APIError` will be thrown:
 ```ts
 const workspace = await client.workspaces
   .create({
-    image_version: 'noble@golden',
     memory_mib: 2048,
     storage_gib: 10,
     vcpu: 1,
@@ -127,7 +124,6 @@ const client = new Dedalus({
 
 // Or, configure per-request:
 await client.workspaces.create({
-  image_version: 'noble@golden',
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -149,7 +145,6 @@ const client = new Dedalus({
 
 // Override per-request:
 await client.workspaces.create({
-  image_version: 'noble@golden',
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -209,7 +204,6 @@ const client = new Dedalus();
 
 const response = await client.workspaces
   .create({
-    image_version: 'noble@golden',
     memory_mib: 2048,
     storage_gib: 10,
     vcpu: 1,
@@ -220,7 +214,6 @@ console.log(response.statusText); // access the underlying Response object
 
 const { data: workspace, response: raw } = await client.workspaces
   .create({
-    image_version: 'noble@golden',
     memory_mib: 2048,
     storage_gib: 10,
     vcpu: 1,

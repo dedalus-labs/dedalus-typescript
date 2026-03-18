@@ -152,8 +152,6 @@ export class Workspaces extends APIResource {
 export type WorkspaceListItemsWorkspaceList = PaginationWorkspaceList<WorkspaceList.Item>;
 
 export interface CreateParams {
-  image_version: string;
-
   /**
    * Memory in MiB.
    */
@@ -177,8 +175,6 @@ export interface LifecycleStatus {
 
   last_transition_at: string;
 
-  observed_revision: string;
-
   phase:
     | 'accepted'
     | 'placement_pending'
@@ -196,15 +192,7 @@ export interface LifecycleStatus {
 
   revision: string;
 
-  assigned_host?: string;
-
   last_error?: string;
-
-  memory_assigned_mib?: number;
-
-  memory_resize_state?: string;
-
-  memory_target_mib?: number;
 }
 
 export interface UpdateParams {
@@ -249,8 +237,6 @@ export interface Workspace {
    * A URL to the JSON Schema for this object.
    */
   $schema?: string;
-
-  image_version?: string;
 }
 
 export interface WorkspaceList {
@@ -285,14 +271,10 @@ export namespace WorkspaceList {
     vcpu: number;
 
     workspace_id: string;
-
-    image_version?: string;
   }
 }
 
 export interface WorkspaceCreateParams {
-  image_version: string;
-
   /**
    * Memory in MiB.
    */

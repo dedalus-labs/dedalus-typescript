@@ -153,8 +153,6 @@ export interface ExecutionCreateParams {
    */
   $schema?: string;
 
-  capture_paths?: Array<string> | null;
-
   cwd?: string;
 
   env?: { [key: string]: string };
@@ -231,8 +229,6 @@ export interface ExecutionOutput {
 
 export interface ExecutionCreateParams {
   command: Array<string> | null;
-
-  capture_paths?: Array<string> | null;
 
   cwd?: string;
 
