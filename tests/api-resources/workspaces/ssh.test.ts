@@ -7,14 +7,9 @@ const client = new Dedalus({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource workspaces', () => {
+describe('resource ssh', () => {
   test('create: only required params', async () => {
-    const responsePromise = client.workspaces.create({
-      cpus: 0,
-      image_version: 'image_version',
-      memory_mib: 0,
-      storage_gib: 0,
-    });
+    const responsePromise = client.workspaces.ssh.create('workspace_id', { public_key: 'public_key' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -25,16 +20,14 @@ describe('resource workspaces', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.create({
-      cpus: 0,
-      image_version: 'image_version',
-      memory_mib: 0,
-      storage_gib: 0,
+    const response = await client.workspaces.ssh.create('workspace_id', {
+      public_key: 'public_key',
+      wake_if_needed: true,
     });
   });
 
-  test('retrieve', async () => {
-    const responsePromise = client.workspaces.retrieve('workspace_id');
+  test('retrieve: only required params', async () => {
+    const responsePromise = client.workspaces.ssh.retrieve('session_id', { workspace_id: 'workspace_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -44,28 +37,12 @@ describe('resource workspaces', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('update: only required params', async () => {
-    const responsePromise = client.workspaces.update('workspace_id', { 'If-Match': 'If-Match' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('update: required and optional params', async () => {
-    const response = await client.workspaces.update('workspace_id', {
-      'If-Match': 'If-Match',
-      cpus: 0,
-      memory_mib: 0,
-      storage_gib: 0,
-    });
+  test('retrieve: required and optional params', async () => {
+    const response = await client.workspaces.ssh.retrieve('session_id', { workspace_id: 'workspace_id' });
   });
 
   test('list', async () => {
-    const responsePromise = client.workspaces.list();
+    const responsePromise = client.workspaces.ssh.list('workspace_id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -78,12 +55,16 @@ describe('resource workspaces', () => {
   test('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.workspaces.list({ cursor: 'cursor', limit: 0 }, { path: '/_stainless_unknown_path' }),
+      client.workspaces.ssh.list(
+        'workspace_id',
+        { cursor: 'cursor', limit: 0 },
+        { path: '/_stainless_unknown_path' },
+      ),
     ).rejects.toThrow(Dedalus.NotFoundError);
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.workspaces.delete('workspace_id', { 'If-Match': 'If-Match' });
+    const responsePromise = client.workspaces.ssh.delete('session_id', { workspace_id: 'workspace_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -94,6 +75,6 @@ describe('resource workspaces', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.workspaces.delete('workspace_id', { 'If-Match': 'If-Match' });
+    const response = await client.workspaces.ssh.delete('session_id', { workspace_id: 'workspace_id' });
   });
 });

@@ -36,10 +36,10 @@ const client = new Dedalus({
 });
 
 const workspace = await client.workspaces.create({
-  cpus: 1,
-  image_version: 'noble@2026-03-01.1',
+  image_version: 'noble@golden',
   memory_mib: 2048,
-  storage_gib: 20,
+  storage_gib: 10,
+  vcpu: 1,
 });
 
 console.log(workspace.workspace_id);
@@ -58,10 +58,10 @@ const client = new Dedalus({
 });
 
 const params: Dedalus.WorkspaceCreateParams = {
-  cpus: 1,
-  image_version: 'noble@2026-03-01.1',
+  image_version: 'noble@golden',
   memory_mib: 2048,
-  storage_gib: 20,
+  storage_gib: 10,
+  vcpu: 1,
 };
 const workspace: Dedalus.Workspace = await client.workspaces.create(params);
 ```
@@ -78,10 +78,10 @@ a subclass of `APIError` will be thrown:
 ```ts
 const workspace = await client.workspaces
   .create({
-    cpus: 1,
-    image_version: 'noble@2026-03-01.1',
+    image_version: 'noble@golden',
     memory_mib: 2048,
-    storage_gib: 20,
+    storage_gib: 10,
+    vcpu: 1,
   })
   .catch(async (err) => {
     if (err instanceof Dedalus.APIError) {
@@ -127,10 +127,10 @@ const client = new Dedalus({
 
 // Or, configure per-request:
 await client.workspaces.create({
-  cpus: 1,
-  image_version: 'noble@2026-03-01.1',
+  image_version: 'noble@golden',
   memory_mib: 2048,
-  storage_gib: 20,
+  storage_gib: 10,
+  vcpu: 1,
 }, {
   maxRetries: 5,
 });
@@ -149,10 +149,10 @@ const client = new Dedalus({
 
 // Override per-request:
 await client.workspaces.create({
-  cpus: 1,
-  image_version: 'noble@2026-03-01.1',
+  image_version: 'noble@golden',
   memory_mib: 2048,
-  storage_gib: 20,
+  storage_gib: 10,
+  vcpu: 1,
 }, {
   timeout: 5 * 1000,
 });
@@ -209,10 +209,10 @@ const client = new Dedalus();
 
 const response = await client.workspaces
   .create({
-    cpus: 1,
-    image_version: 'noble@2026-03-01.1',
+    image_version: 'noble@golden',
     memory_mib: 2048,
-    storage_gib: 20,
+    storage_gib: 10,
+    vcpu: 1,
   })
   .asResponse();
 console.log(response.headers.get('X-My-Header'));
@@ -220,10 +220,10 @@ console.log(response.statusText); // access the underlying Response object
 
 const { data: workspace, response: raw } = await client.workspaces
   .create({
-    cpus: 1,
-    image_version: 'noble@2026-03-01.1',
+    image_version: 'noble@golden',
     memory_mib: 2048,
-    storage_gib: 20,
+    storage_gib: 10,
+    vcpu: 1,
   })
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));

@@ -15,7 +15,23 @@ import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Pagination from './core/pagination';
-import { AbstractPage, type WorkspaceListParams, WorkspaceListResponse } from './core/pagination';
+import {
+  AbstractPage,
+  type ArtifactListParams,
+  ArtifactListResponse,
+  type ExecutionEventsParams,
+  ExecutionEventsResponse,
+  type ExecutionListParams,
+  ExecutionListResponse,
+  type PreviewListParams,
+  PreviewListResponse,
+  type SSHSessionListParams,
+  SSHSessionListResponse,
+  type TerminalListParams,
+  TerminalListResponse,
+  type WorkspaceListParams,
+  WorkspaceListResponse,
+} from './core/pagination';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
@@ -31,7 +47,7 @@ import {
   WorkspaceListParams as WorkspacesAPIWorkspaceListParams,
   WorkspaceUpdateParams,
   Workspaces,
-} from './resources/workspaces';
+} from './resources/workspaces/workspaces';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -817,6 +833,33 @@ export declare namespace Dedalus {
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceListResponse as WorkspaceListResponse,
   };
+
+  export import SSHSessionList = Pagination.SSHSessionList;
+  export {
+    type SSHSessionListParams as SSHSessionListParams,
+    type SSHSessionListResponse as SSHSessionListResponse,
+  };
+
+  export import ExecutionList = Pagination.ExecutionList;
+  export {
+    type ExecutionListParams as ExecutionListParams,
+    type ExecutionListResponse as ExecutionListResponse,
+  };
+
+  export import ExecutionEvents = Pagination.ExecutionEvents;
+  export {
+    type ExecutionEventsParams as ExecutionEventsParams,
+    type ExecutionEventsResponse as ExecutionEventsResponse,
+  };
+
+  export import ArtifactList = Pagination.ArtifactList;
+  export { type ArtifactListParams as ArtifactListParams, type ArtifactListResponse as ArtifactListResponse };
+
+  export import PreviewList = Pagination.PreviewList;
+  export { type PreviewListParams as PreviewListParams, type PreviewListResponse as PreviewListResponse };
+
+  export import TerminalList = Pagination.TerminalList;
+  export { type TerminalListParams as TerminalListParams, type TerminalListResponse as TerminalListResponse };
 
   export {
     Workspaces as Workspaces,

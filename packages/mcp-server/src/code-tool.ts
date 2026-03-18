@@ -26,10 +26,10 @@ For example:
 \`\`\`
 async function run(client) {
   const workspace = await client.workspaces.create({
-    cpus: 1,
-    image_version: 'noble@2026-03-01.1',
+    image_version: 'noble@golden',
     memory_mib: 2048,
-    storage_gib: 20,
+    storage_gib: 10,
+    vcpu: 1,
   });
 
   console.log(workspace.workspace_id);
