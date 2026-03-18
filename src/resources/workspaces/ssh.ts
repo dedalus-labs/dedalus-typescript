@@ -81,11 +81,6 @@ export interface SSHSession {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   connection?: SSHConnection;
 
   error_code?: string;
@@ -102,21 +97,11 @@ export interface SSHSession {
 export interface SSHSessionCreateParams {
   public_key: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   wake_if_needed?: boolean;
 }
 
 export interface SSHSessionList {
   items: Array<SSHSession> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }

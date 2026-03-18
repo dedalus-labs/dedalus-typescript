@@ -60,11 +60,6 @@ export interface Artifact {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   download_url?: string;
 
   execution_id?: string;
@@ -78,11 +73,6 @@ export interface Artifact {
 
 export interface ArtifactList {
   items: Array<Artifact> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }

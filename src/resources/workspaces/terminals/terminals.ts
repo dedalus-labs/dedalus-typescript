@@ -69,11 +69,6 @@ export interface Terminal {
 
   workspace_id: string;
 
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
-
   error_code?: string;
 
   error_message?: string;
@@ -99,11 +94,6 @@ export interface TerminalCreateParams {
   height: number;
 
   width: number;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   cwd?: string;
 
@@ -133,11 +123,6 @@ export interface TerminalInputEvent {
 
 export interface TerminalList {
   items: Array<Terminal> | null;
-
-  /**
-   * A URL to the JSON Schema for this object.
-   */
-  $schema?: string;
 
   next_cursor?: string;
 }
