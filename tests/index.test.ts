@@ -462,10 +462,10 @@ describe('idempotency', () => {
     });
     await client.workspaces.create(
       {
-        cpus: 0,
         image_version: 'image_version',
         memory_mib: 0,
         storage_gib: 0,
+        vcpu: 0,
       },
       { idempotencyKey: 'my-idempotency-key' },
     );

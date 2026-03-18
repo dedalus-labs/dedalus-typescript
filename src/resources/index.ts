@@ -12,4 +12,4 @@ export {
   type WorkspaceListParams,
   type WorkspaceDeleteParams,
   type WorkspaceListItemsWorkspaceList,
-} from './workspaces';
+} from './workspaces/workspaces';
