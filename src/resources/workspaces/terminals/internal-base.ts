@@ -6,6 +6,11 @@ import { EventEmitter } from '../../../core/EventEmitter';
 import { DedalusError } from '../../../core/error';
 import { stringifyQuery } from '../../../internal/utils';
 
+export type TerminalsStreamMessage =
+  | { type: 'connecting' | 'open' | 'closing' | 'close' }
+  | { type: 'message'; message: TerminalsAPI.TerminalServerEvent }
+  | { type: 'error'; error: WebSocketError };
+
 export class WebSocketError extends DedalusError {
   /**
    * The error data that the API sent back in an error event.
