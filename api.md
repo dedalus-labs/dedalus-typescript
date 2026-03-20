@@ -15,6 +15,7 @@ Methods:
 - <code title="patch /v1/workspaces/{workspace_id}">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">update</a>(workspaceID, { ...params }) -> Workspace</code>
 - <code title="get /v1/workspaces">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">list</a>({ ...params }) -> WorkspaceListItemsCursorPage</code>
 - <code title="delete /v1/workspaces/{workspace_id}">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">delete</a>(workspaceID, { ...params }) -> Workspace</code>
+- <code title="get /v1/workspaces/{workspace_id}/status/stream">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">streamStatus</a>(workspaceID, { ...params }) -> Workspace</code>
 
 ## Artifacts
 
