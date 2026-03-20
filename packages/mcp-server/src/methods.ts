@@ -41,6 +41,12 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v1/workspaces/{workspace_id}',
   },
   {
+    clientCallName: 'client.workspaces.streamStatus',
+    fullyQualifiedName: 'workspaces.streamStatus',
+    httpMethod: 'get',
+    httpPath: '/v1/workspaces/{workspace_id}/status/stream',
+  },
+  {
     clientCallName: 'client.workspaces.artifacts.retrieve',
     fullyQualifiedName: 'workspaces.artifacts.retrieve',
     httpMethod: 'get',
@@ -165,6 +171,10 @@ export const sdkMethods: SdkMethod[] = [
     fullyQualifiedName: 'workspaces.terminals.delete',
     httpMethod: 'delete',
     httpPath: '/v1/workspaces/{workspace_id}/terminals/{terminal_id}',
+  },
+  {
+    clientCallName: 'client.workspaces.terminals.connect',
+    fullyQualifiedName: 'workspaces.terminals.connect',
   },
 ];
 
