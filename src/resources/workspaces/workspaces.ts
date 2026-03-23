@@ -55,7 +55,7 @@ import {
   SSHSessionList,
   SSHSessionsCursorPage,
 } from './ssh';
-import * as TerminalsAPI from './terminals';
+import * as TerminalsAPI from './terminals/terminals';
 import {
   Terminal,
   TerminalClientEvent,
@@ -72,9 +72,10 @@ import {
   TerminalServerEvent,
   Terminals,
   TerminalsCursorPage,
-} from './terminals';
+} from './terminals/terminals';
 import { APIPromise } from '../../core/api-promise';
 import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
+import { Stream } from '../../core/streaming';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
@@ -139,6 +140,30 @@ export class Workspaces extends APIResource {
       ...options,
       headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
     });
+  }
+
+  /**
+   * Streams workspace lifecycle updates over Server-Sent Events. Each `status` event
+   * contains a full `LifecycleResponse` payload. The stream closes after the
+   * workspace reaches its current desired state.
+   */
+  streamStatus(
+    workspaceID: string,
+    params: WorkspaceStreamStatusParams | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<Stream<Workspace>> {
+    const { 'Last-Event-ID': lastEventID } = params ?? {};
+    return this._client.get(path`/v1/workspaces/${workspaceID}/status/stream`, {
+      ...options,
+      headers: buildHeaders([
+        {
+          Accept: 'text/event-stream',
+          ...(lastEventID != null ? { 'Last-Event-ID': lastEventID } : undefined),
+        },
+        options?.headers,
+      ]),
+      stream: true,
+    }) as APIPromise<Stream<Workspace>>;
   }
 }
 
@@ -289,6 +314,13 @@ export interface WorkspaceDeleteParams {
   'If-Match': string;
 }
 
+export interface WorkspaceStreamStatusParams {
+  /**
+   * Optional resourceVersion bookmark used to resume a previous stream.
+   */
+  'Last-Event-ID'?: string;
+}
+
 Workspaces.Artifacts = Artifacts;
 Workspaces.Previews = Previews;
 Workspaces.SSH = SSH;
@@ -307,6 +339,7 @@ export declare namespace Workspaces {
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
+    type WorkspaceStreamStatusParams as WorkspaceStreamStatusParams,
   };
 
   export {

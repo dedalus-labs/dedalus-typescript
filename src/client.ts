@@ -29,6 +29,7 @@ import {
   WorkspaceList,
   WorkspaceListItemsCursorPage,
   WorkspaceListParams,
+  WorkspaceStreamStatusParams,
   WorkspaceUpdateParams,
   Workspaces,
 } from './resources/workspaces/workspaces';
@@ -827,5 +828,6 @@ export declare namespace Dedalus {
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
+    type WorkspaceStreamStatusParams as WorkspaceStreamStatusParams,
   };
 }
