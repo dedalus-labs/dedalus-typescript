@@ -26,7 +26,6 @@ describe('resource executions', () => {
       env: { foo: 'string' },
       stdin: 'stdin',
       timeout_ms: 0,
-      wake_if_needed: true,
     });
   });
 

@@ -55,7 +55,7 @@ import {
   SSHSessionList,
   SSHSessionsCursorPage,
 } from './ssh';
-import * as TerminalsAPI from './terminals';
+import * as TerminalsAPI from './terminals/terminals';
 import {
   Terminal,
   TerminalClientEvent,
@@ -72,9 +72,10 @@ import {
   TerminalServerEvent,
   Terminals,
   TerminalsCursorPage,
-} from './terminals';
+} from './terminals/terminals';
 import { APIPromise } from '../../core/api-promise';
 import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
+import { Stream } from '../../core/streaming';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
@@ -140,6 +141,30 @@ export class Workspaces extends APIResource {
       headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
     });
   }
+
+  /**
+   * Streams workspace lifecycle updates over Server-Sent Events. Each `status` event
+   * contains a full `LifecycleResponse` payload. The stream closes after the
+   * workspace reaches its current desired state.
+   */
+  watch(
+    workspaceID: string,
+    params: WorkspaceWatchParams | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<Stream<Workspace>> {
+    const { 'Last-Event-ID': lastEventID } = params ?? {};
+    return this._client.get(path`/v1/workspaces/${workspaceID}/status/stream`, {
+      ...options,
+      headers: buildHeaders([
+        {
+          Accept: 'text/event-stream',
+          ...(lastEventID != null ? { 'Last-Event-ID': lastEventID } : undefined),
+        },
+        options?.headers,
+      ]),
+      stream: true,
+    }) as APIPromise<Stream<Workspace>>;
+  }
 }
 
 export type WorkspaceListItemsCursorPage = CursorPage<WorkspaceList.Item>;
@@ -150,6 +175,9 @@ export interface CreateParams {
    */
   memory_mib: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib: number;
 
   /**
@@ -189,6 +217,9 @@ export interface UpdateParams {
    */
   memory_mib?: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib?: number;
 
   /**
@@ -198,7 +229,7 @@ export interface UpdateParams {
 }
 
 export interface Workspace {
-  desired_state: 'active' | 'inactive' | 'destroyed';
+  desired_state: 'running' | 'sleeping' | 'destroyed';
 
   /**
    * Memory in MiB.
@@ -227,7 +258,7 @@ export namespace WorkspaceList {
   export interface Item {
     created_at: string;
 
-    desired_state: 'active' | 'inactive' | 'destroyed';
+    desired_state: 'running' | 'sleeping' | 'destroyed';
 
     /**
      * Memory in MiB.
@@ -253,6 +284,9 @@ export interface WorkspaceCreateParams {
    */
   memory_mib: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib: number;
 
   /**
@@ -273,7 +307,7 @@ export interface WorkspaceUpdateParams {
   memory_mib?: number;
 
   /**
-   * Body param
+   * Body param: Storage in GiB.
    */
   storage_gib?: number;
 
@@ -287,6 +321,13 @@ export interface WorkspaceListParams extends CursorPageParams {}
 
 export interface WorkspaceDeleteParams {
   'If-Match': string;
+}
+
+export interface WorkspaceWatchParams {
+  /**
+   * Optional resourceVersion bookmark used to resume a previous stream.
+   */
+  'Last-Event-ID'?: string;
 }
 
 Workspaces.Artifacts = Artifacts;
@@ -307,6 +348,7 @@ export declare namespace Workspaces {
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
+    type WorkspaceWatchParams as WorkspaceWatchParams,
   };
 
   export {

@@ -44,6 +44,24 @@ const workspace = await client.workspaces.create({
 console.log(workspace.workspace_id);
 ```
 
+## Streaming responses
+
+We provide support for streaming responses using Server Sent Events (SSE).
+
+```ts
+import Dedalus from 'dedalus';
+
+const client = new Dedalus();
+
+const stream = await client.workspaces.watch('workspace_id');
+for await (const workspace of stream) {
+  console.log(workspace.workspace_id);
+}
+```
+
+If you need to cancel a stream, you can `break` from the loop
+or call `stream.controller.abort()`.
+
 ### Request & Response types
 
 This library includes TypeScript definitions for all request params and response fields. You may import and use them like so:

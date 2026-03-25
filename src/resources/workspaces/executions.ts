@@ -143,8 +143,6 @@ export interface ExecutionCreateParams {
   stdin?: string;
 
   timeout_ms?: number;
-
-  wake_if_needed?: boolean;
 }
 
 export interface ExecutionEvent {
@@ -205,8 +203,6 @@ export interface ExecutionCreateParams {
   stdin?: string;
 
   timeout_ms?: number;
-
-  wake_if_needed?: boolean;
 }
 
 export interface ExecutionRetrieveParams {
