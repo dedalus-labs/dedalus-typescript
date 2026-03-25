@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.0.2 (2026-03-25)
+
+Full Changelog: [v0.0.2...v0.0.2](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.2...v0.0.2)
+
+### Features
+
+* **client:** add async iterator and stream() to WebSocket classes ([e5ae371](https://github.com/dedalus-labs/dedalus-typescript/commit/e5ae371ac8502ad2dce24d4d2654964938f630c6))
+
+
+### Bug Fixes
+
+* **api:** add streaming support/workspace watch/terminal websocket, remove wake_if_needed params ([089d6f2](https://github.com/dedalus-labs/dedalus-typescript/commit/089d6f2d99f068dba443197150e5aed27a388fa7))
+* **api:** add streamStatus to workspaces, WebSocket support to terminals, SSE streaming ([17f9df8](https://github.com/dedalus-labs/dedalus-typescript/commit/17f9df80f0b95ea3a2683f681b9ac9c4fbecffa3))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([6b71717](https://github.com/dedalus-labs/dedalus-typescript/commit/6b7171795cb8fdc69a027d61bc1e4f2e9ac3a759))
+* configure new SDK language ([2eb532c](https://github.com/dedalus-labs/dedalus-typescript/commit/2eb532c1dbaf266852d8b63214753f96ebef1b3a))
+* **internal:** fix MCP server TS errors that occur with required client options ([8cfce31](https://github.com/dedalus-labs/dedalus-typescript/commit/8cfce312dd5c12b85bc52b5d2d125c795d8f5fc9))
+* **internal:** update gitignore ([e543b90](https://github.com/dedalus-labs/dedalus-typescript/commit/e543b908ba5711637d5bd30468810c9cc9a9e135))
+* **tests:** bump steady to v0.19.4 ([f8996a2](https://github.com/dedalus-labs/dedalus-typescript/commit/f8996a2bf63453416543aad252ad238baf43058f))
+* **tests:** bump steady to v0.19.5 ([e0ff7c0](https://github.com/dedalus-labs/dedalus-typescript/commit/e0ff7c00d93035e6e126fb7371ed1c1744728136))
+* **tests:** bump steady to v0.19.6 ([7875048](https://github.com/dedalus-labs/dedalus-typescript/commit/78750482955435c8ed094deffc836daf13c9049c))
+* **tests:** bump steady to v0.19.7 ([538bf6f](https://github.com/dedalus-labs/dedalus-typescript/commit/538bf6fee018ee8b935e057ea231662b0e1f089e))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([e0da8cc](https://github.com/dedalus-labs/dedalus-typescript/commit/e0da8ccbf4911c6bc4c8038d4a0acdee109fdd2a))
+
 ## 0.0.2 (2026-03-18)
 
 Full Changelog: [v0.0.1...v0.0.2](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.1...v0.0.2)
