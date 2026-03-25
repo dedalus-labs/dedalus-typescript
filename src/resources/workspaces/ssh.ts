@@ -91,8 +91,6 @@ export interface SSHSession {
 
 export interface SSHSessionCreateParams {
   public_key: string;
-
-  wake_if_needed?: boolean;
 }
 
 export interface SSHSessionList {
@@ -103,8 +101,6 @@ export interface SSHSessionList {
 
 export interface SSHCreateParams {
   public_key: string;
-
-  wake_if_needed?: boolean;
 }
 
 export interface SSHRetrieveParams {

@@ -95,8 +95,8 @@ describe('resource workspaces', () => {
     const response = await client.workspaces.delete('workspace_id', { 'If-Match': 'If-Match' });
   });
 
-  test('streamStatus', async () => {
-    const responsePromise = client.workspaces.streamStatus('workspace_id');
+  test('watch', async () => {
+    const responsePromise = client.workspaces.watch('workspace_id');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -106,10 +106,10 @@ describe('resource workspaces', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('streamStatus: request options and params are passed correctly', async () => {
+  test('watch: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.workspaces.streamStatus(
+      client.workspaces.watch(
         'workspace_id',
         { 'Last-Event-ID': 'Last-Event-ID' },
         { path: '/_stainless_unknown_path' },

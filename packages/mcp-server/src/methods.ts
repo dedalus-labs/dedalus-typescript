@@ -41,8 +41,8 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v1/workspaces/{workspace_id}',
   },
   {
-    clientCallName: 'client.workspaces.streamStatus',
-    fullyQualifiedName: 'workspaces.streamStatus',
+    clientCallName: 'client.workspaces.watch',
+    fullyQualifiedName: 'workspaces.watch',
     httpMethod: 'get',
     httpPath: '/v1/workspaces/{workspace_id}/status/stream',
   },

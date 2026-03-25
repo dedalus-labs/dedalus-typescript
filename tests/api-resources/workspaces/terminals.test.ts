@@ -26,7 +26,6 @@ describe('resource terminals', () => {
       cwd: 'cwd',
       env: { foo: 'string' },
       shell: 'shell',
-      wake_if_needed: true,
     });
   });
 

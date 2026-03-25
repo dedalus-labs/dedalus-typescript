@@ -53,7 +53,7 @@ import Dedalus from 'dedalus';
 
 const client = new Dedalus();
 
-const stream = await client.workspaces.streamStatus('workspace_id');
+const stream = await client.workspaces.watch('workspace_id');
 for await (const workspace of stream) {
   console.log(workspace.workspace_id);
 }

@@ -95,8 +95,6 @@ export interface TerminalCreateParams {
   env?: { [key: string]: string };
 
   shell?: string;
-
-  wake_if_needed?: boolean;
 }
 
 export interface TerminalErrorEvent {
@@ -151,8 +149,6 @@ export interface TerminalCreateParams {
   env?: { [key: string]: string };
 
   shell?: string;
-
-  wake_if_needed?: boolean;
 }
 
 export interface TerminalRetrieveParams {

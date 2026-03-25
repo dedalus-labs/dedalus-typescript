@@ -147,9 +147,9 @@ export class Workspaces extends APIResource {
    * contains a full `LifecycleResponse` payload. The stream closes after the
    * workspace reaches its current desired state.
    */
-  streamStatus(
+  watch(
     workspaceID: string,
-    params: WorkspaceStreamStatusParams | undefined = {},
+    params: WorkspaceWatchParams | undefined = {},
     options?: RequestOptions,
   ): APIPromise<Stream<Workspace>> {
     const { 'Last-Event-ID': lastEventID } = params ?? {};
@@ -175,6 +175,9 @@ export interface CreateParams {
    */
   memory_mib: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib: number;
 
   /**
@@ -214,6 +217,9 @@ export interface UpdateParams {
    */
   memory_mib?: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib?: number;
 
   /**
@@ -223,7 +229,7 @@ export interface UpdateParams {
 }
 
 export interface Workspace {
-  desired_state: 'active' | 'inactive' | 'destroyed';
+  desired_state: 'running' | 'sleeping' | 'destroyed';
 
   /**
    * Memory in MiB.
@@ -252,7 +258,7 @@ export namespace WorkspaceList {
   export interface Item {
     created_at: string;
 
-    desired_state: 'active' | 'inactive' | 'destroyed';
+    desired_state: 'running' | 'sleeping' | 'destroyed';
 
     /**
      * Memory in MiB.
@@ -278,6 +284,9 @@ export interface WorkspaceCreateParams {
    */
   memory_mib: number;
 
+  /**
+   * Storage in GiB.
+   */
   storage_gib: number;
 
   /**
@@ -298,7 +307,7 @@ export interface WorkspaceUpdateParams {
   memory_mib?: number;
 
   /**
-   * Body param
+   * Body param: Storage in GiB.
    */
   storage_gib?: number;
 
@@ -314,7 +323,7 @@ export interface WorkspaceDeleteParams {
   'If-Match': string;
 }
 
-export interface WorkspaceStreamStatusParams {
+export interface WorkspaceWatchParams {
   /**
    * Optional resourceVersion bookmark used to resume a previous stream.
    */
@@ -339,7 +348,7 @@ export declare namespace Workspaces {
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
-    type WorkspaceStreamStatusParams as WorkspaceStreamStatusParams,
+    type WorkspaceWatchParams as WorkspaceWatchParams,
   };
 
   export {
