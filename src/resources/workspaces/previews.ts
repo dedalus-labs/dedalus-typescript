@@ -77,8 +77,6 @@ export interface PreviewCreateParams {
   port: number;
 
   protocol?: 'http' | 'https';
-
-  wake_if_needed?: boolean;
 }
 
 export interface PreviewList {
@@ -91,8 +89,6 @@ export interface PreviewCreateParams {
   port: number;
 
   protocol?: 'http' | 'https';
-
-  wake_if_needed?: boolean;
 }
 
 export interface PreviewRetrieveParams {

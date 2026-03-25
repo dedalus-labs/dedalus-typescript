@@ -11,6 +11,6 @@ export {
   type WorkspaceUpdateParams,
   type WorkspaceListParams,
   type WorkspaceDeleteParams,
-  type WorkspaceStreamStatusParams,
+  type WorkspaceWatchParams,
   type WorkspaceListItemsCursorPage,
 } from './workspaces/workspaces';

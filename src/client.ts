@@ -29,8 +29,8 @@ import {
   WorkspaceList,
   WorkspaceListItemsCursorPage,
   WorkspaceListParams,
-  WorkspaceStreamStatusParams,
   WorkspaceUpdateParams,
+  WorkspaceWatchParams,
   Workspaces,
 } from './resources/workspaces/workspaces';
 import { type Fetch } from './internal/builtin-types';
@@ -828,6 +828,6 @@ export declare namespace Dedalus {
     type WorkspaceUpdateParams as WorkspaceUpdateParams,
     type WorkspaceListParams as WorkspaceListParams,
     type WorkspaceDeleteParams as WorkspaceDeleteParams,
-    type WorkspaceStreamStatusParams as WorkspaceStreamStatusParams,
+    type WorkspaceWatchParams as WorkspaceWatchParams,
   };
 }

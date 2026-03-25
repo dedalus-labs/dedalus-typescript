@@ -20,10 +20,7 @@ describe('resource ssh', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.ssh.create('workspace_id', {
-      public_key: 'public_key',
-      wake_if_needed: true,
-    });
+    const response = await client.workspaces.ssh.create('workspace_id', { public_key: 'public_key' });
   });
 
   test('retrieve: only required params', async () => {

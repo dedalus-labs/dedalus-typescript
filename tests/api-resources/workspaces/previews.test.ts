@@ -20,11 +20,7 @@ describe('resource previews', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.previews.create('workspace_id', {
-      port: 0,
-      protocol: 'http',
-      wake_if_needed: true,
-    });
+    const response = await client.workspaces.previews.create('workspace_id', { port: 0, protocol: 'http' });
   });
 
   test('retrieve: only required params', async () => {
