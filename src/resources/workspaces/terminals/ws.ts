@@ -10,10 +10,15 @@ export class TerminalsWS extends TerminalsEmitter {
   socket: WS.WebSocket;
   private client: Dedalus;
 
-  constructor(client: Dedalus, parameters?: null | undefined, options?: WS.ClientOptions | null | undefined) {
+  constructor(
+    client: Dedalus,
+    workspaceId: string,
+    terminalId: string,
+    options?: WS.ClientOptions | null | undefined,
+  ) {
     super();
     this.client = client;
-    this.url = buildURL(client, parameters);
+    this.url = buildURL(client, workspaceId, terminalId);
     this.socket = new WS.WebSocket(this.url, {
       ...options,
       headers: {
