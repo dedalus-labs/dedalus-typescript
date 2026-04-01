@@ -1,6 +1,6 @@
 {
   "name": "dedalus",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The official TypeScript library for the Dedalus API",
   "author": "Dedalus <oss@dedaluslabs.ai>",
   "types": "dist/index.d.ts",
