@@ -7,9 +7,13 @@ const client = new Dedalus({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource previews', () => {
+describe('resource terminals', () => {
   test('create: only required params', async () => {
-    const responsePromise = client.workspaces.previews.create('workspace_id', { port: 0 });
+    const responsePromise = client.machines.terminals.create({
+      machine_id: 'machine_id',
+      height: 0,
+      width: 0,
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -20,12 +24,20 @@ describe('resource previews', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.previews.create('workspace_id', { port: 0, protocol: 'http' });
+    const response = await client.machines.terminals.create({
+      machine_id: 'machine_id',
+      height: 0,
+      width: 0,
+      cwd: 'cwd',
+      env: { foo: 'string' },
+      shell: 'shell',
+    });
   });
 
   test('retrieve: only required params', async () => {
-    const responsePromise = client.workspaces.previews.retrieve('preview_id', {
-      workspace_id: 'workspace_id',
+    const responsePromise = client.machines.terminals.retrieve({
+      machine_id: 'machine_id',
+      terminal_id: 'terminal_id',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -37,13 +49,14 @@ describe('resource previews', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.workspaces.previews.retrieve('preview_id', {
-      workspace_id: 'workspace_id',
+    const response = await client.machines.terminals.retrieve({
+      machine_id: 'machine_id',
+      terminal_id: 'terminal_id',
     });
   });
 
-  test('list', async () => {
-    const responsePromise = client.workspaces.previews.list('workspace_id');
+  test('list: only required params', async () => {
+    const responsePromise = client.machines.terminals.list({ machine_id: 'machine_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -53,19 +66,19 @@ describe('resource previews', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('list: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.workspaces.previews.list(
-        'workspace_id',
-        { cursor: 'cursor', limit: 0 },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Dedalus.NotFoundError);
+  test('list: required and optional params', async () => {
+    const response = await client.machines.terminals.list({
+      machine_id: 'machine_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.workspaces.previews.delete('preview_id', { workspace_id: 'workspace_id' });
+    const responsePromise = client.machines.terminals.delete({
+      machine_id: 'machine_id',
+      terminal_id: 'terminal_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -76,6 +89,9 @@ describe('resource previews', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.workspaces.previews.delete('preview_id', { workspace_id: 'workspace_id' });
+    const response = await client.machines.terminals.delete({
+      machine_id: 'machine_id',
+      terminal_id: 'terminal_id',
+    });
   });
 });

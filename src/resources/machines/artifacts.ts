@@ -10,24 +10,17 @@ export class Artifacts extends APIResource {
   /**
    * Get artifact
    */
-  retrieve(
-    artifactID: string,
-    params: ArtifactRetrieveParams,
-    options?: RequestOptions,
-  ): APIPromise<Artifact> {
-    const { workspace_id } = params;
-    return this._client.get(path`/v1/workspaces/${workspace_id}/artifacts/${artifactID}`, options);
+  retrieve(params: ArtifactRetrieveParams, options?: RequestOptions): APIPromise<Artifact> {
+    const { machine_id, artifact_id } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
   }
 
   /**
    * List artifacts
    */
-  list(
-    workspaceID: string,
-    query: ArtifactListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<ArtifactsCursorPage, Artifact> {
-    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/artifacts`, CursorPage<Artifact>, {
+  list(params: ArtifactListParams, options?: RequestOptions): PagePromise<ArtifactsCursorPage, Artifact> {
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/artifacts`, CursorPage<Artifact>, {
       query,
       ...options,
     });
@@ -36,9 +29,9 @@ export class Artifacts extends APIResource {
   /**
    * Delete artifact
    */
-  delete(artifactID: string, params: ArtifactDeleteParams, options?: RequestOptions): APIPromise<Artifact> {
-    const { workspace_id } = params;
-    return this._client.delete(path`/v1/workspaces/${workspace_id}/artifacts/${artifactID}`, options);
+  delete(params: ArtifactDeleteParams, options?: RequestOptions): APIPromise<Artifact> {
+    const { machine_id, artifact_id } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
   }
 }
 
@@ -49,11 +42,11 @@ export interface Artifact {
 
   created_at: string;
 
+  machine_id: string;
+
   name: string;
 
   size_bytes: number;
-
-  workspace_id: string;
 
   download_url?: string;
 
@@ -73,13 +66,22 @@ export interface ArtifactList {
 }
 
 export interface ArtifactRetrieveParams {
-  workspace_id: string;
+  machine_id: string;
+
+  artifact_id: string;
 }
 
-export interface ArtifactListParams extends CursorPageParams {}
+export interface ArtifactListParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+}
 
 export interface ArtifactDeleteParams {
-  workspace_id: string;
+  machine_id: string;
+
+  artifact_id: string;
 }
 
 export declare namespace Artifacts {

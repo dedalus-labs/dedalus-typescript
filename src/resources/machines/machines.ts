@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as WorkspacesAPI from './workspaces';
 import * as ArtifactsAPI from './artifacts';
 import {
   Artifact,
@@ -80,7 +79,7 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
-export class Workspaces extends APIResource {
+export class Machines extends APIResource {
   artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
   previews: PreviewsAPI.Previews = new PreviewsAPI.Previews(this._client);
   ssh: SSHAPI.SSH = new SSHAPI.SSH(this._client);
@@ -88,29 +87,26 @@ export class Workspaces extends APIResource {
   terminals: TerminalsAPI.Terminals = new TerminalsAPI.Terminals(this._client);
 
   /**
-   * Create workspace
+   * Create machine
    */
-  create(body: WorkspaceCreateParams, options?: RequestOptions): APIPromise<Workspace> {
-    return this._client.post('/v1/workspaces', { body, ...options });
+  create(body: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
+    return this._client.post('/v1/machines', { body, ...options });
   }
 
   /**
-   * Get workspace
+   * Get machine
    */
-  retrieve(workspaceID: string, options?: RequestOptions): APIPromise<Workspace> {
-    return this._client.get(path`/v1/workspaces/${workspaceID}`, options);
+  retrieve(params: MachineRetrieveParams, options?: RequestOptions): APIPromise<Machine> {
+    const { machine_id } = params;
+    return this._client.get(path`/v1/machines/${machine_id}`, options);
   }
 
   /**
-   * Update workspace
+   * Update machine
    */
-  update(
-    workspaceID: string,
-    params: WorkspaceUpdateParams,
-    options?: RequestOptions,
-  ): APIPromise<Workspace> {
-    const { 'If-Match': ifMatch, ...body } = params;
-    return this._client.patch(path`/v1/workspaces/${workspaceID}`, {
+  update(params: MachineUpdateParams, options?: RequestOptions): APIPromise<Machine> {
+    const { machine_id, 'If-Match': ifMatch, ...body } = params;
+    return this._client.patch(path`/v1/machines/${machine_id}`, {
       body,
       ...options,
       headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
@@ -118,42 +114,34 @@ export class Workspaces extends APIResource {
   }
 
   /**
-   * List workspaces
+   * List machines
    */
   list(
-    query: WorkspaceListParams | null | undefined = {},
+    query: MachineListParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<WorkspaceListItemsCursorPage, WorkspaceList.Item> {
-    return this._client.getAPIList('/v1/workspaces', CursorPage<WorkspaceList.Item>, { query, ...options });
+  ): PagePromise<MachineListItemsCursorPage, MachineListItem> {
+    return this._client.getAPIList('/v1/machines', CursorPage<MachineListItem>, { query, ...options });
   }
 
   /**
-   * Destroy workspace
+   * Destroy machine
    */
-  delete(
-    workspaceID: string,
-    params: WorkspaceDeleteParams,
-    options?: RequestOptions,
-  ): APIPromise<Workspace> {
-    const { 'If-Match': ifMatch } = params;
-    return this._client.delete(path`/v1/workspaces/${workspaceID}`, {
+  delete(params: MachineDeleteParams, options?: RequestOptions): APIPromise<Machine> {
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}`, {
       ...options,
       headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
     });
   }
 
   /**
-   * Streams workspace lifecycle updates over Server-Sent Events. Each `status` event
-   * contains a full `LifecycleResponse` payload. The stream closes after the
-   * workspace reaches its current desired state.
+   * Streams machine lifecycle updates over Server-Sent Events. Each `status` event
+   * contains a full `LifecycleResponse` payload. The stream closes after the machine
+   * reaches its current desired state.
    */
-  watch(
-    workspaceID: string,
-    params: WorkspaceWatchParams | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<Stream<Workspace>> {
-    const { 'Last-Event-ID': lastEventID } = params ?? {};
-    return this._client.get(path`/v1/workspaces/${workspaceID}/status/stream`, {
+  watch(params: MachineWatchParams, options?: RequestOptions): APIPromise<Stream<Machine>> {
+    const { machine_id, 'Last-Event-ID': lastEventID } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/status/stream`, {
       ...options,
       headers: buildHeaders([
         {
@@ -163,11 +151,11 @@ export class Workspaces extends APIResource {
         options?.headers,
       ]),
       stream: true,
-    }) as APIPromise<Stream<Workspace>>;
+    }) as APIPromise<Stream<Machine>>;
   }
 }
 
-export type WorkspaceListItemsCursorPage = CursorPage<WorkspaceList.Item>;
+export type MachineListItemsCursorPage = CursorPage<MachineListItem>;
 
 export interface CreateParams {
   /**
@@ -211,6 +199,54 @@ export interface LifecycleStatus {
   last_error?: string;
 }
 
+export interface Machine {
+  desired_state: 'running' | 'sleeping' | 'destroyed';
+
+  machine_id: string;
+
+  /**
+   * Memory in MiB.
+   */
+  memory_mib: number;
+
+  status: LifecycleStatus;
+
+  storage_gib: number;
+
+  /**
+   * CPU in vCPUs.
+   */
+  vcpu: number;
+}
+
+export interface MachineList {
+  items: Array<MachineListItem> | null;
+
+  next_cursor?: string;
+}
+
+export interface MachineListItem {
+  created_at: string;
+
+  desired_state: 'running' | 'sleeping' | 'destroyed';
+
+  machine_id: string;
+
+  /**
+   * Memory in MiB.
+   */
+  memory_mib: number;
+
+  status: LifecycleStatus;
+
+  storage_gib: number;
+
+  /**
+   * CPU in vCPUs.
+   */
+  vcpu: number;
+}
+
 export interface UpdateParams {
   /**
    * Memory in MiB.
@@ -228,57 +264,7 @@ export interface UpdateParams {
   vcpu?: number;
 }
 
-export interface Workspace {
-  desired_state: 'running' | 'sleeping' | 'destroyed';
-
-  /**
-   * Memory in MiB.
-   */
-  memory_mib: number;
-
-  status: LifecycleStatus;
-
-  storage_gib: number;
-
-  /**
-   * CPU in vCPUs.
-   */
-  vcpu: number;
-
-  workspace_id: string;
-}
-
-export interface WorkspaceList {
-  items: Array<WorkspaceList.Item> | null;
-
-  next_cursor?: string;
-}
-
-export namespace WorkspaceList {
-  export interface Item {
-    created_at: string;
-
-    desired_state: 'running' | 'sleeping' | 'destroyed';
-
-    /**
-     * Memory in MiB.
-     */
-    memory_mib: number;
-
-    status: WorkspacesAPI.LifecycleStatus;
-
-    storage_gib: number;
-
-    /**
-     * CPU in vCPUs.
-     */
-    vcpu: number;
-
-    workspace_id: string;
-  }
-}
-
-export interface WorkspaceCreateParams {
+export interface MachineCreateParams {
   /**
    * Memory in MiB.
    */
@@ -295,7 +281,16 @@ export interface WorkspaceCreateParams {
   vcpu: number;
 }
 
-export interface WorkspaceUpdateParams {
+export interface MachineRetrieveParams {
+  machine_id: string;
+}
+
+export interface MachineUpdateParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
   /**
    * Header param
    */
@@ -317,38 +312,54 @@ export interface WorkspaceUpdateParams {
   vcpu?: number;
 }
 
-export interface WorkspaceListParams extends CursorPageParams {}
+export interface MachineListParams extends CursorPageParams {}
 
-export interface WorkspaceDeleteParams {
+export interface MachineDeleteParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Header param
+   */
   'If-Match': string;
 }
 
-export interface WorkspaceWatchParams {
+export interface MachineWatchParams {
   /**
-   * Optional resourceVersion bookmark used to resume a previous stream.
+   * Path param: Machine identifier.
+   */
+  machine_id: string;
+
+  /**
+   * Header param: Optional resourceVersion bookmark used to resume a previous
+   * stream.
    */
   'Last-Event-ID'?: string;
 }
 
-Workspaces.Artifacts = Artifacts;
-Workspaces.Previews = Previews;
-Workspaces.SSH = SSH;
-Workspaces.Executions = Executions;
-Workspaces.Terminals = Terminals;
+Machines.Artifacts = Artifacts;
+Machines.Previews = Previews;
+Machines.SSH = SSH;
+Machines.Executions = Executions;
+Machines.Terminals = Terminals;
 
-export declare namespace Workspaces {
+export declare namespace Machines {
   export {
     type CreateParams as CreateParams,
     type LifecycleStatus as LifecycleStatus,
+    type Machine as Machine,
+    type MachineList as MachineList,
+    type MachineListItem as MachineListItem,
     type UpdateParams as UpdateParams,
-    type Workspace as Workspace,
-    type WorkspaceList as WorkspaceList,
-    type WorkspaceListItemsCursorPage as WorkspaceListItemsCursorPage,
-    type WorkspaceCreateParams as WorkspaceCreateParams,
-    type WorkspaceUpdateParams as WorkspaceUpdateParams,
-    type WorkspaceListParams as WorkspaceListParams,
-    type WorkspaceDeleteParams as WorkspaceDeleteParams,
-    type WorkspaceWatchParams as WorkspaceWatchParams,
+    type MachineListItemsCursorPage as MachineListItemsCursorPage,
+    type MachineCreateParams as MachineCreateParams,
+    type MachineRetrieveParams as MachineRetrieveParams,
+    type MachineUpdateParams as MachineUpdateParams,
+    type MachineListParams as MachineListParams,
+    type MachineDeleteParams as MachineDeleteParams,
+    type MachineWatchParams as MachineWatchParams,
   };
 
   export {

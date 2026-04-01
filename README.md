@@ -35,13 +35,13 @@ const client = new Dedalus({
   apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted
 });
 
-const workspace = await client.workspaces.create({
+const machine = await client.machines.create({
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
 });
 
-console.log(workspace.workspace_id);
+console.log(machine.machine_id);
 ```
 
 ## Streaming responses
@@ -53,9 +53,9 @@ import Dedalus from 'dedalus';
 
 const client = new Dedalus();
 
-const stream = await client.workspaces.watch('workspace_id');
-for await (const workspace of stream) {
-  console.log(workspace.workspace_id);
+const stream = await client.machines.watch({ machine_id: 'machine_id' });
+for await (const machine of stream) {
+  console.log(machine.machine_id);
 }
 ```
 
@@ -74,12 +74,12 @@ const client = new Dedalus({
   apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted
 });
 
-const params: Dedalus.WorkspaceCreateParams = {
+const params: Dedalus.MachineCreateParams = {
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
 };
-const workspace: Dedalus.Workspace = await client.workspaces.create(params);
+const machine: Dedalus.Machine = await client.machines.create(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -92,7 +92,7 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const workspace = await client.workspaces
+const machine = await client.machines
   .create({
     memory_mib: 2048,
     storage_gib: 10,
@@ -141,7 +141,7 @@ const client = new Dedalus({
 });
 
 // Or, configure per-request:
-await client.workspaces.create({
+await client.machines.create({
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -162,7 +162,7 @@ const client = new Dedalus({
 });
 
 // Override per-request:
-await client.workspaces.create({
+await client.machines.create({
   memory_mib: 2048,
   storage_gib: 10,
   vcpu: 1,
@@ -181,22 +181,22 @@ List methods in the Dedalus API are paginated.
 You can use the `for await … of` syntax to iterate through items across all pages:
 
 ```ts
-async function fetchAllWorkspaces(params) {
-  const allWorkspaces = [];
+async function fetchAllMachineListItems(params) {
+  const allMachineListItems = [];
   // Automatically fetches more pages as needed.
-  for await (const workspace of client.workspaces.list()) {
-    allWorkspaces.push(workspace);
+  for await (const machineListItem of client.machines.list()) {
+    allMachineListItems.push(machineListItem);
   }
-  return allWorkspaces;
+  return allMachineListItems;
 }
 ```
 
 Alternatively, you can request a single page at a time:
 
 ```ts
-let page = await client.workspaces.list();
-for (const workspace of page.items) {
-  console.log(workspace);
+let page = await client.machines.list();
+for (const machineListItem of page.items) {
+  console.log(machineListItem);
 }
 
 // Convenience methods are provided for manually paginating:
@@ -220,7 +220,7 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 ```ts
 const client = new Dedalus();
 
-const response = await client.workspaces
+const response = await client.machines
   .create({
     memory_mib: 2048,
     storage_gib: 10,
@@ -230,7 +230,7 @@ const response = await client.workspaces
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: workspace, response: raw } = await client.workspaces
+const { data: machine, response: raw } = await client.machines
   .create({
     memory_mib: 2048,
     storage_gib: 10,
@@ -238,7 +238,7 @@ const { data: workspace, response: raw } = await client.workspaces
   })
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(workspace.workspace_id);
+console.log(machine.machine_id);
 ```
 
 ### Logging
@@ -318,7 +318,7 @@ parameter. This library doesn't validate at runtime that the request matches the
 send will be sent as-is.
 
 ```ts
-client.workspaces.create({
+client.machines.create({
   // ...
   // @ts-expect-error baz is not yet public
   baz: 'undocumented option',

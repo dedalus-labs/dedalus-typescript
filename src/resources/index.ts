@@ -1,16 +1,18 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 export {
-  Workspaces,
+  Machines,
   type CreateParams,
   type LifecycleStatus,
+  type Machine,
+  type MachineList,
+  type MachineListItem,
   type UpdateParams,
-  type Workspace,
-  type WorkspaceList,
-  type WorkspaceCreateParams,
-  type WorkspaceUpdateParams,
-  type WorkspaceListParams,
-  type WorkspaceDeleteParams,
-  type WorkspaceWatchParams,
-  type WorkspaceListItemsCursorPage,
-} from './workspaces/workspaces';
+  type MachineCreateParams,
+  type MachineRetrieveParams,
+  type MachineUpdateParams,
+  type MachineListParams,
+  type MachineDeleteParams,
+  type MachineWatchParams,
+  type MachineListItemsCursorPage,
+} from './machines/machines';

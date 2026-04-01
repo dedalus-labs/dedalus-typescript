@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.0.4 (2026-04-01)
+
+Full Changelog: [v0.0.3...v0.0.4](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.3...v0.0.4)
+
+### Bug Fixes
+
+* **internal:** gitignore generated `oidc` dir ([df9a092](https://github.com/dedalus-labs/dedalus-typescript/commit/df9a092b396ca2c18c728595866418c36c98eac6))
+
+
+### Chores
+
+* **api:** rename workspaces to machines ([a3a2e12](https://github.com/dedalus-labs/dedalus-typescript/commit/a3a2e1212045049b016de75a9e0d7345e13b5243))
+* **ci:** escape input path in publish-npm workflow ([7b19ee3](https://github.com/dedalus-labs/dedalus-typescript/commit/7b19ee356b4c55e9054da5e1ce23a2083e6a5a6f))
+* **internal:** improve local docs search for MCP servers ([e3bb747](https://github.com/dedalus-labs/dedalus-typescript/commit/e3bb747c669b5f97b79b4af39b86809bc620581a))
+* **internal:** improve local docs search for MCP servers ([659dbfd](https://github.com/dedalus-labs/dedalus-typescript/commit/659dbfd8b999f79e01f91859dd032d107f88834d))
+* **internal:** support custom-instructions-path flag in MCP servers ([4e32c82](https://github.com/dedalus-labs/dedalus-typescript/commit/4e32c820322e1b78224bf0a4f47fb9e0e28b9136))
+* **internal:** support local docs search in MCP servers ([b5715ef](https://github.com/dedalus-labs/dedalus-typescript/commit/b5715ef09add6bcdd602993d30dbc14c7da67cb0))
+* **internal:** update multipart form array serialization ([45425c7](https://github.com/dedalus-labs/dedalus-typescript/commit/45425c798fe040f916c48a27870ced914c1ad167))
+* **mcp-server:** add support for session id, forward client info ([c590780](https://github.com/dedalus-labs/dedalus-typescript/commit/c5907800c87dbbfe86fecb5dfb9677d32069ce7b))
+* **tests:** bump steady to v0.20.1 ([b5e3154](https://github.com/dedalus-labs/dedalus-typescript/commit/b5e31543755e71c1eb6b41543231ae33c973cb62))
+* **tests:** bump steady to v0.20.2 ([260b764](https://github.com/dedalus-labs/dedalus-typescript/commit/260b764a0f97ba5045ab601b1fcb23a2f0406c9d))
+
 ## 0.0.3 (2026-03-25)
 
 Full Changelog: [v0.0.2...v0.0.3](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.2...v0.0.3)
