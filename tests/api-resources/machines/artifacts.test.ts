@@ -9,8 +9,9 @@ const client = new Dedalus({
 
 describe('resource artifacts', () => {
   test('retrieve: only required params', async () => {
-    const responsePromise = client.workspaces.artifacts.retrieve('artifact_id', {
-      workspace_id: 'workspace_id',
+    const responsePromise = client.machines.artifacts.retrieve({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -22,13 +23,14 @@ describe('resource artifacts', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.workspaces.artifacts.retrieve('artifact_id', {
-      workspace_id: 'workspace_id',
+    const response = await client.machines.artifacts.retrieve({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
     });
   });
 
-  test('list', async () => {
-    const responsePromise = client.workspaces.artifacts.list('workspace_id');
+  test('list: only required params', async () => {
+    const responsePromise = client.machines.artifacts.list({ machine_id: 'machine_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -38,20 +40,18 @@ describe('resource artifacts', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('list: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.workspaces.artifacts.list(
-        'workspace_id',
-        { cursor: 'cursor', limit: 0 },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Dedalus.NotFoundError);
+  test('list: required and optional params', async () => {
+    const response = await client.machines.artifacts.list({
+      machine_id: 'machine_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.workspaces.artifacts.delete('artifact_id', {
-      workspace_id: 'workspace_id',
+    const responsePromise = client.machines.artifacts.delete({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -63,8 +63,9 @@ describe('resource artifacts', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.workspaces.artifacts.delete('artifact_id', {
-      workspace_id: 'workspace_id',
+    const response = await client.machines.artifacts.delete({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
     });
   });
 });

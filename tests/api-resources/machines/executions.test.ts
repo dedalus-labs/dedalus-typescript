@@ -7,12 +7,11 @@ const client = new Dedalus({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource workspaces', () => {
+describe('resource executions', () => {
   test('create: only required params', async () => {
-    const responsePromise = client.workspaces.create({
-      memory_mib: 0,
-      storage_gib: 0,
-      vcpu: 0,
+    const responsePromise = client.machines.executions.create({
+      machine_id: 'machine_id',
+      command: ['string'],
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -24,15 +23,21 @@ describe('resource workspaces', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.create({
-      memory_mib: 0,
-      storage_gib: 0,
-      vcpu: 0,
+    const response = await client.machines.executions.create({
+      machine_id: 'machine_id',
+      command: ['string'],
+      cwd: 'cwd',
+      env: { foo: 'string' },
+      stdin: 'stdin',
+      timeout_ms: 0,
     });
   });
 
-  test('retrieve', async () => {
-    const responsePromise = client.workspaces.retrieve('workspace_id');
+  test('retrieve: only required params', async () => {
+    const responsePromise = client.machines.executions.retrieve({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -42,28 +47,15 @@ describe('resource workspaces', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('update: only required params', async () => {
-    const responsePromise = client.workspaces.update('workspace_id', { 'If-Match': 'If-Match' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('update: required and optional params', async () => {
-    const response = await client.workspaces.update('workspace_id', {
-      'If-Match': 'If-Match',
-      memory_mib: 0,
-      storage_gib: 0,
-      vcpu: 0,
+  test('retrieve: required and optional params', async () => {
+    const response = await client.machines.executions.retrieve({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
     });
   });
 
-  test('list', async () => {
-    const responsePromise = client.workspaces.list();
+  test('list: only required params', async () => {
+    const responsePromise = client.machines.executions.list({ machine_id: 'machine_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -73,15 +65,19 @@ describe('resource workspaces', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('list: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.workspaces.list({ cursor: 'cursor', limit: 0 }, { path: '/_stainless_unknown_path' }),
-    ).rejects.toThrow(Dedalus.NotFoundError);
+  test('list: required and optional params', async () => {
+    const response = await client.machines.executions.list({
+      machine_id: 'machine_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.workspaces.delete('workspace_id', { 'If-Match': 'If-Match' });
+    const responsePromise = client.machines.executions.delete({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -92,11 +88,17 @@ describe('resource workspaces', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.workspaces.delete('workspace_id', { 'If-Match': 'If-Match' });
+    const response = await client.machines.executions.delete({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
   });
 
-  test('watch', async () => {
-    const responsePromise = client.workspaces.watch('workspace_id');
+  test('events: only required params', async () => {
+    const responsePromise = client.machines.executions.events({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -106,14 +108,33 @@ describe('resource workspaces', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('watch: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.workspaces.watch(
-        'workspace_id',
-        { 'Last-Event-ID': 'Last-Event-ID' },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Dedalus.NotFoundError);
+  test('events: required and optional params', async () => {
+    const response = await client.machines.executions.events({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
+  });
+
+  test('output: only required params', async () => {
+    const responsePromise = client.machines.executions.output({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('output: required and optional params', async () => {
+    const response = await client.machines.executions.output({
+      machine_id: 'machine_id',
+      execution_id: 'execution_id',
+    });
   });
 });

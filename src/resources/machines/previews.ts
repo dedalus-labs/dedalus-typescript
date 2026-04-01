@@ -10,27 +10,25 @@ export class Previews extends APIResource {
   /**
    * Create preview
    */
-  create(workspaceID: string, body: PreviewCreateParams, options?: RequestOptions): APIPromise<Preview> {
-    return this._client.post(path`/v1/workspaces/${workspaceID}/previews`, { body, ...options });
+  create(params: PreviewCreateParams, options?: RequestOptions): APIPromise<Preview> {
+    const { machine_id, ...body } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/previews`, { body, ...options });
   }
 
   /**
    * Get preview
    */
-  retrieve(previewID: string, params: PreviewRetrieveParams, options?: RequestOptions): APIPromise<Preview> {
-    const { workspace_id } = params;
-    return this._client.get(path`/v1/workspaces/${workspace_id}/previews/${previewID}`, options);
+  retrieve(params: PreviewRetrieveParams, options?: RequestOptions): APIPromise<Preview> {
+    const { machine_id, preview_id } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/previews/${preview_id}`, options);
   }
 
   /**
    * List previews
    */
-  list(
-    workspaceID: string,
-    query: PreviewListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<PreviewsCursorPage, Preview> {
-    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/previews`, CursorPage<Preview>, {
+  list(params: PreviewListParams, options?: RequestOptions): PagePromise<PreviewsCursorPage, Preview> {
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/previews`, CursorPage<Preview>, {
       query,
       ...options,
     });
@@ -39,9 +37,9 @@ export class Previews extends APIResource {
   /**
    * Delete preview
    */
-  delete(previewID: string, params: PreviewDeleteParams, options?: RequestOptions): APIPromise<Preview> {
-    const { workspace_id } = params;
-    return this._client.delete(path`/v1/workspaces/${workspace_id}/previews/${previewID}`, options);
+  delete(params: PreviewDeleteParams, options?: RequestOptions): APIPromise<Preview> {
+    const { machine_id, preview_id } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}/previews/${preview_id}`, options);
   }
 }
 
@@ -50,13 +48,15 @@ export type PreviewsCursorPage = CursorPage<Preview>;
 export interface Preview {
   created_at: string;
 
+  machine_id: string;
+
   port: number;
 
   preview_id: string;
 
   status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed';
 
-  workspace_id: string;
+  visibility: 'public' | 'private' | 'org';
 
   error_code?: string;
 
@@ -77,6 +77,8 @@ export interface PreviewCreateParams {
   port: number;
 
   protocol?: 'http' | 'https';
+
+  visibility?: 'public' | 'private' | 'org';
 }
 
 export interface PreviewList {
@@ -86,19 +88,44 @@ export interface PreviewList {
 }
 
 export interface PreviewCreateParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Body param
+   */
   port: number;
 
+  /**
+   * Body param
+   */
   protocol?: 'http' | 'https';
+
+  /**
+   * Body param
+   */
+  visibility?: 'public' | 'private' | 'org';
 }
 
 export interface PreviewRetrieveParams {
-  workspace_id: string;
+  machine_id: string;
+
+  preview_id: string;
 }
 
-export interface PreviewListParams extends CursorPageParams {}
+export interface PreviewListParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+}
 
 export interface PreviewDeleteParams {
-  workspace_id: string;
+  machine_id: string;
+
+  preview_id: string;
 }
 
 export declare namespace Previews {

@@ -79,11 +79,11 @@ export abstract class TerminalsEmitter extends EventEmitter<WebSocketEvents> {
 
 export function buildURL(
   client: Dedalus,
-  workspaceId: string,
+  machineId: string,
   terminalId: string,
   query?: object | null,
 ): URL {
-  const path = `/v1/workspaces/${encodeURIComponent(workspaceId)}/terminals/${encodeURIComponent(
+  const path = `/v1/machines/${encodeURIComponent(machineId)}/terminals/${encodeURIComponent(
     terminalId,
   )}/stream`;
   const baseURL = client.baseURL;

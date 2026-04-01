@@ -25,13 +25,13 @@ For example:
 
 \`\`\`
 async function run(client) {
-  const workspace = await client.workspaces.create({
+  const machine = await client.machines.create({
     memory_mib: 2048,
     storage_gib: 10,
     vcpu: 1,
   });
 
-  console.log(workspace.workspace_id);
+  console.log(machine.machine_id);
 }
 \`\`\`
 

@@ -12,13 +12,13 @@ export class TerminalsWS extends TerminalsEmitter {
 
   constructor(
     client: Dedalus,
-    workspaceId: string,
+    machineId: string,
     terminalId: string,
     options?: WS.ClientOptions | null | undefined,
   ) {
     super();
     this.client = client;
-    this.url = buildURL(client, workspaceId, terminalId);
+    this.url = buildURL(client, machineId, terminalId);
     this.socket = new WS.WebSocket(this.url, {
       ...options,
       headers: {

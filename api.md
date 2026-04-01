@@ -1,106 +1,107 @@
-# Workspaces
+# Machines
 
 Types:
 
-- <code><a href="./src/resources/workspaces/workspaces.ts">CreateParams</a></code>
-- <code><a href="./src/resources/workspaces/workspaces.ts">LifecycleStatus</a></code>
-- <code><a href="./src/resources/workspaces/workspaces.ts">UpdateParams</a></code>
-- <code><a href="./src/resources/workspaces/workspaces.ts">Workspace</a></code>
-- <code><a href="./src/resources/workspaces/workspaces.ts">WorkspaceList</a></code>
+- <code><a href="./src/resources/machines/machines.ts">CreateParams</a></code>
+- <code><a href="./src/resources/machines/machines.ts">LifecycleStatus</a></code>
+- <code><a href="./src/resources/machines/machines.ts">Machine</a></code>
+- <code><a href="./src/resources/machines/machines.ts">MachineList</a></code>
+- <code><a href="./src/resources/machines/machines.ts">MachineListItem</a></code>
+- <code><a href="./src/resources/machines/machines.ts">UpdateParams</a></code>
 
 Methods:
 
-- <code title="post /v1/workspaces">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">create</a>({ ...params }) -> Workspace</code>
-- <code title="get /v1/workspaces/{workspace_id}">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">retrieve</a>(workspaceID) -> Workspace</code>
-- <code title="patch /v1/workspaces/{workspace_id}">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">update</a>(workspaceID, { ...params }) -> Workspace</code>
-- <code title="get /v1/workspaces">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">list</a>({ ...params }) -> WorkspaceListItemsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">delete</a>(workspaceID, { ...params }) -> Workspace</code>
-- <code title="get /v1/workspaces/{workspace_id}/status/stream">client.workspaces.<a href="./src/resources/workspaces/workspaces.ts">watch</a>(workspaceID, { ...params }) -> Workspace</code>
+- <code title="post /v1/machines">client.machines.<a href="./src/resources/machines/machines.ts">create</a>({ ...params }) -> Machine</code>
+- <code title="get /v1/machines/{machine_id}">client.machines.<a href="./src/resources/machines/machines.ts">retrieve</a>({ ...params }) -> Machine</code>
+- <code title="patch /v1/machines/{machine_id}">client.machines.<a href="./src/resources/machines/machines.ts">update</a>({ ...params }) -> Machine</code>
+- <code title="get /v1/machines">client.machines.<a href="./src/resources/machines/machines.ts">list</a>({ ...params }) -> MachineListItemsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}">client.machines.<a href="./src/resources/machines/machines.ts">delete</a>({ ...params }) -> Machine</code>
+- <code title="get /v1/machines/{machine_id}/status/stream">client.machines.<a href="./src/resources/machines/machines.ts">watch</a>({ ...params }) -> Machine</code>
 
 ## Artifacts
 
 Types:
 
-- <code><a href="./src/resources/workspaces/artifacts.ts">Artifact</a></code>
-- <code><a href="./src/resources/workspaces/artifacts.ts">ArtifactList</a></code>
+- <code><a href="./src/resources/machines/artifacts.ts">Artifact</a></code>
+- <code><a href="./src/resources/machines/artifacts.ts">ArtifactList</a></code>
 
 Methods:
 
-- <code title="get /v1/workspaces/{workspace_id}/artifacts/{artifact_id}">client.workspaces.artifacts.<a href="./src/resources/workspaces/artifacts.ts">retrieve</a>(artifactID, { ...params }) -> Artifact</code>
-- <code title="get /v1/workspaces/{workspace_id}/artifacts">client.workspaces.artifacts.<a href="./src/resources/workspaces/artifacts.ts">list</a>(workspaceID, { ...params }) -> ArtifactsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}/artifacts/{artifact_id}">client.workspaces.artifacts.<a href="./src/resources/workspaces/artifacts.ts">delete</a>(artifactID, { ...params }) -> Artifact</code>
+- <code title="get /v1/machines/{machine_id}/artifacts/{artifact_id}">client.machines.artifacts.<a href="./src/resources/machines/artifacts.ts">retrieve</a>({ ...params }) -> Artifact</code>
+- <code title="get /v1/machines/{machine_id}/artifacts">client.machines.artifacts.<a href="./src/resources/machines/artifacts.ts">list</a>({ ...params }) -> ArtifactsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}/artifacts/{artifact_id}">client.machines.artifacts.<a href="./src/resources/machines/artifacts.ts">delete</a>({ ...params }) -> Artifact</code>
 
 ## Previews
 
 Types:
 
-- <code><a href="./src/resources/workspaces/previews.ts">Preview</a></code>
-- <code><a href="./src/resources/workspaces/previews.ts">PreviewCreateParams</a></code>
-- <code><a href="./src/resources/workspaces/previews.ts">PreviewList</a></code>
+- <code><a href="./src/resources/machines/previews.ts">Preview</a></code>
+- <code><a href="./src/resources/machines/previews.ts">PreviewCreateParams</a></code>
+- <code><a href="./src/resources/machines/previews.ts">PreviewList</a></code>
 
 Methods:
 
-- <code title="post /v1/workspaces/{workspace_id}/previews">client.workspaces.previews.<a href="./src/resources/workspaces/previews.ts">create</a>(workspaceID, { ...params }) -> Preview</code>
-- <code title="get /v1/workspaces/{workspace_id}/previews/{preview_id}">client.workspaces.previews.<a href="./src/resources/workspaces/previews.ts">retrieve</a>(previewID, { ...params }) -> Preview</code>
-- <code title="get /v1/workspaces/{workspace_id}/previews">client.workspaces.previews.<a href="./src/resources/workspaces/previews.ts">list</a>(workspaceID, { ...params }) -> PreviewsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}/previews/{preview_id}">client.workspaces.previews.<a href="./src/resources/workspaces/previews.ts">delete</a>(previewID, { ...params }) -> Preview</code>
+- <code title="post /v1/machines/{machine_id}/previews">client.machines.previews.<a href="./src/resources/machines/previews.ts">create</a>({ ...params }) -> Preview</code>
+- <code title="get /v1/machines/{machine_id}/previews/{preview_id}">client.machines.previews.<a href="./src/resources/machines/previews.ts">retrieve</a>({ ...params }) -> Preview</code>
+- <code title="get /v1/machines/{machine_id}/previews">client.machines.previews.<a href="./src/resources/machines/previews.ts">list</a>({ ...params }) -> PreviewsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}/previews/{preview_id}">client.machines.previews.<a href="./src/resources/machines/previews.ts">delete</a>({ ...params }) -> Preview</code>
 
 ## SSH
 
 Types:
 
-- <code><a href="./src/resources/workspaces/ssh.ts">SSHConnection</a></code>
-- <code><a href="./src/resources/workspaces/ssh.ts">SSHHostTrust</a></code>
-- <code><a href="./src/resources/workspaces/ssh.ts">SSHSession</a></code>
-- <code><a href="./src/resources/workspaces/ssh.ts">SSHSessionCreateParams</a></code>
-- <code><a href="./src/resources/workspaces/ssh.ts">SSHSessionList</a></code>
+- <code><a href="./src/resources/machines/ssh.ts">SSHConnection</a></code>
+- <code><a href="./src/resources/machines/ssh.ts">SSHHostTrust</a></code>
+- <code><a href="./src/resources/machines/ssh.ts">SSHSession</a></code>
+- <code><a href="./src/resources/machines/ssh.ts">SSHSessionCreateParams</a></code>
+- <code><a href="./src/resources/machines/ssh.ts">SSHSessionList</a></code>
 
 Methods:
 
-- <code title="post /v1/workspaces/{workspace_id}/ssh">client.workspaces.ssh.<a href="./src/resources/workspaces/ssh.ts">create</a>(workspaceID, { ...params }) -> SSHSession</code>
-- <code title="get /v1/workspaces/{workspace_id}/ssh/{session_id}">client.workspaces.ssh.<a href="./src/resources/workspaces/ssh.ts">retrieve</a>(sessionID, { ...params }) -> SSHSession</code>
-- <code title="get /v1/workspaces/{workspace_id}/ssh">client.workspaces.ssh.<a href="./src/resources/workspaces/ssh.ts">list</a>(workspaceID, { ...params }) -> SSHSessionsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}/ssh/{session_id}">client.workspaces.ssh.<a href="./src/resources/workspaces/ssh.ts">delete</a>(sessionID, { ...params }) -> SSHSession</code>
+- <code title="post /v1/machines/{machine_id}/ssh">client.machines.ssh.<a href="./src/resources/machines/ssh.ts">create</a>({ ...params }) -> SSHSession</code>
+- <code title="get /v1/machines/{machine_id}/ssh/{session_id}">client.machines.ssh.<a href="./src/resources/machines/ssh.ts">retrieve</a>({ ...params }) -> SSHSession</code>
+- <code title="get /v1/machines/{machine_id}/ssh">client.machines.ssh.<a href="./src/resources/machines/ssh.ts">list</a>({ ...params }) -> SSHSessionsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}/ssh/{session_id}">client.machines.ssh.<a href="./src/resources/machines/ssh.ts">delete</a>({ ...params }) -> SSHSession</code>
 
 ## Executions
 
 Types:
 
-- <code><a href="./src/resources/workspaces/executions.ts">ArtifactRef</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">Execution</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">ExecutionCreateParams</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">ExecutionEvent</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">ExecutionEvents</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">ExecutionList</a></code>
-- <code><a href="./src/resources/workspaces/executions.ts">ExecutionOutput</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ArtifactRef</a></code>
+- <code><a href="./src/resources/machines/executions.ts">Execution</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ExecutionCreateParams</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ExecutionEvent</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ExecutionEvents</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ExecutionList</a></code>
+- <code><a href="./src/resources/machines/executions.ts">ExecutionOutput</a></code>
 
 Methods:
 
-- <code title="post /v1/workspaces/{workspace_id}/executions">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">create</a>(workspaceID, { ...params }) -> Execution</code>
-- <code title="get /v1/workspaces/{workspace_id}/executions/{execution_id}">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">retrieve</a>(executionID, { ...params }) -> Execution</code>
-- <code title="get /v1/workspaces/{workspace_id}/executions">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">list</a>(workspaceID, { ...params }) -> ExecutionsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}/executions/{execution_id}">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">delete</a>(executionID, { ...params }) -> Execution</code>
-- <code title="get /v1/workspaces/{workspace_id}/executions/{execution_id}/events">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">events</a>(executionID, { ...params }) -> ExecutionEventsCursorPage</code>
-- <code title="get /v1/workspaces/{workspace_id}/executions/{execution_id}/output">client.workspaces.executions.<a href="./src/resources/workspaces/executions.ts">output</a>(executionID, { ...params }) -> ExecutionOutput</code>
+- <code title="post /v1/machines/{machine_id}/executions">client.machines.executions.<a href="./src/resources/machines/executions.ts">create</a>({ ...params }) -> Execution</code>
+- <code title="get /v1/machines/{machine_id}/executions/{execution_id}">client.machines.executions.<a href="./src/resources/machines/executions.ts">retrieve</a>({ ...params }) -> Execution</code>
+- <code title="get /v1/machines/{machine_id}/executions">client.machines.executions.<a href="./src/resources/machines/executions.ts">list</a>({ ...params }) -> ExecutionsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}/executions/{execution_id}">client.machines.executions.<a href="./src/resources/machines/executions.ts">delete</a>({ ...params }) -> Execution</code>
+- <code title="get /v1/machines/{machine_id}/executions/{execution_id}/events">client.machines.executions.<a href="./src/resources/machines/executions.ts">events</a>({ ...params }) -> ExecutionEventsCursorPage</code>
+- <code title="get /v1/machines/{machine_id}/executions/{execution_id}/output">client.machines.executions.<a href="./src/resources/machines/executions.ts">output</a>({ ...params }) -> ExecutionOutput</code>
 
 ## Terminals
 
 Types:
 
-- <code><a href="./src/resources/workspaces/terminals.ts">Terminal</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalClientEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalClosedEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalCreateParams</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalErrorEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalInputEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalList</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalOutputEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalResizeEvent</a></code>
-- <code><a href="./src/resources/workspaces/terminals.ts">TerminalServerEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">Terminal</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalClientEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalClosedEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalCreateParams</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalErrorEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalInputEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalList</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalOutputEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalResizeEvent</a></code>
+- <code><a href="./src/resources/machines/terminals.ts">TerminalServerEvent</a></code>
 
 Methods:
 
-- <code title="post /v1/workspaces/{workspace_id}/terminals">client.workspaces.terminals.<a href="./src/resources/workspaces/terminals.ts">create</a>(workspaceID, { ...params }) -> Terminal</code>
-- <code title="get /v1/workspaces/{workspace_id}/terminals/{terminal_id}">client.workspaces.terminals.<a href="./src/resources/workspaces/terminals.ts">retrieve</a>(terminalID, { ...params }) -> Terminal</code>
-- <code title="get /v1/workspaces/{workspace_id}/terminals">client.workspaces.terminals.<a href="./src/resources/workspaces/terminals.ts">list</a>(workspaceID, { ...params }) -> TerminalsCursorPage</code>
-- <code title="delete /v1/workspaces/{workspace_id}/terminals/{terminal_id}">client.workspaces.terminals.<a href="./src/resources/workspaces/terminals.ts">delete</a>(terminalID, { ...params }) -> Terminal</code>
+- <code title="post /v1/machines/{machine_id}/terminals">client.machines.terminals.<a href="./src/resources/machines/terminals.ts">create</a>({ ...params }) -> Terminal</code>
+- <code title="get /v1/machines/{machine_id}/terminals/{terminal_id}">client.machines.terminals.<a href="./src/resources/machines/terminals.ts">retrieve</a>({ ...params }) -> Terminal</code>
+- <code title="get /v1/machines/{machine_id}/terminals">client.machines.terminals.<a href="./src/resources/machines/terminals.ts">list</a>({ ...params }) -> TerminalsCursorPage</code>
+- <code title="delete /v1/machines/{machine_id}/terminals/{terminal_id}">client.machines.terminals.<a href="./src/resources/machines/terminals.ts">delete</a>({ ...params }) -> Terminal</code>

@@ -22,17 +22,19 @@ import { APIPromise } from './core/api-promise';
 import {
   CreateParams,
   LifecycleStatus,
+  Machine,
+  MachineCreateParams,
+  MachineDeleteParams,
+  MachineList,
+  MachineListItem,
+  MachineListItemsCursorPage,
+  MachineListParams,
+  MachineRetrieveParams,
+  MachineUpdateParams,
+  MachineWatchParams,
+  Machines,
   UpdateParams,
-  Workspace,
-  WorkspaceCreateParams,
-  WorkspaceDeleteParams,
-  WorkspaceList,
-  WorkspaceListItemsCursorPage,
-  WorkspaceListParams,
-  WorkspaceUpdateParams,
-  WorkspaceWatchParams,
-  Workspaces,
-} from './resources/workspaces/workspaces';
+} from './resources/machines/machines';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -48,17 +50,17 @@ import { isEmptyObj } from './internal/utils/values';
 
 export interface ClientOptions {
   /**
-   * Dedalus API key sent as Authorization: Bearer <key>.
+   * Dedalus API key sent as Authorization Bearer.
    */
   apiKey?: string | null | undefined;
 
   /**
-   * Dedalus API key sent as x-api-key.
+   * Dedalus API key sent as x-api-key header.
    */
   xAPIKey?: string | null | undefined;
 
   /**
-   * Organization ID header applied to all DCS requests.
+   * Organization ID header for all DCS requests.
    */
   dedalusOrgID?: string | null | undefined;
 
@@ -805,10 +807,10 @@ export class Dedalus {
 
   static toFile = Uploads.toFile;
 
-  workspaces: API.Workspaces = new API.Workspaces(this);
+  machines: API.Machines = new API.Machines(this);
 }
 
-Dedalus.Workspaces = Workspaces;
+Dedalus.Machines = Machines;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
@@ -817,17 +819,19 @@ export declare namespace Dedalus {
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
   export {
-    Workspaces as Workspaces,
+    Machines as Machines,
     type CreateParams as CreateParams,
     type LifecycleStatus as LifecycleStatus,
+    type Machine as Machine,
+    type MachineList as MachineList,
+    type MachineListItem as MachineListItem,
     type UpdateParams as UpdateParams,
-    type Workspace as Workspace,
-    type WorkspaceList as WorkspaceList,
-    type WorkspaceListItemsCursorPage as WorkspaceListItemsCursorPage,
-    type WorkspaceCreateParams as WorkspaceCreateParams,
-    type WorkspaceUpdateParams as WorkspaceUpdateParams,
-    type WorkspaceListParams as WorkspaceListParams,
-    type WorkspaceDeleteParams as WorkspaceDeleteParams,
-    type WorkspaceWatchParams as WorkspaceWatchParams,
+    type MachineListItemsCursorPage as MachineListItemsCursorPage,
+    type MachineCreateParams as MachineCreateParams,
+    type MachineRetrieveParams as MachineRetrieveParams,
+    type MachineUpdateParams as MachineUpdateParams,
+    type MachineListParams as MachineListParams,
+    type MachineDeleteParams as MachineDeleteParams,
+    type MachineWatchParams as MachineWatchParams,
   };
 }

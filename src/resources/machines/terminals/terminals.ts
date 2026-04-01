@@ -10,31 +10,25 @@ export class Terminals extends APIResource {
   /**
    * Create terminal
    */
-  create(workspaceID: string, body: TerminalCreateParams, options?: RequestOptions): APIPromise<Terminal> {
-    return this._client.post(path`/v1/workspaces/${workspaceID}/terminals`, { body, ...options });
+  create(params: TerminalCreateParams, options?: RequestOptions): APIPromise<Terminal> {
+    const { machine_id, ...body } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/terminals`, { body, ...options });
   }
 
   /**
    * Get terminal
    */
-  retrieve(
-    terminalID: string,
-    params: TerminalRetrieveParams,
-    options?: RequestOptions,
-  ): APIPromise<Terminal> {
-    const { workspace_id } = params;
-    return this._client.get(path`/v1/workspaces/${workspace_id}/terminals/${terminalID}`, options);
+  retrieve(params: TerminalRetrieveParams, options?: RequestOptions): APIPromise<Terminal> {
+    const { machine_id, terminal_id } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
   }
 
   /**
    * List terminals
    */
-  list(
-    workspaceID: string,
-    query: TerminalListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<TerminalsCursorPage, Terminal> {
-    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/terminals`, CursorPage<Terminal>, {
+  list(params: TerminalListParams, options?: RequestOptions): PagePromise<TerminalsCursorPage, Terminal> {
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/terminals`, CursorPage<Terminal>, {
       query,
       ...options,
     });
@@ -43,9 +37,9 @@ export class Terminals extends APIResource {
   /**
    * Delete terminal
    */
-  delete(terminalID: string, params: TerminalDeleteParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { workspace_id } = params;
-    return this._client.delete(path`/v1/workspaces/${workspace_id}/terminals/${terminalID}`, options);
+  delete(params: TerminalDeleteParams, options?: RequestOptions): APIPromise<Terminal> {
+    const { machine_id, terminal_id } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
   }
 }
 
@@ -56,13 +50,13 @@ export interface Terminal {
 
   height: number;
 
+  machine_id: string;
+
   status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed';
 
   terminal_id: string;
 
   width: number;
-
-  workspace_id: string;
 
   error_code?: string;
 
@@ -140,25 +134,54 @@ export interface TerminalResizeEvent {
 export type TerminalServerEvent = TerminalOutputEvent | TerminalErrorEvent | TerminalClosedEvent;
 
 export interface TerminalCreateParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Body param
+   */
   height: number;
 
+  /**
+   * Body param
+   */
   width: number;
 
+  /**
+   * Body param
+   */
   cwd?: string;
 
+  /**
+   * Body param
+   */
   env?: { [key: string]: string };
 
+  /**
+   * Body param
+   */
   shell?: string;
 }
 
 export interface TerminalRetrieveParams {
-  workspace_id: string;
+  machine_id: string;
+
+  terminal_id: string;
 }
 
-export interface TerminalListParams extends CursorPageParams {}
+export interface TerminalListParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+}
 
 export interface TerminalDeleteParams {
-  workspace_id: string;
+  machine_id: string;
+
+  terminal_id: string;
 }
 
 export declare namespace Terminals {
