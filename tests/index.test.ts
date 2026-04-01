@@ -460,7 +460,7 @@ describe('idempotency', () => {
       baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
       apiKey: 'My API Key',
     });
-    await client.workspaces.create(
+    await client.machines.create(
       {
         memory_mib: 0,
         storage_gib: 0,

@@ -27,6 +27,22 @@ export {
   type ExecutionEventsCursorPage,
 } from './executions';
 export {
+  Machines,
+  type CreateParams,
+  type LifecycleStatus,
+  type Machine,
+  type MachineList,
+  type MachineListItem,
+  type UpdateParams,
+  type MachineCreateParams,
+  type MachineRetrieveParams,
+  type MachineUpdateParams,
+  type MachineListParams,
+  type MachineDeleteParams,
+  type MachineWatchParams,
+  type MachineListItemsCursorPage,
+} from './machines';
+export {
   Previews,
   type Preview,
   type PreviewCreateParams,
@@ -66,17 +82,3 @@ export {
   type TerminalDeleteParams,
   type TerminalsCursorPage,
 } from './terminals';
-export {
-  Workspaces,
-  type CreateParams,
-  type LifecycleStatus,
-  type UpdateParams,
-  type Workspace,
-  type WorkspaceList,
-  type WorkspaceCreateParams,
-  type WorkspaceUpdateParams,
-  type WorkspaceListParams,
-  type WorkspaceDeleteParams,
-  type WorkspaceWatchParams,
-  type WorkspaceListItemsCursorPage,
-} from './workspaces';

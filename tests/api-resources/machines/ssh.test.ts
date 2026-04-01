@@ -9,7 +9,10 @@ const client = new Dedalus({
 
 describe('resource ssh', () => {
   test('create: only required params', async () => {
-    const responsePromise = client.workspaces.ssh.create('workspace_id', { public_key: 'public_key' });
+    const responsePromise = client.machines.ssh.create({
+      machine_id: 'machine_id',
+      public_key: 'public_key',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -20,11 +23,14 @@ describe('resource ssh', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.workspaces.ssh.create('workspace_id', { public_key: 'public_key' });
+    const response = await client.machines.ssh.create({ machine_id: 'machine_id', public_key: 'public_key' });
   });
 
   test('retrieve: only required params', async () => {
-    const responsePromise = client.workspaces.ssh.retrieve('session_id', { workspace_id: 'workspace_id' });
+    const responsePromise = client.machines.ssh.retrieve({
+      machine_id: 'machine_id',
+      session_id: 'session_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -35,11 +41,14 @@ describe('resource ssh', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.workspaces.ssh.retrieve('session_id', { workspace_id: 'workspace_id' });
+    const response = await client.machines.ssh.retrieve({
+      machine_id: 'machine_id',
+      session_id: 'session_id',
+    });
   });
 
-  test('list', async () => {
-    const responsePromise = client.workspaces.ssh.list('workspace_id');
+  test('list: only required params', async () => {
+    const responsePromise = client.machines.ssh.list({ machine_id: 'machine_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -49,19 +58,19 @@ describe('resource ssh', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('list: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.workspaces.ssh.list(
-        'workspace_id',
-        { cursor: 'cursor', limit: 0 },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Dedalus.NotFoundError);
+  test('list: required and optional params', async () => {
+    const response = await client.machines.ssh.list({
+      machine_id: 'machine_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.workspaces.ssh.delete('session_id', { workspace_id: 'workspace_id' });
+    const responsePromise = client.machines.ssh.delete({
+      machine_id: 'machine_id',
+      session_id: 'session_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -72,6 +81,6 @@ describe('resource ssh', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.workspaces.ssh.delete('session_id', { workspace_id: 'workspace_id' });
+    const response = await client.machines.ssh.delete({ machine_id: 'machine_id', session_id: 'session_id' });
   });
 });

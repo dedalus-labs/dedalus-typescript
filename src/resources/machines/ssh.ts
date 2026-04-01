@@ -10,27 +10,25 @@ export class SSH extends APIResource {
   /**
    * Create SSH session
    */
-  create(workspaceID: string, body: SSHCreateParams, options?: RequestOptions): APIPromise<SSHSession> {
-    return this._client.post(path`/v1/workspaces/${workspaceID}/ssh`, { body, ...options });
+  create(params: SSHCreateParams, options?: RequestOptions): APIPromise<SSHSession> {
+    const { machine_id, ...body } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/ssh`, { body, ...options });
   }
 
   /**
    * Get SSH session
    */
-  retrieve(sessionID: string, params: SSHRetrieveParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { workspace_id } = params;
-    return this._client.get(path`/v1/workspaces/${workspace_id}/ssh/${sessionID}`, options);
+  retrieve(params: SSHRetrieveParams, options?: RequestOptions): APIPromise<SSHSession> {
+    const { machine_id, session_id } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/ssh/${session_id}`, options);
   }
 
   /**
    * List SSH sessions
    */
-  list(
-    workspaceID: string,
-    query: SSHListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): PagePromise<SSHSessionsCursorPage, SSHSession> {
-    return this._client.getAPIList(path`/v1/workspaces/${workspaceID}/ssh`, CursorPage<SSHSession>, {
+  list(params: SSHListParams, options?: RequestOptions): PagePromise<SSHSessionsCursorPage, SSHSession> {
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/ssh`, CursorPage<SSHSession>, {
       query,
       ...options,
     });
@@ -39,9 +37,9 @@ export class SSH extends APIResource {
   /**
    * Delete SSH session
    */
-  delete(sessionID: string, params: SSHDeleteParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { workspace_id } = params;
-    return this._client.delete(path`/v1/workspaces/${workspace_id}/ssh/${sessionID}`, options);
+  delete(params: SSHDeleteParams, options?: RequestOptions): APIPromise<SSHSession> {
+    const { machine_id, session_id } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}/ssh/${session_id}`, options);
   }
 }
 
@@ -70,11 +68,11 @@ export interface SSHHostTrust {
 export interface SSHSession {
   created_at: string;
 
+  machine_id: string;
+
   session_id: string;
 
   status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed';
-
-  workspace_id: string;
 
   connection?: SSHConnection;
 
@@ -100,17 +98,34 @@ export interface SSHSessionList {
 }
 
 export interface SSHCreateParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Body param
+   */
   public_key: string;
 }
 
 export interface SSHRetrieveParams {
-  workspace_id: string;
+  machine_id: string;
+
+  session_id: string;
 }
 
-export interface SSHListParams extends CursorPageParams {}
+export interface SSHListParams extends CursorPageParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+}
 
 export interface SSHDeleteParams {
-  workspace_id: string;
+  machine_id: string;
+
+  session_id: string;
 }
 
 export declare namespace SSH {

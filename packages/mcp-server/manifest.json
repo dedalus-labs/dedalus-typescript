@@ -29,19 +29,19 @@
   "user_config": {
     "DEDALUS_API_KEY": {
       "title": "api_key",
-      "description": "Dedalus API key sent as Authorization: Bearer <key>.",
+      "description": "Dedalus API key sent as Authorization Bearer.",
       "required": false,
       "type": "string"
     },
     "DEDALUS_X_API_KEY": {
       "title": "x_api_key",
-      "description": "Dedalus API key sent as x-api-key.",
+      "description": "Dedalus API key sent as x-api-key header.",
       "required": false,
       "type": "string"
     },
     "DEDALUS_ORG_ID": {
       "title": "dedalus_org_id",
-      "description": "Organization ID header applied to all DCS requests.",
+      "description": "Organization ID header for all DCS requests.",
       "required": false,
       "type": "string"
     }
