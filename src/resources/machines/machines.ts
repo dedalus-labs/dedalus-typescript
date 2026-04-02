@@ -135,6 +135,28 @@ export class Machines extends APIResource {
   }
 
   /**
+   * Sleep a running machine
+   */
+  sleep(params: MachineSleepParams, options?: RequestOptions): APIPromise<Machine> {
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/sleep`, {
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
+  }
+
+  /**
+   * Wake a sleeping machine
+   */
+  wake(params: MachineWakeParams, options?: RequestOptions): APIPromise<Machine> {
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/wake`, {
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
+  }
+
+  /**
    * Streams machine lifecycle updates over Server-Sent Events. Each `status` event
    * contains a full `LifecycleResponse` payload. The stream closes after the machine
    * reaches its current desired state.
@@ -326,6 +348,30 @@ export interface MachineDeleteParams {
   'If-Match': string;
 }
 
+export interface MachineSleepParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Header param
+   */
+  'If-Match': string;
+}
+
+export interface MachineWakeParams {
+  /**
+   * Path param
+   */
+  machine_id: string;
+
+  /**
+   * Header param
+   */
+  'If-Match': string;
+}
+
 export interface MachineWatchParams {
   /**
    * Path param: Machine identifier.
@@ -359,6 +405,8 @@ export declare namespace Machines {
     type MachineUpdateParams as MachineUpdateParams,
     type MachineListParams as MachineListParams,
     type MachineDeleteParams as MachineDeleteParams,
+    type MachineSleepParams as MachineSleepParams,
+    type MachineWakeParams as MachineWakeParams,
     type MachineWatchParams as MachineWatchParams,
   };
 
