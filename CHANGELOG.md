@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.0 (2026-04-02)
+
+Full Changelog: [v0.0.4...v0.1.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.4...v0.1.0)
+
+### Features
+
+* **api:** add sleep & wake methods ([25f91cf](https://github.com/dedalus-labs/dedalus-typescript/commit/25f91cfe7d5a3ef88f25d216792629051a016354))
+
+
+### Chores
+
+* **internal:** support type annotations when running MCP in local execution mode ([54bd79d](https://github.com/dedalus-labs/dedalus-typescript/commit/54bd79dfba3fc9387184fcb4c42f77f445fe2219))
+* **lint:** fix prettier formatting in terminal internal-base ([#11](https://github.com/dedalus-labs/dedalus-typescript/issues/11)) ([ee8b5d9](https://github.com/dedalus-labs/dedalus-typescript/commit/ee8b5d9911a3a2857f04c6156de4bb8121a6a0c8))
+
 ## 0.0.4 (2026-04-01)
 
 Full Changelog: [v0.0.3...v0.0.4](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.3...v0.0.4)
