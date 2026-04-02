@@ -16,6 +16,8 @@ Methods:
 - <code title="patch /v1/machines/{machine_id}">client.machines.<a href="./src/resources/machines/machines.ts">update</a>({ ...params }) -> Machine</code>
 - <code title="get /v1/machines">client.machines.<a href="./src/resources/machines/machines.ts">list</a>({ ...params }) -> MachineListItemsCursorPage</code>
 - <code title="delete /v1/machines/{machine_id}">client.machines.<a href="./src/resources/machines/machines.ts">delete</a>({ ...params }) -> Machine</code>
+- <code title="post /v1/machines/{machine_id}/sleep">client.machines.<a href="./src/resources/machines/machines.ts">sleep</a>({ ...params }) -> Machine</code>
+- <code title="post /v1/machines/{machine_id}/wake">client.machines.<a href="./src/resources/machines/machines.ts">wake</a>({ ...params }) -> Machine</code>
 - <code title="get /v1/machines/{machine_id}/status/stream">client.machines.<a href="./src/resources/machines/machines.ts">watch</a>({ ...params }) -> Machine</code>
 
 ## Artifacts

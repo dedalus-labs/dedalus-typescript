@@ -39,6 +39,8 @@ export {
   type MachineUpdateParams,
   type MachineListParams,
   type MachineDeleteParams,
+  type MachineSleepParams,
+  type MachineWakeParams,
   type MachineWatchParams,
   type MachineListItemsCursorPage,
 } from './machines';

@@ -41,6 +41,18 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v1/machines/{machine_id}',
   },
   {
+    clientCallName: 'client.machines.sleep',
+    fullyQualifiedName: 'machines.sleep',
+    httpMethod: 'post',
+    httpPath: '/v1/machines/{machine_id}/sleep',
+  },
+  {
+    clientCallName: 'client.machines.wake',
+    fullyQualifiedName: 'machines.wake',
+    httpMethod: 'post',
+    httpPath: '/v1/machines/{machine_id}/wake',
+  },
+  {
     clientCallName: 'client.machines.watch',
     fullyQualifiedName: 'machines.watch',
     httpMethod: 'get',
