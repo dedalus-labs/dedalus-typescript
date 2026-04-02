@@ -295,6 +295,86 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     },
   },
   {
+    name: 'sleep',
+    endpoint: '/v1/machines/{machine_id}/sleep',
+    httpMethod: 'post',
+    summary: 'Sleep a running machine',
+    description: 'Sleep a running machine',
+    stainlessPath: '(resource) machines > (method) sleep',
+    qualified: 'client.machines.sleep',
+    params: ['machine_id: string;', 'If-Match: string;'],
+    response:
+      "{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }",
+    markdown:
+      "## sleep\n\n`client.machines.sleep(machine_id: string, If-Match: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**post** `/v1/machines/{machine_id}/sleep`\n\nSleep a running machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
+    perLanguage: {
+      cli: {
+        method: 'machines sleep',
+        example:
+          "dedalus machines sleep \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      go: {
+        method: 'client.Machines.Sleep',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Sleep(context.TODO(), dedalus.MachineSleepParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/sleep \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+      },
+      python: {
+        method: 'machines.sleep',
+        example:
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.sleep(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
+      },
+      typescript: {
+        method: 'client.machines.sleep',
+        example:
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+      },
+    },
+  },
+  {
+    name: 'wake',
+    endpoint: '/v1/machines/{machine_id}/wake',
+    httpMethod: 'post',
+    summary: 'Wake a sleeping machine',
+    description: 'Wake a sleeping machine',
+    stainlessPath: '(resource) machines > (method) wake',
+    qualified: 'client.machines.wake',
+    params: ['machine_id: string;', 'If-Match: string;'],
+    response:
+      "{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }",
+    markdown:
+      "## wake\n\n`client.machines.wake(machine_id: string, If-Match: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**post** `/v1/machines/{machine_id}/wake`\n\nWake a sleeping machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
+    perLanguage: {
+      cli: {
+        method: 'machines wake',
+        example:
+          "dedalus machines wake \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      go: {
+        method: 'client.Machines.Wake',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Wake(context.TODO(), dedalus.MachineWakeParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/wake \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+      },
+      python: {
+        method: 'machines.wake',
+        example:
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.wake(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
+      },
+      typescript: {
+        method: 'client.machines.wake',
+        example:
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+      },
+    },
+  },
+  {
     name: 'list',
     endpoint: '/v1/machines/{machine_id}/artifacts',
     httpMethod: 'get',

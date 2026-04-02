@@ -30,7 +30,9 @@ import {
   MachineListItemsCursorPage,
   MachineListParams,
   MachineRetrieveParams,
+  MachineSleepParams,
   MachineUpdateParams,
+  MachineWakeParams,
   MachineWatchParams,
   Machines,
   UpdateParams,
@@ -832,6 +834,8 @@ export declare namespace Dedalus {
     type MachineUpdateParams as MachineUpdateParams,
     type MachineListParams as MachineListParams,
     type MachineDeleteParams as MachineDeleteParams,
+    type MachineSleepParams as MachineSleepParams,
+    type MachineWakeParams as MachineWakeParams,
     type MachineWatchParams as MachineWatchParams,
   };
 }
