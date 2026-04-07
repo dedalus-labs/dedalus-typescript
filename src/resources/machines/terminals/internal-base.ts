@@ -6,8 +6,12 @@ import { EventEmitter } from '../../../core/EventEmitter';
 import { DedalusError } from '../../../core/error';
 import { stringifyQuery } from '../../../internal/utils';
 
+import type { ReconnectingEvent } from '../../../internal/ws';
+
 export type TerminalsStreamMessage =
   | { type: 'connecting' | 'open' | 'closing' | 'close' }
+  | { type: 'reconnecting'; reconnect: ReconnectingEvent }
+  | { type: 'reconnected' }
   | { type: 'message'; message: TerminalsAPI.TerminalServerEvent }
   | { type: 'error'; error: WebSocketError };
 
@@ -28,8 +32,11 @@ type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & {};
 
 type WebSocketEvents = Simplify<
   {
+    close: () => void;
     event: (event: TerminalsAPI.TerminalServerEvent) => void;
     error: (error: WebSocketError) => void;
+    reconnecting: (event: ReconnectingEvent) => void;
+    reconnected: () => void;
   } & {
     [EventType in Exclude<NonNullable<TerminalsAPI.TerminalServerEvent['type']>, 'error'>]: (
       event: Extract<TerminalsAPI.TerminalServerEvent, { type?: EventType }>,
