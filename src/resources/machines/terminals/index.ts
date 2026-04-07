@@ -17,3 +17,4 @@ export {
   type TerminalDeleteParams,
   type TerminalsCursorPage,
 } from './terminals';
+export { type TerminalsWSClientOptions, type TerminalsWSReconnectOptions } from './ws';
