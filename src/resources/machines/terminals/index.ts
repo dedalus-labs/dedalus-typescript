@@ -15,6 +15,7 @@ export {
   type TerminalRetrieveParams,
   type TerminalListParams,
   type TerminalDeleteParams,
+  type TerminalConnectParams,
   type TerminalsCursorPage,
 } from './terminals';
 export { type TerminalsWSClientOptions, type TerminalsWSReconnectOptions } from './ws';

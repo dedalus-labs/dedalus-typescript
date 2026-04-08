@@ -184,6 +184,12 @@ export interface TerminalDeleteParams {
   terminal_id: string;
 }
 
+export interface TerminalConnectParams {
+  machine_id: string;
+
+  terminal_id: string;
+}
+
 export declare namespace Terminals {
   export {
     type Terminal as Terminal,
@@ -200,5 +206,6 @@ export declare namespace Terminals {
     type TerminalRetrieveParams as TerminalRetrieveParams,
     type TerminalListParams as TerminalListParams,
     type TerminalDeleteParams as TerminalDeleteParams,
+    type TerminalConnectParams as TerminalConnectParams,
   };
 }

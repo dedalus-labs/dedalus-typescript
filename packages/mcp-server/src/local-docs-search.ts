@@ -1239,22 +1239,23 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     qualified: 'client.machines.terminals.connect',
     perLanguage: {
       cli: {
-        example: "dedalus machines:terminals connect \\\n  --api-key 'My API Key'",
+        example:
+          "dedalus machines:terminals connect \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
       },
       go: {
         method: 'client.Machines.Terminals.Connect',
         example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Machines.Terminals.Connect(context.TODO())\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Machines.Terminals.Connect(context.TODO(), dedalus.MachineTerminalConnectParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
       },
       python: {
         method: 'machines.terminals.connect',
         example:
-          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nclient.machines.terminals.connect()',
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nclient.machines.terminals.connect(\n    machine_id="machine_id",\n    terminal_id="terminal_id",\n)',
       },
       typescript: {
         method: 'client.machines.terminals.connect',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.machines.terminals.connect();",
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.machines.terminals.connect({ machine_id: 'machine_id', terminal_id: 'terminal_id' });",
       },
     },
   },

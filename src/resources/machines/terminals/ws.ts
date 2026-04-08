@@ -8,6 +8,12 @@ import { isRecoverableClose, type ReconnectingEvent, type ReconnectingOverrides 
 import * as TerminalsAPI from './terminals';
 import { Dedalus } from '../../../client';
 
+export interface TerminalsWSParameters extends Record<string, unknown> {
+  machine_id: string;
+
+  terminal_id: string;
+}
+
 export interface TerminalsWSReconnectOptions {
   /**
    * Called before each reconnect attempt. Return an object with
@@ -47,7 +53,7 @@ export class TerminalsWS extends TerminalsEmitter {
   socket: WS.WebSocket;
 
   private _client: Dedalus;
-  private _parameters: Record<string, unknown> | undefined;
+  private _parameters: Record<string, unknown> | null | undefined;
   private _wsOptions: WS.ClientOptions | null | undefined;
   private _reconnectOptions: TerminalsWSReconnectOptions | null;
   private _sendQueue: string[] = [];
@@ -64,7 +70,7 @@ export class TerminalsWS extends TerminalsEmitter {
 
   constructor(
     client: Dedalus,
-    parameters?: Record<string, unknown> | undefined,
+    parameters: TerminalsWSParameters,
     options?: TerminalsWSClientOptions | null | undefined,
   ) {
     super();
@@ -73,7 +79,7 @@ export class TerminalsWS extends TerminalsEmitter {
     const { reconnect, ...wsOptions } = options ?? {};
     this._wsOptions = wsOptions;
     this._reconnectOptions = reconnect ?? null;
-    this.url = buildURL(client, machineId, terminalId);
+    this.url = buildURL(client, machineId, parameters ?? {});
     this.socket = this._connect();
   }
 
@@ -274,7 +280,7 @@ export class TerminalsWS extends TerminalsEmitter {
     terminalId: string,
     options?: WS.ClientOptions | null | undefined,
   ): WS.WebSocket {
-    this.url = buildURL(this._client, this._parameters);
+    this.url = buildURL(this._client, this._parameters ?? {});
 
     const socket = new WS.WebSocket(this.url, {
       ...this._wsOptions,
