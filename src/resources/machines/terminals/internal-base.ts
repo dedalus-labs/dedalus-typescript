@@ -8,11 +8,12 @@ import { DedalusError } from '../../../core/error';
 import { stringifyQuery } from '../../../internal/utils';
 
 import type { RawWebSocketData, ReconnectingEvent, UnsentMessage } from '../../../internal/ws';
+import { TerminalsWSParameters } from './ws';
 
 export type TerminalsStreamMessage =
   | { type: 'connecting' | 'open' | 'closing' }
   | { type: 'close'; code: number; reason: string; unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[] }
-  | { type: 'reconnecting'; reconnect: ReconnectingEvent }
+  | { type: 'reconnecting'; reconnect: ReconnectingEvent<TerminalsWSParameters> }
   | { type: 'reconnected' }
   | { type: 'message'; message: TerminalsAPI.TerminalServerEvent }
   | { type: 'raw'; data: RawWebSocketData }
@@ -39,7 +40,7 @@ type WebSocketEvents = Simplify<
     raw: (data: RawWebSocketData) => void;
     error: (error: WebSocketError) => void;
     close: (code: number, reason: string, unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[]) => void;
-    reconnecting: (event: ReconnectingEvent) => void;
+    reconnecting: (event: ReconnectingEvent<TerminalsWSParameters>) => void;
     reconnected: () => void;
   } & {
     [EventType in Exclude<NonNullable<TerminalsAPI.TerminalServerEvent['type']>, 'error'>]: (
