@@ -7,14 +7,15 @@ import { EventEmitter } from '../../../core/EventEmitter';
 import { DedalusError } from '../../../core/error';
 import { stringifyQuery } from '../../../internal/utils';
 
-import type { ReconnectingEvent } from '../../../internal/ws';
+import type { RawWebSocketData, ReconnectingEvent, UnsentMessage } from '../../../internal/ws';
 
 export type TerminalsStreamMessage =
   | { type: 'connecting' | 'open' | 'closing' }
-  | { type: 'close'; code: number; reason: string; unsent: TerminalsAPI.TerminalClientEvent[] }
+  | { type: 'close'; code: number; reason: string; unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[] }
   | { type: 'reconnecting'; reconnect: ReconnectingEvent }
   | { type: 'reconnected' }
   | { type: 'message'; message: TerminalsAPI.TerminalServerEvent }
+  | { type: 'raw'; data: RawWebSocketData }
   | { type: 'error'; error: WebSocketError };
 
 export class WebSocketError extends DedalusError {
@@ -35,8 +36,9 @@ type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & {};
 type WebSocketEvents = Simplify<
   {
     event: (event: TerminalsAPI.TerminalServerEvent) => void;
+    raw: (data: RawWebSocketData) => void;
     error: (error: WebSocketError) => void;
-    close: (code: number, reason: string, unsent: TerminalsAPI.TerminalClientEvent[]) => void;
+    close: (code: number, reason: string, unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[]) => void;
     reconnecting: (event: ReconnectingEvent) => void;
     reconnected: () => void;
   } & {
@@ -51,6 +53,11 @@ export abstract class TerminalsEmitter extends EventEmitter<WebSocketEvents> {
    * Send an event to the API.
    */
   abstract send(event: TerminalsAPI.TerminalClientEvent): void;
+
+  /**
+   * Send raw data over the WebSocket without JSON serialization.
+   */
+  abstract sendRaw(data: RawWebSocketData): void;
 
   /**
    * Close the WebSocket connection.
