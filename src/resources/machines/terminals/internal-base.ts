@@ -10,7 +10,8 @@ import { stringifyQuery } from '../../../internal/utils';
 import type { ReconnectingEvent } from '../../../internal/ws';
 
 export type TerminalsStreamMessage =
-  | { type: 'connecting' | 'open' | 'closing' | 'close' }
+  | { type: 'connecting' | 'open' | 'closing' }
+  | { type: 'close'; code: number; reason: string; unsent: TerminalsAPI.TerminalClientEvent[] }
   | { type: 'reconnecting'; reconnect: ReconnectingEvent }
   | { type: 'reconnected' }
   | { type: 'message'; message: TerminalsAPI.TerminalServerEvent }
@@ -33,9 +34,9 @@ type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & {};
 
 type WebSocketEvents = Simplify<
   {
-    close: () => void;
     event: (event: TerminalsAPI.TerminalServerEvent) => void;
     error: (error: WebSocketError) => void;
+    close: (code: number, reason: string, unsent: TerminalsAPI.TerminalClientEvent[]) => void;
     reconnecting: (event: ReconnectingEvent) => void;
     reconnected: () => void;
   } & {
