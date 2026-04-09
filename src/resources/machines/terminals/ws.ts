@@ -28,8 +28,8 @@ export interface TerminalsWSReconnectOptions {
    * `parameters` to override query parameters for the next connection.
    */
   onReconnecting(
-    event: ReconnectingEvent<Record<string, unknown>>,
-  ): ReconnectingOverrides<Record<string, unknown>> | void;
+    event: ReconnectingEvent<TerminalsWSParameters>,
+  ): ReconnectingOverrides<TerminalsWSParameters> | void;
 
   /**
    * Maximum number of reconnection attempts. Default: 5.
@@ -70,7 +70,7 @@ export class TerminalsWS extends TerminalsEmitter {
   socket: WS.WebSocket;
 
   private _client: Dedalus;
-  private _parameters: Record<string, unknown> | null | undefined;
+  private _parameters: TerminalsWSParameters | null | undefined;
   private _wsOptions: WS.ClientOptions | null | undefined;
   private _reconnectOptions: TerminalsWSReconnectOptions | null;
   private _sendQueue: SendQueue<TerminalsAPI.TerminalClientEvent>;
@@ -84,7 +84,7 @@ export class TerminalsWS extends TerminalsEmitter {
   // Necessary to keep the public event interface clean while we manage reconnecting
   private _internalEvents = new InternalEventEmitter<{
     socketSwap: (oldSocket: WS.WebSocket, newSocket: WS.WebSocket) => void;
-    reconnecting: (event: ReconnectingEvent<Record<string, unknown>>) => void;
+    reconnecting: (event: ReconnectingEvent<TerminalsWSParameters>) => void;
     reconnected: () => void;
     close: (code: number, reason: string, unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[]) => void;
   }>();
@@ -96,7 +96,7 @@ export class TerminalsWS extends TerminalsEmitter {
   ) {
     super();
     this._client = client;
-    this._parameters = undefined;
+    this._parameters = parameters;
     const { reconnect, maxQueueSize, ...wsOptions } = options ?? {};
     this._wsOptions = wsOptions;
     this._reconnectOptions = reconnect ?? null;
@@ -211,7 +211,7 @@ export class TerminalsWS extends TerminalsEmitter {
       push({ type: 'open' });
     };
 
-    const onReconnecting = (evt: ReconnectingEvent<Record<string, unknown>>) => {
+    const onReconnecting = (evt: ReconnectingEvent<TerminalsWSParameters>) => {
       push({ type: 'reconnecting', reconnect: evt });
     };
 
@@ -432,7 +432,7 @@ export class TerminalsWS extends TerminalsEmitter {
       const jitter = 0.75 + Math.random() * 0.25;
       const actualDelay = Math.round(baseDelay * jitter);
 
-      let reconnectingEvent: ReconnectingEvent<Record<string, unknown>> = {
+      let reconnectingEvent: ReconnectingEvent<TerminalsWSParameters> = {
         attempt,
         maxAttempts: maxRetries,
         delay: actualDelay,
@@ -440,7 +440,7 @@ export class TerminalsWS extends TerminalsEmitter {
         parameters: this._parameters ? { ...this._parameters } : undefined,
       };
 
-      let overrides: ReconnectingOverrides<Record<string, unknown>> | void;
+      let overrides: ReconnectingOverrides<TerminalsWSParameters> | void;
       try {
         overrides = this._reconnectOptions.onReconnecting(reconnectingEvent);
       } catch (err) {
