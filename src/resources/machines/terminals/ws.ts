@@ -2,7 +2,6 @@
 
 import * as WS from 'ws';
 import { NodeWebSocket } from '../../internal/ws-adapter-node';
-import type { WebSocketLike } from '../../internal/ws-adapter';
 import { TerminalsWSBase, type TerminalsWSBaseOptions, type TerminalsWSParameters } from './ws-base';
 import { Dedalus } from '../../../client';
 
@@ -10,7 +9,7 @@ export type { TerminalsWSParameters, TerminalsWSReconnectOptions } from './ws-ba
 
 export interface TerminalsWSClientOptions extends WS.ClientOptions, TerminalsWSBaseOptions {}
 
-export class TerminalsWS extends TerminalsWSBase {
+export class TerminalsWS extends TerminalsWSBase<NodeWebSocket> {
   private _wsOptions: WS.ClientOptions | null | undefined;
 
   constructor(
@@ -30,7 +29,7 @@ export class TerminalsWS extends TerminalsWSBase {
     this._connectInitial();
   }
 
-  protected _createSocket(url: URL, authHeaders: Record<string, string>): WebSocketLike {
+  protected _createSocket(url: URL, authHeaders: Record<string, string>): NodeWebSocket {
     const ws = new WS.WebSocket(url, {
       ...this._wsOptions,
       headers: {
