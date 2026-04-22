@@ -5,10 +5,9 @@ import * as TerminalsAPI from './terminals';
 import { Dedalus } from '../../../client';
 import { EventEmitter } from '../../../core/EventEmitter';
 import { DedalusError } from '../../../core/error';
-import { stringifyQuery } from '../../../internal/utils';
 
 import type { RawWebSocketData, ReconnectingEvent, UnsentMessage } from '../../../internal/ws';
-import { TerminalsWSParameters } from './ws';
+import { TerminalsWSParameters } from './ws-base';
 
 export type TerminalsStreamMessage =
   | { type: 'connecting' | 'open' | 'closing' }
@@ -97,20 +96,7 @@ export abstract class TerminalsEmitter extends EventEmitter<WebSocketEvents> {
 export function buildURL(client: Dedalus, parameters: Record<string, unknown>): URL {
   const { machine_id, terminal_id, ...query } = parameters;
   const endpoint = path`/v1/machines/${machine_id}/terminals/${terminal_id}/stream`;
-  const baseURL = client.baseURL;
-  const url = new URL(baseURL);
-  url.pathname +=
-    url.pathname.endsWith('/') ?
-      endpoint.startsWith('/') ?
-        endpoint.slice(1)
-      : endpoint
-    : endpoint.startsWith('/') ? endpoint
-    : `/${endpoint}`;
-  if (url.search) {
-    url.search += `&${stringifyQuery(query)}`;
-  } else {
-    url.search = stringifyQuery(query);
-  }
+  const url = new URL(client.buildURL(endpoint, query, undefined));
   url.protocol = url.protocol === 'http:' || url.protocol === 'ws:' ? 'ws:' : 'wss:';
   return url;
 }
