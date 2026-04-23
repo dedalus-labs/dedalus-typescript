@@ -1,9 +1,9 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { TerminalsEmitter, TerminalsStreamMessage, WebSocketError, buildURL } from './internal-base';
-import { InternalEventEmitter } from '../../core/EventEmitter';
-import { sleep } from '../../internal/utils/sleep';
-import { type WebSocketLike, ReadyState } from '../../internal/ws-adapter';
+import { InternalEventEmitter } from '../../../core/EventEmitter';
+import { sleep } from '../../../internal/utils/sleep';
+import { type WebSocketLike, ReadyState } from '../../../internal/ws-adapter';
 import {
   SendQueue,
   flattenRawData,
@@ -12,7 +12,7 @@ import {
   type ReconnectingEvent,
   type ReconnectingOverrides,
   type UnsentMessage,
-} from '../../internal/ws';
+} from '../../../internal/ws';
 import * as TerminalsAPI from './terminals';
 import { Dedalus } from '../../../client';
 import { DedalusError } from '../../../core/error';
