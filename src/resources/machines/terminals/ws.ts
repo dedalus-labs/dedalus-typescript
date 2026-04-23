@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import * as WS from 'ws';
-import { NodeWebSocket } from '../../internal/ws-adapter-node';
+import { NodeWebSocket } from '../../../internal/ws-adapter-node';
 import { TerminalsWSBase, type TerminalsWSBaseOptions, type TerminalsWSParameters } from './ws-base';
 import { Dedalus } from '../../../client';
 
