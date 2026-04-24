@@ -7,185 +7,154 @@ export type SdkMethod = {
   fullyQualifiedName: string;
   httpMethod?: 'get' | 'post' | 'put' | 'patch' | 'delete' | 'query';
   httpPath?: string;
-};
+}
 
-export const sdkMethods: SdkMethod[] = [
-  {
-    clientCallName: 'client.machines.create',
-    fullyQualifiedName: 'machines.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines',
-  },
-  {
-    clientCallName: 'client.machines.retrieve',
-    fullyQualifiedName: 'machines.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}',
-  },
-  {
-    clientCallName: 'client.machines.update',
-    fullyQualifiedName: 'machines.update',
-    httpMethod: 'patch',
-    httpPath: '/v1/machines/{machine_id}',
-  },
-  {
-    clientCallName: 'client.machines.list',
-    fullyQualifiedName: 'machines.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines',
-  },
-  {
-    clientCallName: 'client.machines.delete',
-    fullyQualifiedName: 'machines.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}',
-  },
-  {
-    clientCallName: 'client.machines.sleep',
-    fullyQualifiedName: 'machines.sleep',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/sleep',
-  },
-  {
-    clientCallName: 'client.machines.wake',
-    fullyQualifiedName: 'machines.wake',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/wake',
-  },
-  {
-    clientCallName: 'client.machines.watch',
-    fullyQualifiedName: 'machines.watch',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/status/stream',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.retrieve',
-    fullyQualifiedName: 'machines.artifacts.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.list',
-    fullyQualifiedName: 'machines.artifacts.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/artifacts',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.delete',
-    fullyQualifiedName: 'machines.artifacts.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-  },
-  {
-    clientCallName: 'client.machines.previews.create',
-    fullyQualifiedName: 'machines.previews.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/previews',
-  },
-  {
-    clientCallName: 'client.machines.previews.retrieve',
-    fullyQualifiedName: 'machines.previews.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
-  },
-  {
-    clientCallName: 'client.machines.previews.list',
-    fullyQualifiedName: 'machines.previews.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/previews',
-  },
-  {
-    clientCallName: 'client.machines.previews.delete',
-    fullyQualifiedName: 'machines.previews.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
-  },
-  {
-    clientCallName: 'client.machines.ssh.create',
-    fullyQualifiedName: 'machines.ssh.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/ssh',
-  },
-  {
-    clientCallName: 'client.machines.ssh.retrieve',
-    fullyQualifiedName: 'machines.ssh.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/ssh/{session_id}',
-  },
-  {
-    clientCallName: 'client.machines.ssh.list',
-    fullyQualifiedName: 'machines.ssh.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/ssh',
-  },
-  {
-    clientCallName: 'client.machines.ssh.delete',
-    fullyQualifiedName: 'machines.ssh.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/ssh/{session_id}',
-  },
-  {
-    clientCallName: 'client.machines.executions.create',
-    fullyQualifiedName: 'machines.executions.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/executions',
-  },
-  {
-    clientCallName: 'client.machines.executions.retrieve',
-    fullyQualifiedName: 'machines.executions.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/executions/{execution_id}',
-  },
-  {
-    clientCallName: 'client.machines.executions.list',
-    fullyQualifiedName: 'machines.executions.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/executions',
-  },
-  {
-    clientCallName: 'client.machines.executions.delete',
-    fullyQualifiedName: 'machines.executions.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/executions/{execution_id}',
-  },
-  {
-    clientCallName: 'client.machines.executions.events',
-    fullyQualifiedName: 'machines.executions.events',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/executions/{execution_id}/events',
-  },
-  {
-    clientCallName: 'client.machines.executions.output',
-    fullyQualifiedName: 'machines.executions.output',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/executions/{execution_id}/output',
-  },
-  {
-    clientCallName: 'client.machines.terminals.create',
-    fullyQualifiedName: 'machines.terminals.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/terminals',
-  },
-  {
-    clientCallName: 'client.machines.terminals.retrieve',
-    fullyQualifiedName: 'machines.terminals.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-  },
-  {
-    clientCallName: 'client.machines.terminals.list',
-    fullyQualifiedName: 'machines.terminals.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/terminals',
-  },
-  {
-    clientCallName: 'client.machines.terminals.delete',
-    fullyQualifiedName: 'machines.terminals.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-  },
-  { clientCallName: 'client.machines.terminals.connect', fullyQualifiedName: 'machines.terminals.connect' },
-];
+export const sdkMethods: SdkMethod[] = [{
+  clientCallName: 'client.machines.create',
+  fullyQualifiedName: 'machines.create',
+  httpMethod: 'post',
+  httpPath: '/v1/machines',
+},{
+  clientCallName: 'client.machines.retrieve',
+  fullyQualifiedName: 'machines.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}',
+},{
+  clientCallName: 'client.machines.update',
+  fullyQualifiedName: 'machines.update',
+  httpMethod: 'patch',
+  httpPath: '/v1/machines/{machine_id}',
+},{
+  clientCallName: 'client.machines.list',
+  fullyQualifiedName: 'machines.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines',
+},{
+  clientCallName: 'client.machines.delete',
+  fullyQualifiedName: 'machines.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}',
+},{
+  clientCallName: 'client.machines.sleep',
+  fullyQualifiedName: 'machines.sleep',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/sleep',
+},{
+  clientCallName: 'client.machines.wake',
+  fullyQualifiedName: 'machines.wake',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/wake',
+},{
+  clientCallName: 'client.machines.watch',
+  fullyQualifiedName: 'machines.watch',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/status/stream',
+},{
+  clientCallName: 'client.machines.artifacts.retrieve',
+  fullyQualifiedName: 'machines.artifacts.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+},{
+  clientCallName: 'client.machines.artifacts.list',
+  fullyQualifiedName: 'machines.artifacts.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/artifacts',
+},{
+  clientCallName: 'client.machines.artifacts.delete',
+  fullyQualifiedName: 'machines.artifacts.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+},{
+  clientCallName: 'client.machines.previews.create',
+  fullyQualifiedName: 'machines.previews.create',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/previews',
+},{
+  clientCallName: 'client.machines.previews.retrieve',
+  fullyQualifiedName: 'machines.previews.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
+},{
+  clientCallName: 'client.machines.previews.list',
+  fullyQualifiedName: 'machines.previews.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/previews',
+},{
+  clientCallName: 'client.machines.previews.delete',
+  fullyQualifiedName: 'machines.previews.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
+},{
+  clientCallName: 'client.machines.ssh.create',
+  fullyQualifiedName: 'machines.ssh.create',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/ssh',
+},{
+  clientCallName: 'client.machines.ssh.retrieve',
+  fullyQualifiedName: 'machines.ssh.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/ssh/{session_id}',
+},{
+  clientCallName: 'client.machines.ssh.list',
+  fullyQualifiedName: 'machines.ssh.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/ssh',
+},{
+  clientCallName: 'client.machines.ssh.delete',
+  fullyQualifiedName: 'machines.ssh.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}/ssh/{session_id}',
+},{
+  clientCallName: 'client.machines.executions.create',
+  fullyQualifiedName: 'machines.executions.create',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/executions',
+},{
+  clientCallName: 'client.machines.executions.retrieve',
+  fullyQualifiedName: 'machines.executions.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/executions/{execution_id}',
+},{
+  clientCallName: 'client.machines.executions.list',
+  fullyQualifiedName: 'machines.executions.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/executions',
+},{
+  clientCallName: 'client.machines.executions.delete',
+  fullyQualifiedName: 'machines.executions.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}/executions/{execution_id}',
+},{
+  clientCallName: 'client.machines.executions.events',
+  fullyQualifiedName: 'machines.executions.events',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/executions/{execution_id}/events',
+},{
+  clientCallName: 'client.machines.executions.output',
+  fullyQualifiedName: 'machines.executions.output',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/executions/{execution_id}/output',
+},{
+  clientCallName: 'client.machines.terminals.create',
+  fullyQualifiedName: 'machines.terminals.create',
+  httpMethod: 'post',
+  httpPath: '/v1/machines/{machine_id}/terminals',
+},{
+  clientCallName: 'client.machines.terminals.retrieve',
+  fullyQualifiedName: 'machines.terminals.retrieve',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+},{
+  clientCallName: 'client.machines.terminals.list',
+  fullyQualifiedName: 'machines.terminals.list',
+  httpMethod: 'get',
+  httpPath: '/v1/machines/{machine_id}/terminals',
+},{
+  clientCallName: 'client.machines.terminals.delete',
+  fullyQualifiedName: 'machines.terminals.delete',
+  httpMethod: 'delete',
+  httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+},{ clientCallName: 'client.machines.terminals.connect', fullyQualifiedName: 'machines.terminals.connect' }];
 
 function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[] | undefined {
   if (!options) {
@@ -200,9 +169,9 @@ function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[]
 
     if (options.codeAllowHttpGets) {
       // Add all methods that map to an HTTP GET
-      sdkMethods
-        .filter((method) => method.httpMethod === 'get')
-        .forEach((method) => allowedMethodsSet.add(method));
+      sdkMethods.filter((method) => method.httpMethod === 'get').forEach(
+        (method) => allowedMethodsSet.add(method)
+      );
     }
 
     if (options.codeAllowedMethods) {
@@ -211,15 +180,13 @@ function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[]
         try {
           return new RegExp(pattern);
         } catch (e) {
-          throw new Error(
-            `Invalid regex pattern for allowed method: "${pattern}": ${e instanceof Error ? e.message : e}`,
-          );
+          throw new Error(`Invalid regex pattern for allowed method: "${pattern}": ${e instanceof Error ? e.message : e}`);
         }
       });
 
-      sdkMethods
-        .filter((method) => allowedRegexps.some((regexp) => regexp.test(method.fullyQualifiedName)))
-        .forEach((method) => allowedMethodsSet.add(method));
+      sdkMethods.filter((method) =>
+          allowedRegexps.some((regexp) => regexp.test(method.fullyQualifiedName))
+        ).forEach((method) => allowedMethodsSet.add(method));
     }
 
     allowedMethods = Array.from(allowedMethodsSet);
@@ -234,14 +201,12 @@ function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[]
       try {
         return new RegExp(pattern);
       } catch (e) {
-        throw new Error(
-          `Invalid regex pattern for blocked method: "${pattern}": ${e instanceof Error ? e.message : e}`,
-        );
+        throw new Error(`Invalid regex pattern for blocked method: "${pattern}": ${e instanceof Error ? e.message : e}`);
       }
     });
 
-    allowedMethods = allowedMethods.filter(
-      (method) => !blockedRegexps.some((regexp) => regexp.test(method.fullyQualifiedName)),
+    allowedMethods = allowedMethods.filter((method) =>
+      !blockedRegexps.some((regexp) => regexp.test(method.fullyQualifiedName))
     );
   }
 

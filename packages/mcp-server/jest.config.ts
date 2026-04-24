@@ -10,7 +10,9 @@ const config: JestConfigWithTsJest = {
     '^dedalus-mcp$': '<rootDir>/src/index.ts',
     '^dedalus-mcp/(.*)$': '<rootDir>/src/$1',
   },
-  modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/dist/',
+  ],
   testPathIgnorePatterns: ['scripts'],
 };
 
