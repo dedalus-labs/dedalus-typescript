@@ -11,7 +11,7 @@ export class Terminals extends APIResource {
    * Create terminal
    */
   create(params: TerminalCreateParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, ...body } = params;
+    const { machine_id, ...body } = params
     return this._client.post(path`/v1/machines/${machine_id}/terminals`, { body, ...options });
   }
 
@@ -19,7 +19,7 @@ export class Terminals extends APIResource {
    * Get terminal
    */
   retrieve(params: TerminalRetrieveParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, terminal_id } = params;
+    const { machine_id, terminal_id } = params
     return this._client.get(path`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
   }
 
@@ -27,23 +27,20 @@ export class Terminals extends APIResource {
    * List terminals
    */
   list(params: TerminalListParams, options?: RequestOptions): PagePromise<TerminalsCursorPage, Terminal> {
-    const { machine_id, ...query } = params;
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/terminals`, CursorPage<Terminal>, {
-      query,
-      ...options,
-    });
+    const { machine_id, ...query } = params
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/terminals`, CursorPage<Terminal>, { query, ...options });
   }
 
   /**
    * Delete terminal
    */
   delete(params: TerminalDeleteParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, terminal_id } = params;
+    const { machine_id, terminal_id } = params
     return this._client.delete(path`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
   }
 }
 
-export type TerminalsCursorPage = CursorPage<Terminal>;
+export type TerminalsCursorPage = CursorPage<Terminal>
 
 export interface Terminal {
   created_at: string;
@@ -73,7 +70,7 @@ export interface Terminal {
   stream_url?: string;
 }
 
-export type TerminalClientEvent = TerminalInputEvent | TerminalResizeEvent;
+export type TerminalClientEvent = TerminalInputEvent | TerminalResizeEvent
 
 export interface TerminalClosedEvent {
   type: 'closed';
@@ -131,7 +128,7 @@ export interface TerminalResizeEvent {
   width: number;
 }
 
-export type TerminalServerEvent = TerminalOutputEvent | TerminalErrorEvent | TerminalClosedEvent;
+export type TerminalServerEvent = TerminalOutputEvent | TerminalErrorEvent | TerminalClosedEvent
 
 export interface TerminalCreateParams {
   /**
@@ -206,6 +203,6 @@ export declare namespace Terminals {
     type TerminalRetrieveParams as TerminalRetrieveParams,
     type TerminalListParams as TerminalListParams,
     type TerminalDeleteParams as TerminalDeleteParams,
-    type TerminalConnectParams as TerminalConnectParams,
+    type TerminalConnectParams as TerminalConnectParams
   };
 }

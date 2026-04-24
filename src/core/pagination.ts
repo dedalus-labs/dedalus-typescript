@@ -87,8 +87,7 @@ export class PagePromise<
     super(
       client,
       request,
-      async (client, props) =>
-        new Page(client, props.response, await defaultParseResponse(client, props), props.options),
+      async (client, props) => new Page(client, props.response, await defaultParseResponse(client, props), props.options)
     );
   }
 
@@ -124,12 +123,7 @@ export class CursorPage<Item> extends AbstractPage<Item> implements CursorPageRe
 
   next_cursor: string | null;
 
-  constructor(
-    client: Dedalus,
-    response: Response,
-    body: CursorPageResponse<Item>,
-    options: FinalRequestOptions,
-  ) {
+  constructor(client: Dedalus, response: Response, body: CursorPageResponse<Item>, options: FinalRequestOptions) {
     super(client, response, body, options);
 
     this.items = body.items || [];
@@ -141,7 +135,7 @@ export class CursorPage<Item> extends AbstractPage<Item> implements CursorPageRe
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const cursor = this.next_cursor;
+    const cursor = this.next_cursor
     if (!cursor) {
       return null;
     }

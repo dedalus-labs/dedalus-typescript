@@ -11,7 +11,7 @@ export class Artifacts extends APIResource {
    * Get artifact
    */
   retrieve(params: ArtifactRetrieveParams, options?: RequestOptions): APIPromise<Artifact> {
-    const { machine_id, artifact_id } = params;
+    const { machine_id, artifact_id } = params
     return this._client.get(path`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
   }
 
@@ -19,23 +19,20 @@ export class Artifacts extends APIResource {
    * List artifacts
    */
   list(params: ArtifactListParams, options?: RequestOptions): PagePromise<ArtifactsCursorPage, Artifact> {
-    const { machine_id, ...query } = params;
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/artifacts`, CursorPage<Artifact>, {
-      query,
-      ...options,
-    });
+    const { machine_id, ...query } = params
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/artifacts`, CursorPage<Artifact>, { query, ...options });
   }
 
   /**
    * Delete artifact
    */
   delete(params: ArtifactDeleteParams, options?: RequestOptions): APIPromise<Artifact> {
-    const { machine_id, artifact_id } = params;
+    const { machine_id, artifact_id } = params
     return this._client.delete(path`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
   }
 }
 
-export type ArtifactsCursorPage = CursorPage<Artifact>;
+export type ArtifactsCursorPage = CursorPage<Artifact>
 
 export interface Artifact {
   artifact_id: string;
@@ -91,6 +88,6 @@ export declare namespace Artifacts {
     type ArtifactsCursorPage as ArtifactsCursorPage,
     type ArtifactRetrieveParams as ArtifactRetrieveParams,
     type ArtifactListParams as ArtifactListParams,
-    type ArtifactDeleteParams as ArtifactDeleteParams,
+    type ArtifactDeleteParams as ArtifactDeleteParams
   };
 }
