@@ -64,28 +64,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.list(cursor?: string, limit?: number): { created_at: string; desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**get** `/v1/machines`\n\nList machines\n\n### Parameters\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ created_at: string; desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `created_at: string`\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const machineListItem of client.machines.list()) {\n  console.log(machineListItem);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'machines list',
-        example: "dedalus machines list \\\n  --api-key 'My API Key'",
-      },
-      go: {
-        method: 'client.Machines.List',
+      typescript: {
+        method: 'client.machines.list',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.List(context.TODO(), dedalus.MachineListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const machineListItem of client.machines.list()) {\n  console.log(machineListItem.machine_id);\n}",
       },
       python: {
         method: 'machines.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.list()\npage = page.items[0]\nprint(page.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.list',
+      go: {
+        method: 'client.Machines.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const machineListItem of client.machines.list()) {\n  console.log(machineListItem.machine_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.List(context.TODO(), dedalus.MachineListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'machines list',
+        example: "dedalus machines list \\\n  --api-key 'My API Key'",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -103,29 +103,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.machines.create(memory_mib: number, storage_gib: number, vcpu: number): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**post** `/v1/machines`\n\nCreate machine\n\n### Parameters\n\n- `memory_mib: number`\n  Memory in MiB.\n\n- `storage_gib: number`\n  Storage in GiB.\n\n- `vcpu: number`\n  CPU in vCPUs.\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.create({\n  memory_mib: 0,\n  storage_gib: 0,\n  vcpu: 0,\n});\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines create',
+      typescript: {
+        method: 'client.machines.create',
         example:
-          "dedalus machines create \\\n  --api-key 'My API Key' \\\n  --memory-mib 0 \\\n  --storage-gib 0 \\\n  --vcpu 0",
-      },
-      go: {
-        method: 'client.Machines.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.New(context.TODO(), dedalus.MachineNewParams{\n\t\tCreateParams: dedalus.CreateParams{\n\t\t\tMemoryMiB:  0,\n\t\t\tStorageGiB: 0,\n\t\t\tVCPU:       0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "memory_mib": 0,\n          "storage_gib": 0,\n          "vcpu": 0\n        }\'',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.create({\n  memory_mib: 0,\n  storage_gib: 0,\n  vcpu: 0,\n});\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.create',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.create(\n    memory_mib=0,\n    storage_gib=0,\n    vcpu=0,\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.create',
+      go: {
+        method: 'client.Machines.New',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.create({\n  memory_mib: 0,\n  storage_gib: 0,\n  vcpu: 0,\n});\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.New(context.TODO(), dedalus.MachineNewParams{\n\t\tCreateParams: dedalus.CreateParams{\n\t\t\tMemoryMiB:  0,\n\t\t\tStorageGiB: 0,\n\t\t\tVCPU:       0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines create',
+        example:
+          "dedalus machines create \\\n  --api-key 'My API Key' \\\n  --memory-mib 0 \\\n  --storage-gib 0 \\\n  --vcpu 0",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "memory_mib": 0,\n          "storage_gib": 0,\n          "vcpu": 0\n        }\'',
       },
     },
   },
@@ -143,28 +143,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.retrieve(machine_id: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**get** `/v1/machines/{machine_id}`\n\nGet machine\n\n### Parameters\n\n- `machine_id: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.retrieve({ machine_id: 'machine_id' });\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines retrieve',
-        example: "dedalus machines retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Get',
+      typescript: {
+        method: 'client.machines.retrieve',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Get(context.TODO(), dedalus.MachineGetParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.retrieve({ machine_id: 'machine_id' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.retrieve(\n    machine_id="machine_id",\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.retrieve',
+      go: {
+        method: 'client.Machines.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.retrieve({ machine_id: 'machine_id' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Get(context.TODO(), dedalus.MachineGetParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines retrieve',
+        example: "dedalus machines retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -188,29 +188,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update\n\n`client.machines.update(machine_id: string, If-Match: string, memory_mib?: number, storage_gib?: number, vcpu?: number): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**patch** `/v1/machines/{machine_id}`\n\nUpdate machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n- `memory_mib?: number`\n  Memory in MiB.\n\n- `storage_gib?: number`\n  Storage in GiB.\n\n- `vcpu?: number`\n  CPU in vCPUs.\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.update({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines update',
+      typescript: {
+        method: 'client.machines.update',
         example:
-          "dedalus machines update \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
-      },
-      go: {
-        method: 'client.Machines.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Update(context.TODO(), dedalus.MachineUpdateParams{\n\t\tMachineID:    "machine_id",\n\t\tUpdateParams: dedalus.UpdateParams{},\n\t\tIfMatch:      "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          "curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"Authorization: Bearer $DEDALUS_API_KEY\" \\\n    -d '{}'",
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.update({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.update',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.update(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.update',
+      go: {
+        method: 'client.Machines.Update',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.update({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Update(context.TODO(), dedalus.MachineUpdateParams{\n\t\tMachineID:    "machine_id",\n\t\tUpdateParams: dedalus.UpdateParams{},\n\t\tIfMatch:      "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines update',
+        example:
+          "dedalus machines update \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      http: {
+        example:
+          "curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"Authorization: Bearer $DEDALUS_API_KEY\" \\\n    -d '{}'",
       },
     },
   },
@@ -228,29 +228,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.delete(machine_id: string, If-Match: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**delete** `/v1/machines/{machine_id}`\n\nDestroy machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.delete({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines delete',
+      typescript: {
+        method: 'client.machines.delete',
         example:
-          "dedalus machines delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
-      },
-      go: {
-        method: 'client.Machines.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Delete(context.TODO(), dedalus.MachineDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.delete({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.delete(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.delete',
+      go: {
+        method: 'client.Machines.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.delete({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Delete(context.TODO(), dedalus.MachineDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines delete',
+        example:
+          "dedalus machines delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -269,28 +269,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## watch\n\n`client.machines.watch(machine_id: string, Last-Event-ID?: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**get** `/v1/machines/{machine_id}/status/stream`\n\nStreams machine lifecycle updates over Server-Sent Events. Each `status` event contains a full `LifecycleResponse` payload. The stream closes after the machine reaches its current desired state.\n\n### Parameters\n\n- `machine_id: string`\n\n- `Last-Event-ID?: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst stream = await client.machines.watch({ machine_id: 'machine_id' });\nfor await (const machine of stream) {\n  console.log(machine);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'machines watch',
-        example: "dedalus machines watch \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Watch',
+      typescript: {
+        method: 'client.machines.watch',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tstream := client.Machines.WatchStreaming(context.TODO(), dedalus.MachineWatchParams{\n\t\tMachineID: "machine_id",\n\t})\n\tfor stream.Next() {\n\t\tfmt.Printf("%+v\\n", stream.Current())\n\t}\n\terr := stream.Err()\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/status/stream \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.watch({ machine_id: 'machine_id' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.watch',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nfor machine in client.machines.watch(\n    machine_id="machine_id",\n):\n  print(machine)',
       },
-      typescript: {
-        method: 'client.machines.watch',
+      go: {
+        method: 'client.Machines.Watch',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.watch({ machine_id: 'machine_id' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tstream := client.Machines.WatchStreaming(context.TODO(), dedalus.MachineWatchParams{\n\t\tMachineID: "machine_id",\n\t})\n\tfor stream.Next() {\n\t\tfmt.Printf("%+v\\n", stream.Current())\n\t}\n\terr := stream.Err()\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
+      cli: {
+        method: 'machines watch',
+        example: "dedalus machines watch \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/status/stream \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -308,29 +308,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## sleep\n\n`client.machines.sleep(machine_id: string, If-Match: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**post** `/v1/machines/{machine_id}/sleep`\n\nSleep a running machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines sleep',
+      typescript: {
+        method: 'client.machines.sleep',
         example:
-          "dedalus machines sleep \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
-      },
-      go: {
-        method: 'client.Machines.Sleep',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Sleep(context.TODO(), dedalus.MachineSleepParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/sleep \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.sleep',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.sleep(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.sleep',
+      go: {
+        method: 'client.Machines.Sleep',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Sleep(context.TODO(), dedalus.MachineSleepParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines sleep',
+        example:
+          "dedalus machines sleep \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/sleep \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -348,29 +348,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## wake\n\n`client.machines.wake(machine_id: string, If-Match: string): { desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: lifecycle_status; storage_gib: number; vcpu: number; }`\n\n**post** `/v1/machines/{machine_id}/wake`\n\nWake a sleeping machine\n\n### Parameters\n\n- `machine_id: string`\n\n- `If-Match: string`\n\n### Returns\n\n- `{ desired_state: 'running' | 'sleeping' | 'destroyed'; machine_id: string; memory_mib: number; status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }; storage_gib: number; vcpu: number; }`\n\n  - `desired_state: 'running' | 'sleeping' | 'destroyed'`\n  - `machine_id: string`\n  - `memory_mib: number`\n  - `status: { last_progress_at: string; last_transition_at: string; phase: string; reason: string; retryable: boolean; revision: string; last_error?: string; }`\n  - `storage_gib: number`\n  - `vcpu: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machine = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine);\n```",
     perLanguage: {
-      cli: {
-        method: 'machines wake',
+      typescript: {
+        method: 'client.machines.wake',
         example:
-          "dedalus machines wake \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
-      },
-      go: {
-        method: 'client.Machines.Wake',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Wake(context.TODO(), dedalus.MachineWakeParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/wake \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
       },
       python: {
         method: 'machines.wake',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine = client.machines.wake(\n    machine_id="machine_id",\n    if_match="If-Match",\n)\nprint(machine.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.wake',
+      go: {
+        method: 'client.Machines.Wake',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machine = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });\n\nconsole.log(machine.machine_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachine, err := client.Machines.Wake(context.TODO(), dedalus.MachineWakeParams{\n\t\tMachineID: "machine_id",\n\t\tIfMatch:   "If-Match",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machine.MachineID)\n}\n',
+      },
+      cli: {
+        method: 'machines wake',
+        example:
+          "dedalus machines wake \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --if-match If-Match",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/wake \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -388,28 +388,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.artifacts.list(machine_id: string, cursor?: string, limit?: number): { artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n**get** `/v1/machines/{machine_id}/artifacts`\n\nList artifacts\n\n### Parameters\n\n- `machine_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n  - `artifact_id: string`\n  - `created_at: string`\n  - `machine_id: string`\n  - `name: string`\n  - `size_bytes: number`\n  - `download_url?: string`\n  - `execution_id?: string`\n  - `expires_at?: string`\n  - `mime_type?: string`\n  - `sha256?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const artifact of client.machines.artifacts.list({ machine_id: 'machine_id' })) {\n  console.log(artifact);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'artifacts list',
-        example: "dedalus machines:artifacts list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Artifacts.List',
+      typescript: {
+        method: 'client.machines.artifacts.list',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Artifacts.List(context.TODO(), dedalus.MachineArtifactListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const artifact of client.machines.artifacts.list({ machine_id: 'machine_id' })) {\n  console.log(artifact.artifact_id);\n}",
       },
       python: {
         method: 'machines.artifacts.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.artifacts.list(\n    machine_id="machine_id",\n)\npage = page.items[0]\nprint(page.artifact_id)',
       },
-      typescript: {
-        method: 'client.machines.artifacts.list',
+      go: {
+        method: 'client.Machines.Artifacts.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const artifact of client.machines.artifacts.list({ machine_id: 'machine_id' })) {\n  console.log(artifact.artifact_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Artifacts.List(context.TODO(), dedalus.MachineArtifactListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'artifacts list',
+        example: "dedalus machines:artifacts list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -427,29 +427,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.artifacts.retrieve(machine_id: string, artifact_id: string): { artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n**get** `/v1/machines/{machine_id}/artifacts/{artifact_id}`\n\nGet artifact\n\n### Parameters\n\n- `machine_id: string`\n\n- `artifact_id: string`\n\n### Returns\n\n- `{ artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n  - `artifact_id: string`\n  - `created_at: string`\n  - `machine_id: string`\n  - `name: string`\n  - `size_bytes: number`\n  - `download_url?: string`\n  - `execution_id?: string`\n  - `expires_at?: string`\n  - `mime_type?: string`\n  - `sha256?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst artifact = await client.machines.artifacts.retrieve({ machine_id: 'machine_id', artifact_id: 'artifact_id' });\n\nconsole.log(artifact);\n```",
     perLanguage: {
-      cli: {
-        method: 'artifacts retrieve',
+      typescript: {
+        method: 'client.machines.artifacts.retrieve',
         example:
-          "dedalus machines:artifacts retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --artifact-id artifact_id",
-      },
-      go: {
-        method: 'client.Machines.Artifacts.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tartifact, err := client.Machines.Artifacts.Get(context.TODO(), dedalus.MachineArtifactGetParams{\n\t\tMachineID:  "machine_id",\n\t\tArtifactID: "artifact_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", artifact.ArtifactID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst artifact = await client.machines.artifacts.retrieve({\n  machine_id: 'machine_id',\n  artifact_id: 'artifact_id',\n});\n\nconsole.log(artifact.artifact_id);",
       },
       python: {
         method: 'machines.artifacts.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nartifact = client.machines.artifacts.retrieve(\n    machine_id="machine_id",\n    artifact_id="artifact_id",\n)\nprint(artifact.artifact_id)',
       },
-      typescript: {
-        method: 'client.machines.artifacts.retrieve',
+      go: {
+        method: 'client.Machines.Artifacts.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst artifact = await client.machines.artifacts.retrieve({\n  machine_id: 'machine_id',\n  artifact_id: 'artifact_id',\n});\n\nconsole.log(artifact.artifact_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tartifact, err := client.Machines.Artifacts.Get(context.TODO(), dedalus.MachineArtifactGetParams{\n\t\tMachineID:  "machine_id",\n\t\tArtifactID: "artifact_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", artifact.ArtifactID)\n}\n',
+      },
+      cli: {
+        method: 'artifacts retrieve',
+        example:
+          "dedalus machines:artifacts retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --artifact-id artifact_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -467,29 +467,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.artifacts.delete(machine_id: string, artifact_id: string): { artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n**delete** `/v1/machines/{machine_id}/artifacts/{artifact_id}`\n\nDelete artifact\n\n### Parameters\n\n- `machine_id: string`\n\n- `artifact_id: string`\n\n### Returns\n\n- `{ artifact_id: string; created_at: string; machine_id: string; name: string; size_bytes: number; download_url?: string; execution_id?: string; expires_at?: string; mime_type?: string; sha256?: string; }`\n\n  - `artifact_id: string`\n  - `created_at: string`\n  - `machine_id: string`\n  - `name: string`\n  - `size_bytes: number`\n  - `download_url?: string`\n  - `execution_id?: string`\n  - `expires_at?: string`\n  - `mime_type?: string`\n  - `sha256?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst artifact = await client.machines.artifacts.delete({ machine_id: 'machine_id', artifact_id: 'artifact_id' });\n\nconsole.log(artifact);\n```",
     perLanguage: {
-      cli: {
-        method: 'artifacts delete',
+      typescript: {
+        method: 'client.machines.artifacts.delete',
         example:
-          "dedalus machines:artifacts delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --artifact-id artifact_id",
-      },
-      go: {
-        method: 'client.Machines.Artifacts.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tartifact, err := client.Machines.Artifacts.Delete(context.TODO(), dedalus.MachineArtifactDeleteParams{\n\t\tMachineID:  "machine_id",\n\t\tArtifactID: "artifact_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", artifact.ArtifactID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst artifact = await client.machines.artifacts.delete({\n  machine_id: 'machine_id',\n  artifact_id: 'artifact_id',\n});\n\nconsole.log(artifact.artifact_id);",
       },
       python: {
         method: 'machines.artifacts.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nartifact = client.machines.artifacts.delete(\n    machine_id="machine_id",\n    artifact_id="artifact_id",\n)\nprint(artifact.artifact_id)',
       },
-      typescript: {
-        method: 'client.machines.artifacts.delete',
+      go: {
+        method: 'client.Machines.Artifacts.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst artifact = await client.machines.artifacts.delete({\n  machine_id: 'machine_id',\n  artifact_id: 'artifact_id',\n});\n\nconsole.log(artifact.artifact_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tartifact, err := client.Machines.Artifacts.Delete(context.TODO(), dedalus.MachineArtifactDeleteParams{\n\t\tMachineID:  "machine_id",\n\t\tArtifactID: "artifact_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", artifact.ArtifactID)\n}\n',
+      },
+      cli: {
+        method: 'artifacts delete',
+        example:
+          "dedalus machines:artifacts delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --artifact-id artifact_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -507,28 +507,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.previews.list(machine_id: string, cursor?: string, limit?: number): { created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n**get** `/v1/machines/{machine_id}/previews`\n\nList previews\n\n### Parameters\n\n- `machine_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `port: number`\n  - `preview_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `visibility: 'public' | 'private' | 'org'`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'http' | 'https'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const preview of client.machines.previews.list({ machine_id: 'machine_id' })) {\n  console.log(preview);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'previews list',
-        example: "dedalus machines:previews list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Previews.List',
+      typescript: {
+        method: 'client.machines.previews.list',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Previews.List(context.TODO(), dedalus.MachinePreviewListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const preview of client.machines.previews.list({ machine_id: 'machine_id' })) {\n  console.log(preview.machine_id);\n}",
       },
       python: {
         method: 'machines.previews.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.previews.list(\n    machine_id="machine_id",\n)\npage = page.items[0]\nprint(page.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.previews.list',
+      go: {
+        method: 'client.Machines.Previews.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const preview of client.machines.previews.list({ machine_id: 'machine_id' })) {\n  console.log(preview.machine_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Previews.List(context.TODO(), dedalus.MachinePreviewListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'previews list',
+        example: "dedalus machines:previews list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -551,29 +551,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.machines.previews.create(machine_id: string, port: number, protocol?: 'http' | 'https', visibility?: 'public' | 'private' | 'org'): { created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n**post** `/v1/machines/{machine_id}/previews`\n\nCreate preview\n\n### Parameters\n\n- `machine_id: string`\n\n- `port: number`\n\n- `protocol?: 'http' | 'https'`\n\n- `visibility?: 'public' | 'private' | 'org'`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `port: number`\n  - `preview_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `visibility: 'public' | 'private' | 'org'`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'http' | 'https'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst preview = await client.machines.previews.create({ machine_id: 'machine_id', port: 0 });\n\nconsole.log(preview);\n```",
     perLanguage: {
-      cli: {
-        method: 'previews create',
+      typescript: {
+        method: 'client.machines.previews.create',
         example:
-          "dedalus machines:previews create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --port 0",
-      },
-      go: {
-        method: 'client.Machines.Previews.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.New(context.TODO(), dedalus.MachinePreviewNewParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewCreateParams: dedalus.PreviewCreateParams{\n\t\t\tPort: 0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "port": 0\n        }\'',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.create({ machine_id: 'machine_id', port: 0 });\n\nconsole.log(preview.preview_id);",
       },
       python: {
         method: 'machines.previews.create',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npreview = client.machines.previews.create(\n    machine_id="machine_id",\n    port=0,\n)\nprint(preview.preview_id)',
       },
-      typescript: {
-        method: 'client.machines.previews.create',
+      go: {
+        method: 'client.Machines.Previews.New',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.create({ machine_id: 'machine_id', port: 0 });\n\nconsole.log(preview.preview_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.New(context.TODO(), dedalus.MachinePreviewNewParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewCreateParams: dedalus.PreviewCreateParams{\n\t\t\tPort: 0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
+      },
+      cli: {
+        method: 'previews create',
+        example:
+          "dedalus machines:previews create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --port 0",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "port": 0\n        }\'',
       },
     },
   },
@@ -591,29 +591,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.previews.retrieve(machine_id: string, preview_id: string): { created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n**get** `/v1/machines/{machine_id}/previews/{preview_id}`\n\nGet preview\n\n### Parameters\n\n- `machine_id: string`\n\n- `preview_id: string`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `port: number`\n  - `preview_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `visibility: 'public' | 'private' | 'org'`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'http' | 'https'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst preview = await client.machines.previews.retrieve({ machine_id: 'machine_id', preview_id: 'preview_id' });\n\nconsole.log(preview);\n```",
     perLanguage: {
-      cli: {
-        method: 'previews retrieve',
+      typescript: {
+        method: 'client.machines.previews.retrieve',
         example:
-          "dedalus machines:previews retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --preview-id preview_id",
-      },
-      go: {
-        method: 'client.Machines.Previews.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.Get(context.TODO(), dedalus.MachinePreviewGetParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewID: "preview_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews/$PREVIEW_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.retrieve({\n  machine_id: 'machine_id',\n  preview_id: 'preview_id',\n});\n\nconsole.log(preview.preview_id);",
       },
       python: {
         method: 'machines.previews.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npreview = client.machines.previews.retrieve(\n    machine_id="machine_id",\n    preview_id="preview_id",\n)\nprint(preview.preview_id)',
       },
-      typescript: {
-        method: 'client.machines.previews.retrieve',
+      go: {
+        method: 'client.Machines.Previews.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.retrieve({\n  machine_id: 'machine_id',\n  preview_id: 'preview_id',\n});\n\nconsole.log(preview.preview_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.Get(context.TODO(), dedalus.MachinePreviewGetParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewID: "preview_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
+      },
+      cli: {
+        method: 'previews retrieve',
+        example:
+          "dedalus machines:previews retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --preview-id preview_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews/$PREVIEW_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -631,29 +631,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.previews.delete(machine_id: string, preview_id: string): { created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n**delete** `/v1/machines/{machine_id}/previews/{preview_id}`\n\nDelete preview\n\n### Parameters\n\n- `machine_id: string`\n\n- `preview_id: string`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; port: number; preview_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; visibility: 'public' | 'private' | 'org'; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'http' | 'https'; ready_at?: string; retry_after_ms?: number; url?: string; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `port: number`\n  - `preview_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `visibility: 'public' | 'private' | 'org'`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'http' | 'https'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst preview = await client.machines.previews.delete({ machine_id: 'machine_id', preview_id: 'preview_id' });\n\nconsole.log(preview);\n```",
     perLanguage: {
-      cli: {
-        method: 'previews delete',
+      typescript: {
+        method: 'client.machines.previews.delete',
         example:
-          "dedalus machines:previews delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --preview-id preview_id",
-      },
-      go: {
-        method: 'client.Machines.Previews.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.Delete(context.TODO(), dedalus.MachinePreviewDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewID: "preview_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews/$PREVIEW_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.delete({\n  machine_id: 'machine_id',\n  preview_id: 'preview_id',\n});\n\nconsole.log(preview.preview_id);",
       },
       python: {
         method: 'machines.previews.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npreview = client.machines.previews.delete(\n    machine_id="machine_id",\n    preview_id="preview_id",\n)\nprint(preview.preview_id)',
       },
-      typescript: {
-        method: 'client.machines.previews.delete',
+      go: {
+        method: 'client.Machines.Previews.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst preview = await client.machines.previews.delete({\n  machine_id: 'machine_id',\n  preview_id: 'preview_id',\n});\n\nconsole.log(preview.preview_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpreview, err := client.Machines.Previews.Delete(context.TODO(), dedalus.MachinePreviewDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tPreviewID: "preview_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", preview.PreviewID)\n}\n',
+      },
+      cli: {
+        method: 'previews delete',
+        example:
+          "dedalus machines:previews delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --preview-id preview_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews/$PREVIEW_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -671,28 +671,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.ssh.list(machine_id: string, cursor?: string, limit?: number): { created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: ssh_connection; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n**get** `/v1/machines/{machine_id}/ssh`\n\nList SSH sessions\n\n### Parameters\n\n- `machine_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: ssh_host_trust; user_certificate?: string; }; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `session_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: { host_pattern: string; kind: 'cert_authority'; public_key: string; }; user_certificate?: string; }`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const sshSession of client.machines.ssh.list({ machine_id: 'machine_id' })) {\n  console.log(sshSession);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'ssh list',
-        example: "dedalus machines:ssh list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.SSH.List',
+      typescript: {
+        method: 'client.machines.ssh.list',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.SSH.List(context.TODO(), dedalus.MachineSSHListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const sshSession of client.machines.ssh.list({ machine_id: 'machine_id' })) {\n  console.log(sshSession.machine_id);\n}",
       },
       python: {
         method: 'machines.ssh.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.ssh.list(\n    machine_id="machine_id",\n)\npage = page.items[0]\nprint(page.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.ssh.list',
+      go: {
+        method: 'client.Machines.SSH.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const sshSession of client.machines.ssh.list({ machine_id: 'machine_id' })) {\n  console.log(sshSession.machine_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.SSH.List(context.TODO(), dedalus.MachineSSHListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'ssh list',
+        example: "dedalus machines:ssh list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -710,29 +710,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.machines.ssh.create(machine_id: string, public_key: string): { created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: ssh_connection; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n**post** `/v1/machines/{machine_id}/ssh`\n\nCreate SSH session\n\n### Parameters\n\n- `machine_id: string`\n\n- `public_key: string`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: ssh_host_trust; user_certificate?: string; }; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `session_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: { host_pattern: string; kind: 'cert_authority'; public_key: string; }; user_certificate?: string; }`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst sshSession = await client.machines.ssh.create({ machine_id: 'machine_id', public_key: 'public_key' });\n\nconsole.log(sshSession);\n```",
     perLanguage: {
-      cli: {
-        method: 'ssh create',
+      typescript: {
+        method: 'client.machines.ssh.create',
         example:
-          "dedalus machines:ssh create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --public-key public_key",
-      },
-      go: {
-        method: 'client.Machines.SSH.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.New(context.TODO(), dedalus.MachineSSHNewParams{\n\t\tMachineID: "machine_id",\n\t\tSSHSessionCreateParams: dedalus.SSHSessionCreateParams{\n\t\t\tPublicKey: "public_key",\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "public_key": "public_key"\n        }\'',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.create({\n  machine_id: 'machine_id',\n  public_key: 'public_key',\n});\n\nconsole.log(sshSession.session_id);",
       },
       python: {
         method: 'machines.ssh.create',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nssh_session = client.machines.ssh.create(\n    machine_id="machine_id",\n    public_key="public_key",\n)\nprint(ssh_session.session_id)',
       },
-      typescript: {
-        method: 'client.machines.ssh.create',
+      go: {
+        method: 'client.Machines.SSH.New',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.create({\n  machine_id: 'machine_id',\n  public_key: 'public_key',\n});\n\nconsole.log(sshSession.session_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.New(context.TODO(), dedalus.MachineSSHNewParams{\n\t\tMachineID: "machine_id",\n\t\tSSHSessionCreateParams: dedalus.SSHSessionCreateParams{\n\t\t\tPublicKey: "public_key",\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
+      },
+      cli: {
+        method: 'ssh create',
+        example:
+          "dedalus machines:ssh create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --public-key public_key",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "public_key": "public_key"\n        }\'',
       },
     },
   },
@@ -750,29 +750,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.ssh.retrieve(machine_id: string, session_id: string): { created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: ssh_connection; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n**get** `/v1/machines/{machine_id}/ssh/{session_id}`\n\nGet SSH session\n\n### Parameters\n\n- `machine_id: string`\n\n- `session_id: string`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: ssh_host_trust; user_certificate?: string; }; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `session_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: { host_pattern: string; kind: 'cert_authority'; public_key: string; }; user_certificate?: string; }`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst sshSession = await client.machines.ssh.retrieve({ machine_id: 'machine_id', session_id: 'session_id' });\n\nconsole.log(sshSession);\n```",
     perLanguage: {
-      cli: {
-        method: 'ssh retrieve',
+      typescript: {
+        method: 'client.machines.ssh.retrieve',
         example:
-          "dedalus machines:ssh retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --session-id session_id",
-      },
-      go: {
-        method: 'client.Machines.SSH.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.Get(context.TODO(), dedalus.MachineSSHGetParams{\n\t\tMachineID: "machine_id",\n\t\tSessionID: "session_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh/$SESSION_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.retrieve({\n  machine_id: 'machine_id',\n  session_id: 'session_id',\n});\n\nconsole.log(sshSession.session_id);",
       },
       python: {
         method: 'machines.ssh.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nssh_session = client.machines.ssh.retrieve(\n    machine_id="machine_id",\n    session_id="session_id",\n)\nprint(ssh_session.session_id)',
       },
-      typescript: {
-        method: 'client.machines.ssh.retrieve',
+      go: {
+        method: 'client.Machines.SSH.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.retrieve({\n  machine_id: 'machine_id',\n  session_id: 'session_id',\n});\n\nconsole.log(sshSession.session_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.Get(context.TODO(), dedalus.MachineSSHGetParams{\n\t\tMachineID: "machine_id",\n\t\tSessionID: "session_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
+      },
+      cli: {
+        method: 'ssh retrieve',
+        example:
+          "dedalus machines:ssh retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --session-id session_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh/$SESSION_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -790,29 +790,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.ssh.delete(machine_id: string, session_id: string): { created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: ssh_connection; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n**delete** `/v1/machines/{machine_id}/ssh/{session_id}`\n\nDelete SSH session\n\n### Parameters\n\n- `machine_id: string`\n\n- `session_id: string`\n\n### Returns\n\n- `{ created_at: string; machine_id: string; session_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: ssh_host_trust; user_certificate?: string; }; error_code?: string; error_message?: string; expires_at?: string; ready_at?: string; retry_after_ms?: number; }`\n\n  - `created_at: string`\n  - `machine_id: string`\n  - `session_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `connection?: { endpoint: string; port: number; ssh_username: string; host_trust?: { host_pattern: string; kind: 'cert_authority'; public_key: string; }; user_certificate?: string; }`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst sshSession = await client.machines.ssh.delete({ machine_id: 'machine_id', session_id: 'session_id' });\n\nconsole.log(sshSession);\n```",
     perLanguage: {
-      cli: {
-        method: 'ssh delete',
+      typescript: {
+        method: 'client.machines.ssh.delete',
         example:
-          "dedalus machines:ssh delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --session-id session_id",
-      },
-      go: {
-        method: 'client.Machines.SSH.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.Delete(context.TODO(), dedalus.MachineSSHDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tSessionID: "session_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh/$SESSION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.delete({\n  machine_id: 'machine_id',\n  session_id: 'session_id',\n});\n\nconsole.log(sshSession.session_id);",
       },
       python: {
         method: 'machines.ssh.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nssh_session = client.machines.ssh.delete(\n    machine_id="machine_id",\n    session_id="session_id",\n)\nprint(ssh_session.session_id)',
       },
-      typescript: {
-        method: 'client.machines.ssh.delete',
+      go: {
+        method: 'client.Machines.SSH.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst sshSession = await client.machines.ssh.delete({\n  machine_id: 'machine_id',\n  session_id: 'session_id',\n});\n\nconsole.log(sshSession.session_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tsshSession, err := client.Machines.SSH.Delete(context.TODO(), dedalus.MachineSSHDeleteParams{\n\t\tMachineID: "machine_id",\n\t\tSessionID: "session_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", sshSession.SessionID)\n}\n',
+      },
+      cli: {
+        method: 'ssh delete',
+        example:
+          "dedalus machines:ssh delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --session-id session_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh/$SESSION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -830,29 +830,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.executions.list(machine_id: string, cursor?: string, limit?: number): { command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: artifact_ref[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n**get** `/v1/machines/{machine_id}/executions`\n\nList executions\n\n### Parameters\n\n- `machine_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: { artifact_id: string; name: string; }[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n  - `command: string[]`\n  - `created_at: string`\n  - `execution_id: string`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'`\n  - `artifacts?: { artifact_id: string; name: string; }[]`\n  - `completed_at?: string`\n  - `cwd?: string`\n  - `env_keys?: string[]`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `exit_code?: number`\n  - `expires_at?: string`\n  - `retry_after_ms?: number`\n  - `signal?: number`\n  - `started_at?: string`\n  - `stderr_bytes?: number`\n  - `stderr_truncated?: boolean`\n  - `stdout_bytes?: number`\n  - `stdout_truncated?: boolean`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const execution of client.machines.executions.list({ machine_id: 'machine_id' })) {\n  console.log(execution);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'executions list',
+      typescript: {
+        method: 'client.machines.executions.list',
         example:
-          "dedalus machines:executions list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Executions.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Executions.List(context.TODO(), dedalus.MachineExecutionListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const execution of client.machines.executions.list({ machine_id: 'machine_id' })) {\n  console.log(execution.execution_id);\n}",
       },
       python: {
         method: 'machines.executions.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.executions.list(\n    machine_id="machine_id",\n)\npage = page.items[0]\nprint(page.execution_id)',
       },
-      typescript: {
-        method: 'client.machines.executions.list',
+      go: {
+        method: 'client.Machines.Executions.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const execution of client.machines.executions.list({ machine_id: 'machine_id' })) {\n  console.log(execution.execution_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Executions.List(context.TODO(), dedalus.MachineExecutionListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'executions list',
+        example:
+          "dedalus machines:executions list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -877,29 +877,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.machines.executions.create(machine_id: string, command: string[], cwd?: string, env?: object, stdin?: string, timeout_ms?: number): { command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: artifact_ref[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n**post** `/v1/machines/{machine_id}/executions`\n\nCreate execution\n\n### Parameters\n\n- `machine_id: string`\n\n- `command: string[]`\n\n- `cwd?: string`\n\n- `env?: object`\n\n- `stdin?: string`\n\n- `timeout_ms?: number`\n\n### Returns\n\n- `{ command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: { artifact_id: string; name: string; }[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n  - `command: string[]`\n  - `created_at: string`\n  - `execution_id: string`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'`\n  - `artifacts?: { artifact_id: string; name: string; }[]`\n  - `completed_at?: string`\n  - `cwd?: string`\n  - `env_keys?: string[]`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `exit_code?: number`\n  - `expires_at?: string`\n  - `retry_after_ms?: number`\n  - `signal?: number`\n  - `started_at?: string`\n  - `stderr_bytes?: number`\n  - `stderr_truncated?: boolean`\n  - `stdout_bytes?: number`\n  - `stdout_truncated?: boolean`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst execution = await client.machines.executions.create({ machine_id: 'machine_id', command: ['string'] });\n\nconsole.log(execution);\n```",
     perLanguage: {
-      cli: {
-        method: 'executions create',
+      typescript: {
+        method: 'client.machines.executions.create',
         example:
-          "dedalus machines:executions create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --command string",
-      },
-      go: {
-        method: 'client.Machines.Executions.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.New(context.TODO(), dedalus.MachineExecutionNewParams{\n\t\tMachineID: "machine_id",\n\t\tExecutionCreateParams: dedalus.ExecutionCreateParams{\n\t\t\tCommand: []string{"string"},\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "command": [\n            "string"\n          ]\n        }\'',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.create({\n  machine_id: 'machine_id',\n  command: ['string'],\n});\n\nconsole.log(execution.execution_id);",
       },
       python: {
         method: 'machines.executions.create',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nexecution = client.machines.executions.create(\n    machine_id="machine_id",\n    command=["string"],\n)\nprint(execution.execution_id)',
       },
-      typescript: {
-        method: 'client.machines.executions.create',
+      go: {
+        method: 'client.Machines.Executions.New',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.create({\n  machine_id: 'machine_id',\n  command: ['string'],\n});\n\nconsole.log(execution.execution_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.New(context.TODO(), dedalus.MachineExecutionNewParams{\n\t\tMachineID: "machine_id",\n\t\tExecutionCreateParams: dedalus.ExecutionCreateParams{\n\t\t\tCommand: []string{"string"},\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
+      },
+      cli: {
+        method: 'executions create',
+        example:
+          "dedalus machines:executions create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --command string",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "command": [\n            "string"\n          ]\n        }\'',
       },
     },
   },
@@ -917,29 +917,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.executions.retrieve(machine_id: string, execution_id: string): { command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: artifact_ref[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n**get** `/v1/machines/{machine_id}/executions/{execution_id}`\n\nGet execution\n\n### Parameters\n\n- `machine_id: string`\n\n- `execution_id: string`\n\n### Returns\n\n- `{ command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: { artifact_id: string; name: string; }[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n  - `command: string[]`\n  - `created_at: string`\n  - `execution_id: string`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'`\n  - `artifacts?: { artifact_id: string; name: string; }[]`\n  - `completed_at?: string`\n  - `cwd?: string`\n  - `env_keys?: string[]`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `exit_code?: number`\n  - `expires_at?: string`\n  - `retry_after_ms?: number`\n  - `signal?: number`\n  - `started_at?: string`\n  - `stderr_bytes?: number`\n  - `stderr_truncated?: boolean`\n  - `stdout_bytes?: number`\n  - `stdout_truncated?: boolean`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst execution = await client.machines.executions.retrieve({ machine_id: 'machine_id', execution_id: 'execution_id' });\n\nconsole.log(execution);\n```",
     perLanguage: {
-      cli: {
-        method: 'executions retrieve',
+      typescript: {
+        method: 'client.machines.executions.retrieve',
         example:
-          "dedalus machines:executions retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
-      },
-      go: {
-        method: 'client.Machines.Executions.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.Get(context.TODO(), dedalus.MachineExecutionGetParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.retrieve({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(execution.execution_id);",
       },
       python: {
         method: 'machines.executions.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nexecution = client.machines.executions.retrieve(\n    machine_id="machine_id",\n    execution_id="execution_id",\n)\nprint(execution.execution_id)',
       },
-      typescript: {
-        method: 'client.machines.executions.retrieve',
+      go: {
+        method: 'client.Machines.Executions.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.retrieve({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(execution.execution_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.Get(context.TODO(), dedalus.MachineExecutionGetParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
+      },
+      cli: {
+        method: 'executions retrieve',
+        example:
+          "dedalus machines:executions retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -957,29 +957,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.executions.delete(machine_id: string, execution_id: string): { command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: artifact_ref[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n**delete** `/v1/machines/{machine_id}/executions/{execution_id}`\n\nDelete execution\n\n### Parameters\n\n- `machine_id: string`\n\n- `execution_id: string`\n\n### Returns\n\n- `{ command: string[]; created_at: string; execution_id: string; machine_id: string; status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; artifacts?: { artifact_id: string; name: string; }[]; completed_at?: string; cwd?: string; env_keys?: string[]; error_code?: string; error_message?: string; exit_code?: number; expires_at?: string; retry_after_ms?: number; signal?: number; started_at?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n  - `command: string[]`\n  - `created_at: string`\n  - `execution_id: string`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'`\n  - `artifacts?: { artifact_id: string; name: string; }[]`\n  - `completed_at?: string`\n  - `cwd?: string`\n  - `env_keys?: string[]`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `exit_code?: number`\n  - `expires_at?: string`\n  - `retry_after_ms?: number`\n  - `signal?: number`\n  - `started_at?: string`\n  - `stderr_bytes?: number`\n  - `stderr_truncated?: boolean`\n  - `stdout_bytes?: number`\n  - `stdout_truncated?: boolean`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst execution = await client.machines.executions.delete({ machine_id: 'machine_id', execution_id: 'execution_id' });\n\nconsole.log(execution);\n```",
     perLanguage: {
-      cli: {
-        method: 'executions delete',
+      typescript: {
+        method: 'client.machines.executions.delete',
         example:
-          "dedalus machines:executions delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
-      },
-      go: {
-        method: 'client.Machines.Executions.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.Delete(context.TODO(), dedalus.MachineExecutionDeleteParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.delete({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(execution.execution_id);",
       },
       python: {
         method: 'machines.executions.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nexecution = client.machines.executions.delete(\n    machine_id="machine_id",\n    execution_id="execution_id",\n)\nprint(execution.execution_id)',
       },
-      typescript: {
-        method: 'client.machines.executions.delete',
+      go: {
+        method: 'client.Machines.Executions.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst execution = await client.machines.executions.delete({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(execution.execution_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecution, err := client.Machines.Executions.Delete(context.TODO(), dedalus.MachineExecutionDeleteParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", execution.ExecutionID)\n}\n',
+      },
+      cli: {
+        method: 'executions delete',
+        example:
+          "dedalus machines:executions delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -997,29 +997,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## output\n\n`client.machines.executions.output(machine_id: string, execution_id: string): { execution_id: string; stderr?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout?: string; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n**get** `/v1/machines/{machine_id}/executions/{execution_id}/output`\n\nGet execution output\n\n### Parameters\n\n- `machine_id: string`\n\n- `execution_id: string`\n\n### Returns\n\n- `{ execution_id: string; stderr?: string; stderr_bytes?: number; stderr_truncated?: boolean; stdout?: string; stdout_bytes?: number; stdout_truncated?: boolean; }`\n\n  - `execution_id: string`\n  - `stderr?: string`\n  - `stderr_bytes?: number`\n  - `stderr_truncated?: boolean`\n  - `stdout?: string`\n  - `stdout_bytes?: number`\n  - `stdout_truncated?: boolean`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst executionOutput = await client.machines.executions.output({ machine_id: 'machine_id', execution_id: 'execution_id' });\n\nconsole.log(executionOutput);\n```",
     perLanguage: {
-      cli: {
-        method: 'executions output',
+      typescript: {
+        method: 'client.machines.executions.output',
         example:
-          "dedalus machines:executions output \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
-      },
-      go: {
-        method: 'client.Machines.Executions.Output',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecutionOutput, err := client.Machines.Executions.Output(context.TODO(), dedalus.MachineExecutionOutputParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", executionOutput.ExecutionID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID/output \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst executionOutput = await client.machines.executions.output({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(executionOutput.execution_id);",
       },
       python: {
         method: 'machines.executions.output',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nexecution_output = client.machines.executions.output(\n    machine_id="machine_id",\n    execution_id="execution_id",\n)\nprint(execution_output.execution_id)',
       },
-      typescript: {
-        method: 'client.machines.executions.output',
+      go: {
+        method: 'client.Machines.Executions.Output',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst executionOutput = await client.machines.executions.output({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n});\n\nconsole.log(executionOutput.execution_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\texecutionOutput, err := client.Machines.Executions.Output(context.TODO(), dedalus.MachineExecutionOutputParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", executionOutput.ExecutionID)\n}\n',
+      },
+      cli: {
+        method: 'executions output',
+        example:
+          "dedalus machines:executions output \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID/output \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -1037,29 +1037,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## events\n\n`client.machines.executions.events(machine_id: string, execution_id: string, cursor?: string, limit?: number): { at: string; sequence: number; type: 'lifecycle' | 'stdout' | 'stderr'; chunk?: string; error_code?: string; error_message?: string; exit_code?: number; signal?: number; status?: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; }`\n\n**get** `/v1/machines/{machine_id}/executions/{execution_id}/events`\n\nList execution events\n\n### Parameters\n\n- `machine_id: string`\n\n- `execution_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ at: string; sequence: number; type: 'lifecycle' | 'stdout' | 'stderr'; chunk?: string; error_code?: string; error_message?: string; exit_code?: number; signal?: number; status?: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'; }`\n\n  - `at: string`\n  - `sequence: number`\n  - `type: 'lifecycle' | 'stdout' | 'stderr'`\n  - `chunk?: string`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `exit_code?: number`\n  - `signal?: number`\n  - `status?: 'wake_in_progress' | 'queued' | 'running' | 'succeeded' | 'failed' | 'cancelled' | 'expired'`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const executionEvent of client.machines.executions.events({ machine_id: 'machine_id', execution_id: 'execution_id' })) {\n  console.log(executionEvent);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'executions events',
+      typescript: {
+        method: 'client.machines.executions.events',
         example:
-          "dedalus machines:executions events \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
-      },
-      go: {
-        method: 'client.Machines.Executions.Events',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Executions.Events(context.TODO(), dedalus.MachineExecutionEventsParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID/events \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const executionEvent of client.machines.executions.events({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n})) {\n  console.log(executionEvent.at);\n}",
       },
       python: {
         method: 'machines.executions.events',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.executions.events(\n    machine_id="machine_id",\n    execution_id="execution_id",\n)\npage = page.items[0]\nprint(page.at)',
       },
-      typescript: {
-        method: 'client.machines.executions.events',
+      go: {
+        method: 'client.Machines.Executions.Events',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const executionEvent of client.machines.executions.events({\n  machine_id: 'machine_id',\n  execution_id: 'execution_id',\n})) {\n  console.log(executionEvent.at);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Executions.Events(context.TODO(), dedalus.MachineExecutionEventsParams{\n\t\tMachineID:   "machine_id",\n\t\tExecutionID: "execution_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'executions events',
+        example:
+          "dedalus machines:executions events \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --execution-id execution_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID/events \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -1077,28 +1077,28 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.machines.terminals.list(machine_id: string, cursor?: string, limit?: number): { created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n**get** `/v1/machines/{machine_id}/terminals`\n\nList terminals\n\n### Parameters\n\n- `machine_id: string`\n\n- `cursor?: string`\n\n- `limit?: number`\n\n### Returns\n\n- `{ created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n  - `created_at: string`\n  - `height: number`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `terminal_id: string`\n  - `width: number`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'websocket'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `stream_url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\n// Automatically fetches more pages as needed.\nfor await (const terminal of client.machines.terminals.list({ machine_id: 'machine_id' })) {\n  console.log(terminal);\n}\n```",
     perLanguage: {
-      cli: {
-        method: 'terminals list',
-        example: "dedalus machines:terminals list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
-      },
-      go: {
-        method: 'client.Machines.Terminals.List',
+      typescript: {
+        method: 'client.machines.terminals.list',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Terminals.List(context.TODO(), dedalus.MachineTerminalListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const terminal of client.machines.terminals.list({ machine_id: 'machine_id' })) {\n  console.log(terminal.machine_id);\n}",
       },
       python: {
         method: 'machines.terminals.list',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\npage = client.machines.terminals.list(\n    machine_id="machine_id",\n)\npage = page.items[0]\nprint(page.machine_id)',
       },
-      typescript: {
-        method: 'client.machines.terminals.list',
+      go: {
+        method: 'client.Machines.Terminals.List',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const terminal of client.machines.terminals.list({ machine_id: 'machine_id' })) {\n  console.log(terminal.machine_id);\n}",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tpage, err := client.Machines.Terminals.List(context.TODO(), dedalus.MachineTerminalListParams{\n\t\tMachineID: "machine_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", page)\n}\n',
+      },
+      cli: {
+        method: 'terminals list',
+        example: "dedalus machines:terminals list \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -1123,29 +1123,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.machines.terminals.create(machine_id: string, height: number, width: number, cwd?: string, env?: object, shell?: string): { created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n**post** `/v1/machines/{machine_id}/terminals`\n\nCreate terminal\n\n### Parameters\n\n- `machine_id: string`\n\n- `height: number`\n\n- `width: number`\n\n- `cwd?: string`\n\n- `env?: object`\n\n- `shell?: string`\n\n### Returns\n\n- `{ created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n  - `created_at: string`\n  - `height: number`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `terminal_id: string`\n  - `width: number`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'websocket'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `stream_url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst terminal = await client.machines.terminals.create({\n  machine_id: 'machine_id',\n  height: 0,\n  width: 0,\n});\n\nconsole.log(terminal);\n```",
     perLanguage: {
-      cli: {
-        method: 'terminals create',
+      typescript: {
+        method: 'client.machines.terminals.create',
         example:
-          "dedalus machines:terminals create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --height 0 \\\n  --width 0",
-      },
-      go: {
-        method: 'client.Machines.Terminals.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.New(context.TODO(), dedalus.MachineTerminalNewParams{\n\t\tMachineID: "machine_id",\n\t\tTerminalCreateParams: dedalus.TerminalCreateParams{\n\t\t\tHeight: 0,\n\t\t\tWidth:  0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "height": 0,\n          "width": 0\n        }\'',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.create({\n  machine_id: 'machine_id',\n  height: 0,\n  width: 0,\n});\n\nconsole.log(terminal.terminal_id);",
       },
       python: {
         method: 'machines.terminals.create',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nterminal = client.machines.terminals.create(\n    machine_id="machine_id",\n    height=0,\n    width=0,\n)\nprint(terminal.terminal_id)',
       },
-      typescript: {
-        method: 'client.machines.terminals.create',
+      go: {
+        method: 'client.Machines.Terminals.New',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.create({\n  machine_id: 'machine_id',\n  height: 0,\n  width: 0,\n});\n\nconsole.log(terminal.terminal_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.New(context.TODO(), dedalus.MachineTerminalNewParams{\n\t\tMachineID: "machine_id",\n\t\tTerminalCreateParams: dedalus.TerminalCreateParams{\n\t\t\tHeight: 0,\n\t\t\tWidth:  0,\n\t\t},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
+      },
+      cli: {
+        method: 'terminals create',
+        example:
+          "dedalus machines:terminals create \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --height 0 \\\n  --width 0",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "height": 0,\n          "width": 0\n        }\'',
       },
     },
   },
@@ -1163,29 +1163,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.machines.terminals.retrieve(machine_id: string, terminal_id: string): { created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n**get** `/v1/machines/{machine_id}/terminals/{terminal_id}`\n\nGet terminal\n\n### Parameters\n\n- `machine_id: string`\n\n- `terminal_id: string`\n\n### Returns\n\n- `{ created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n  - `created_at: string`\n  - `height: number`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `terminal_id: string`\n  - `width: number`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'websocket'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `stream_url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst terminal = await client.machines.terminals.retrieve({ machine_id: 'machine_id', terminal_id: 'terminal_id' });\n\nconsole.log(terminal);\n```",
     perLanguage: {
-      cli: {
-        method: 'terminals retrieve',
+      typescript: {
+        method: 'client.machines.terminals.retrieve',
         example:
-          "dedalus machines:terminals retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
-      },
-      go: {
-        method: 'client.Machines.Terminals.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.Get(context.TODO(), dedalus.MachineTerminalGetParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals/$TERMINAL_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.retrieve({\n  machine_id: 'machine_id',\n  terminal_id: 'terminal_id',\n});\n\nconsole.log(terminal.terminal_id);",
       },
       python: {
         method: 'machines.terminals.retrieve',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nterminal = client.machines.terminals.retrieve(\n    machine_id="machine_id",\n    terminal_id="terminal_id",\n)\nprint(terminal.terminal_id)',
       },
-      typescript: {
-        method: 'client.machines.terminals.retrieve',
+      go: {
+        method: 'client.Machines.Terminals.Get',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.retrieve({\n  machine_id: 'machine_id',\n  terminal_id: 'terminal_id',\n});\n\nconsole.log(terminal.terminal_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.Get(context.TODO(), dedalus.MachineTerminalGetParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
+      },
+      cli: {
+        method: 'terminals retrieve',
+        example:
+          "dedalus machines:terminals retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals/$TERMINAL_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -1203,29 +1203,29 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.machines.terminals.delete(machine_id: string, terminal_id: string): { created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n**delete** `/v1/machines/{machine_id}/terminals/{terminal_id}`\n\nDelete terminal\n\n### Parameters\n\n- `machine_id: string`\n\n- `terminal_id: string`\n\n### Returns\n\n- `{ created_at: string; height: number; machine_id: string; status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'; terminal_id: string; width: number; error_code?: string; error_message?: string; expires_at?: string; protocol?: 'websocket'; ready_at?: string; retry_after_ms?: number; stream_url?: string; }`\n\n  - `created_at: string`\n  - `height: number`\n  - `machine_id: string`\n  - `status: 'wake_in_progress' | 'ready' | 'closed' | 'expired' | 'failed'`\n  - `terminal_id: string`\n  - `width: number`\n  - `error_code?: string`\n  - `error_message?: string`\n  - `expires_at?: string`\n  - `protocol?: 'websocket'`\n  - `ready_at?: string`\n  - `retry_after_ms?: number`\n  - `stream_url?: string`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst terminal = await client.machines.terminals.delete({ machine_id: 'machine_id', terminal_id: 'terminal_id' });\n\nconsole.log(terminal);\n```",
     perLanguage: {
-      cli: {
-        method: 'terminals delete',
+      typescript: {
+        method: 'client.machines.terminals.delete',
         example:
-          "dedalus machines:terminals delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
-      },
-      go: {
-        method: 'client.Machines.Terminals.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.Delete(context.TODO(), dedalus.MachineTerminalDeleteParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals/$TERMINAL_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.delete({\n  machine_id: 'machine_id',\n  terminal_id: 'terminal_id',\n});\n\nconsole.log(terminal.terminal_id);",
       },
       python: {
         method: 'machines.terminals.delete',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nterminal = client.machines.terminals.delete(\n    machine_id="machine_id",\n    terminal_id="terminal_id",\n)\nprint(terminal.terminal_id)',
       },
-      typescript: {
-        method: 'client.machines.terminals.delete',
+      go: {
+        method: 'client.Machines.Terminals.Delete',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst terminal = await client.machines.terminals.delete({\n  machine_id: 'machine_id',\n  terminal_id: 'terminal_id',\n});\n\nconsole.log(terminal.terminal_id);",
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tterminal, err := client.Machines.Terminals.Delete(context.TODO(), dedalus.MachineTerminalDeleteParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", terminal.TerminalID)\n}\n',
+      },
+      cli: {
+        method: 'terminals delete',
+        example:
+          "dedalus machines:terminals delete \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
+      },
+      http: {
+        example:
+          'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals/$TERMINAL_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
@@ -1238,24 +1238,24 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     stainlessPath: '(resource) machines.terminals > (method) connect',
     qualified: 'client.machines.terminals.connect',
     perLanguage: {
-      cli: {
+      typescript: {
+        method: 'client.machines.terminals.connect',
         example:
-          "dedalus machines:terminals connect \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
-      },
-      go: {
-        method: 'client.Machines.Terminals.Connect',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Machines.Terminals.Connect(context.TODO(), dedalus.MachineTerminalConnectParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.machines.terminals.connect({ machine_id: 'machine_id', terminal_id: 'terminal_id' });",
       },
       python: {
         method: 'machines.terminals.connect',
         example:
           'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nclient.machines.terminals.connect(\n    machine_id="machine_id",\n    terminal_id="terminal_id",\n)',
       },
-      typescript: {
-        method: 'client.machines.terminals.connect',
+      go: {
+        method: 'client.Machines.Terminals.Connect',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.machines.terminals.connect({ machine_id: 'machine_id', terminal_id: 'terminal_id' });",
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Machines.Terminals.Connect(context.TODO(), dedalus.MachineTerminalConnectParams{\n\t\tMachineID:  "machine_id",\n\t\tTerminalID: "terminal_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
+      cli: {
+        example:
+          "dedalus machines:terminals connect \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
       },
     },
   },
