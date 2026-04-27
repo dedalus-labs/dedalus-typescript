@@ -2,15 +2,77 @@
 
 import { APIResource } from '../../core/resource';
 import * as ArtifactsAPI from './artifacts';
-import { Artifact, ArtifactDeleteParams, ArtifactList, ArtifactListParams, ArtifactRetrieveParams, Artifacts, ArtifactsCursorPage } from './artifacts';
+import {
+  Artifact,
+  ArtifactDeleteParams,
+  ArtifactList,
+  ArtifactListParams,
+  ArtifactRetrieveParams,
+  Artifacts,
+  ArtifactsCursorPage,
+} from './artifacts';
 import * as ExecutionsAPI from './executions';
-import { ArtifactRef, Execution, ExecutionCreateParams, ExecutionDeleteParams, ExecutionEvent, ExecutionEvents, ExecutionEventsCursorPage, ExecutionEventsParams, ExecutionList, ExecutionListParams, ExecutionOutput, ExecutionOutputParams, ExecutionRetrieveParams, Executions, ExecutionsCursorPage } from './executions';
+import {
+  ArtifactRef,
+  Execution,
+  ExecutionCreateParams,
+  ExecutionDeleteParams,
+  ExecutionEvent,
+  ExecutionEvents,
+  ExecutionEventsCursorPage,
+  ExecutionEventsParams,
+  ExecutionList,
+  ExecutionListParams,
+  ExecutionOutput,
+  ExecutionOutputParams,
+  ExecutionRetrieveParams,
+  Executions,
+  ExecutionsCursorPage,
+} from './executions';
 import * as PreviewsAPI from './previews';
-import { Preview, PreviewCreateParams, PreviewDeleteParams, PreviewList, PreviewListParams, PreviewRetrieveParams, Previews, PreviewsCursorPage } from './previews';
+import {
+  Preview,
+  PreviewCreateParams,
+  PreviewDeleteParams,
+  PreviewList,
+  PreviewListParams,
+  PreviewRetrieveParams,
+  Previews,
+  PreviewsCursorPage,
+} from './previews';
 import * as SSHAPI from './ssh';
-import { SSH, SSHConnection, SSHCreateParams, SSHDeleteParams, SSHHostTrust, SSHListParams, SSHRetrieveParams, SSHSession, SSHSessionCreateParams, SSHSessionList, SSHSessionsCursorPage } from './ssh';
+import {
+  SSH,
+  SSHConnection,
+  SSHCreateParams,
+  SSHDeleteParams,
+  SSHHostTrust,
+  SSHListParams,
+  SSHRetrieveParams,
+  SSHSession,
+  SSHSessionCreateParams,
+  SSHSessionList,
+  SSHSessionsCursorPage,
+} from './ssh';
 import * as TerminalsAPI from './terminals/terminals';
-import { Terminal, TerminalClientEvent, TerminalClosedEvent, TerminalConnectParams, TerminalCreateParams, TerminalDeleteParams, TerminalErrorEvent, TerminalInputEvent, TerminalList, TerminalListParams, TerminalOutputEvent, TerminalResizeEvent, TerminalRetrieveParams, TerminalServerEvent, Terminals, TerminalsCursorPage } from './terminals/terminals';
+import {
+  Terminal,
+  TerminalClientEvent,
+  TerminalClosedEvent,
+  TerminalConnectParams,
+  TerminalCreateParams,
+  TerminalDeleteParams,
+  TerminalErrorEvent,
+  TerminalInputEvent,
+  TerminalList,
+  TerminalListParams,
+  TerminalOutputEvent,
+  TerminalResizeEvent,
+  TerminalRetrieveParams,
+  TerminalServerEvent,
+  Terminals,
+  TerminalsCursorPage,
+} from './terminals/terminals';
 import { APIPromise } from '../../core/api-promise';
 import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
 import { Stream } from '../../core/streaming';
@@ -36,7 +98,7 @@ export class Machines extends APIResource {
    * Get machine
    */
   retrieve(params: MachineRetrieveParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id } = params
+    const { machine_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}`, options);
   }
 
@@ -44,14 +106,21 @@ export class Machines extends APIResource {
    * Update machine
    */
   update(params: MachineUpdateParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch, ...body } = params
-    return this._client.patch(path`/v1/machines/${machine_id}`, { body, ...options, headers: buildHeaders([{'If-Match': ifMatch}, options?.headers]) });
+    const { machine_id, 'If-Match': ifMatch, ...body } = params;
+    return this._client.patch(path`/v1/machines/${machine_id}`, {
+      body,
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
   }
 
   /**
    * List machines
    */
-  list(query: MachineListParams | null | undefined = {}, options?: RequestOptions): PagePromise<MachineListItemsCursorPage, MachineListItem> {
+  list(
+    query: MachineListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<MachineListItemsCursorPage, MachineListItem> {
     return this._client.getAPIList('/v1/machines', CursorPage<MachineListItem>, { query, ...options });
   }
 
@@ -59,24 +128,33 @@ export class Machines extends APIResource {
    * Destroy machine
    */
   delete(params: MachineDeleteParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params
-    return this._client.delete(path`/v1/machines/${machine_id}`, { ...options, headers: buildHeaders([{'If-Match': ifMatch}, options?.headers]) });
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}`, {
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
   }
 
   /**
    * Sleep a running machine
    */
   sleep(params: MachineSleepParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params
-    return this._client.post(path`/v1/machines/${machine_id}/sleep`, { ...options, headers: buildHeaders([{'If-Match': ifMatch}, options?.headers]) });
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/sleep`, {
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
   }
 
   /**
    * Wake a sleeping machine
    */
   wake(params: MachineWakeParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params
-    return this._client.post(path`/v1/machines/${machine_id}/wake`, { ...options, headers: buildHeaders([{'If-Match': ifMatch}, options?.headers]) });
+    const { machine_id, 'If-Match': ifMatch } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/wake`, {
+      ...options,
+      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
+    });
   }
 
   /**
@@ -85,12 +163,22 @@ export class Machines extends APIResource {
    * reaches its current desired state.
    */
   watch(params: MachineWatchParams, options?: RequestOptions): APIPromise<Stream<Machine>> {
-    const { machine_id, 'Last-Event-ID': lastEventID } = params
-    return this._client.get(path`/v1/machines/${machine_id}/status/stream`, { ...options, headers: buildHeaders([{Accept: 'text/event-stream', ...(lastEventID != null ? { 'Last-Event-ID': lastEventID } : undefined)}, options?.headers]), stream: true }) as APIPromise<Stream<Machine>>;
+    const { machine_id, 'Last-Event-ID': lastEventID } = params;
+    return this._client.get(path`/v1/machines/${machine_id}/status/stream`, {
+      ...options,
+      headers: buildHeaders([
+        {
+          Accept: 'text/event-stream',
+          ...(lastEventID != null ? { 'Last-Event-ID': lastEventID } : undefined),
+        },
+        options?.headers,
+      ]),
+      stream: true,
+    }) as APIPromise<Stream<Machine>>;
   }
 }
 
-export type MachineListItemsCursorPage = CursorPage<MachineListItem>
+export type MachineListItemsCursorPage = CursorPage<MachineListItem>;
 
 export interface CreateParams {
   /**
@@ -114,7 +202,16 @@ export interface LifecycleStatus {
 
   last_transition_at: string;
 
-  phase: 'accepted' | 'placement_pending' | 'starting' | 'running' | 'stopping' | 'sleeping' | 'destroying' | 'destroyed' | 'failed';
+  phase:
+    | 'accepted'
+    | 'placement_pending'
+    | 'starting'
+    | 'running'
+    | 'stopping'
+    | 'sleeping'
+    | 'destroying'
+    | 'destroyed'
+    | 'failed';
 
   reason: string;
 
@@ -238,8 +335,7 @@ export interface MachineUpdateParams {
   vcpu?: number;
 }
 
-export interface MachineListParams extends CursorPageParams {
-}
+export interface MachineListParams extends CursorPageParams {}
 
 export interface MachineDeleteParams {
   /**
@@ -312,7 +408,7 @@ export declare namespace Machines {
     type MachineDeleteParams as MachineDeleteParams,
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
-    type MachineWatchParams as MachineWatchParams
+    type MachineWatchParams as MachineWatchParams,
   };
 
   export {
@@ -322,7 +418,7 @@ export declare namespace Machines {
     type ArtifactsCursorPage as ArtifactsCursorPage,
     type ArtifactRetrieveParams as ArtifactRetrieveParams,
     type ArtifactListParams as ArtifactListParams,
-    type ArtifactDeleteParams as ArtifactDeleteParams
+    type ArtifactDeleteParams as ArtifactDeleteParams,
   };
 
   export {
@@ -333,7 +429,7 @@ export declare namespace Machines {
     type PreviewsCursorPage as PreviewsCursorPage,
     type PreviewRetrieveParams as PreviewRetrieveParams,
     type PreviewListParams as PreviewListParams,
-    type PreviewDeleteParams as PreviewDeleteParams
+    type PreviewDeleteParams as PreviewDeleteParams,
   };
 
   export {
@@ -347,7 +443,7 @@ export declare namespace Machines {
     type SSHCreateParams as SSHCreateParams,
     type SSHRetrieveParams as SSHRetrieveParams,
     type SSHListParams as SSHListParams,
-    type SSHDeleteParams as SSHDeleteParams
+    type SSHDeleteParams as SSHDeleteParams,
   };
 
   export {
@@ -365,7 +461,7 @@ export declare namespace Machines {
     type ExecutionListParams as ExecutionListParams,
     type ExecutionDeleteParams as ExecutionDeleteParams,
     type ExecutionEventsParams as ExecutionEventsParams,
-    type ExecutionOutputParams as ExecutionOutputParams
+    type ExecutionOutputParams as ExecutionOutputParams,
   };
 
   export {
@@ -384,6 +480,6 @@ export declare namespace Machines {
     type TerminalRetrieveParams as TerminalRetrieveParams,
     type TerminalListParams as TerminalListParams,
     type TerminalDeleteParams as TerminalDeleteParams,
-    type TerminalConnectParams as TerminalConnectParams
+    type TerminalConnectParams as TerminalConnectParams,
   };
 }

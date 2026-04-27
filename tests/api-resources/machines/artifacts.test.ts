@@ -2,11 +2,17 @@
 
 import Dedalus from 'dedalus';
 
-const client = new Dedalus({ apiKey: 'My API Key', baseURL: process.env["TEST_API_BASE_URL"] ?? 'http://127.0.0.1:4010' });
+const client = new Dedalus({
+  apiKey: 'My API Key',
+  baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+});
 
 describe('resource artifacts', () => {
   test('retrieve: only required params', async () => {
-    const responsePromise = client.machines.artifacts.retrieve({ machine_id: 'machine_id', artifact_id: 'artifact_id' });
+    const responsePromise = client.machines.artifacts.retrieve({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -17,7 +23,10 @@ describe('resource artifacts', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.machines.artifacts.retrieve({ machine_id: 'machine_id', artifact_id: 'artifact_id' });
+    const response = await client.machines.artifacts.retrieve({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
+    });
   });
 
   test('list: only required params', async () => {
@@ -33,14 +42,17 @@ describe('resource artifacts', () => {
 
   test('list: required and optional params', async () => {
     const response = await client.machines.artifacts.list({
-    machine_id: 'machine_id',
-    cursor: 'cursor',
-    limit: 0,
-  });
+      machine_id: 'machine_id',
+      cursor: 'cursor',
+      limit: 0,
+    });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.machines.artifacts.delete({ machine_id: 'machine_id', artifact_id: 'artifact_id' });
+    const responsePromise = client.machines.artifacts.delete({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -51,6 +63,9 @@ describe('resource artifacts', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.machines.artifacts.delete({ machine_id: 'machine_id', artifact_id: 'artifact_id' });
+    const response = await client.machines.artifacts.delete({
+      machine_id: 'machine_id',
+      artifact_id: 'artifact_id',
+    });
   });
 });

@@ -11,7 +11,7 @@ export class SSH extends APIResource {
    * Create SSH session
    */
   create(params: SSHCreateParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, ...body } = params
+    const { machine_id, ...body } = params;
     return this._client.post(path`/v1/machines/${machine_id}/ssh`, { body, ...options });
   }
 
@@ -19,7 +19,7 @@ export class SSH extends APIResource {
    * Get SSH session
    */
   retrieve(params: SSHRetrieveParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, session_id } = params
+    const { machine_id, session_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}/ssh/${session_id}`, options);
   }
 
@@ -27,20 +27,23 @@ export class SSH extends APIResource {
    * List SSH sessions
    */
   list(params: SSHListParams, options?: RequestOptions): PagePromise<SSHSessionsCursorPage, SSHSession> {
-    const { machine_id, ...query } = params
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/ssh`, CursorPage<SSHSession>, { query, ...options });
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/ssh`, CursorPage<SSHSession>, {
+      query,
+      ...options,
+    });
   }
 
   /**
    * Delete SSH session
    */
   delete(params: SSHDeleteParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, session_id } = params
+    const { machine_id, session_id } = params;
     return this._client.delete(path`/v1/machines/${machine_id}/ssh/${session_id}`, options);
   }
 }
 
-export type SSHSessionsCursorPage = CursorPage<SSHSession>
+export type SSHSessionsCursorPage = CursorPage<SSHSession>;
 
 export interface SSHConnection {
   endpoint: string;
@@ -136,6 +139,6 @@ export declare namespace SSH {
     type SSHCreateParams as SSHCreateParams,
     type SSHRetrieveParams as SSHRetrieveParams,
     type SSHListParams as SSHListParams,
-    type SSHDeleteParams as SSHDeleteParams
+    type SSHDeleteParams as SSHDeleteParams,
   };
 }

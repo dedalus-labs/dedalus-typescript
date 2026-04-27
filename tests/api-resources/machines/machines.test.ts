@@ -2,15 +2,18 @@
 
 import Dedalus from 'dedalus';
 
-const client = new Dedalus({ apiKey: 'My API Key', baseURL: process.env["TEST_API_BASE_URL"] ?? 'http://127.0.0.1:4010' });
+const client = new Dedalus({
+  apiKey: 'My API Key',
+  baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+});
 
 describe('resource machines', () => {
   test('create: only required params', async () => {
     const responsePromise = client.machines.create({
-    memory_mib: 0,
-    storage_gib: 0,
-    vcpu: 0,
-  });
+      memory_mib: 0,
+      storage_gib: 0,
+      vcpu: 0,
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -22,10 +25,10 @@ describe('resource machines', () => {
 
   test('create: required and optional params', async () => {
     const response = await client.machines.create({
-    memory_mib: 0,
-    storage_gib: 0,
-    vcpu: 0,
-  });
+      memory_mib: 0,
+      storage_gib: 0,
+      vcpu: 0,
+    });
   });
 
   test('retrieve: only required params', async () => {
@@ -56,12 +59,12 @@ describe('resource machines', () => {
 
   test('update: required and optional params', async () => {
     const response = await client.machines.update({
-    machine_id: 'machine_id',
-    'If-Match': 'If-Match',
-    memory_mib: 0,
-    storage_gib: 0,
-    vcpu: 0,
-  });
+      machine_id: 'machine_id',
+      'If-Match': 'If-Match',
+      memory_mib: 0,
+      storage_gib: 0,
+      vcpu: 0,
+    });
   });
 
   test('list', async () => {
@@ -77,9 +80,9 @@ describe('resource machines', () => {
 
   test('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(client.machines.list({ cursor: 'cursor', limit: 0 }, { path: '/_stainless_unknown_path' }))
-      .rejects
-      .toThrow(Dedalus.NotFoundError);
+    await expect(
+      client.machines.list({ cursor: 'cursor', limit: 0 }, { path: '/_stainless_unknown_path' }),
+    ).rejects.toThrow(Dedalus.NotFoundError);
   });
 
   test('delete: only required params', async () => {
@@ -139,6 +142,9 @@ describe('resource machines', () => {
   });
 
   test('watch: required and optional params', async () => {
-    const response = await client.machines.watch({ machine_id: 'machine_id', 'Last-Event-ID': 'Last-Event-ID' });
+    const response = await client.machines.watch({
+      machine_id: 'machine_id',
+      'Last-Event-ID': 'Last-Event-ID',
+    });
   });
 });

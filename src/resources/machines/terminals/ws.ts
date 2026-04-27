@@ -5,17 +5,18 @@ import { NodeWebSocket } from '../../../internal/ws-adapter-node';
 import { TerminalsWSBase, type TerminalsWSBaseOptions, type TerminalsWSParameters } from './ws-base';
 import { Dedalus } from '../../../client';
 
-export type { TerminalsWSParameters, TerminalsWSReconnectOptions } from './ws-base'
+export type { TerminalsWSParameters, TerminalsWSReconnectOptions } from './ws-base';
 
-export interface TerminalsWSClientOptions extends WS.ClientOptions, TerminalsWSBaseOptions {
-}
+export interface TerminalsWSClientOptions extends WS.ClientOptions, TerminalsWSBaseOptions {}
 
 export class TerminalsWS extends TerminalsWSBase<NodeWebSocket> {
   private _wsOptions: WS.ClientOptions | null | undefined;
 
-  constructor(client: Dedalus,
-  parameters: TerminalsWSParameters,
-  options?: TerminalsWSClientOptions | null | undefined) {
+  constructor(
+    client: Dedalus,
+    parameters: TerminalsWSParameters,
+    options?: TerminalsWSClientOptions | null | undefined,
+  ) {
     if (!WS?.WebSocket) {
       throw new Error(
         'TerminalsWS from "dedalus/resources/machines/terminals/ws" requires the "ws" package but it could not be loaded.',
@@ -33,8 +34,8 @@ export class TerminalsWS extends TerminalsWSBase<NodeWebSocket> {
       ...this._wsOptions,
       headers: {
         ...authHeaders,
-        ...this._wsOptions?.headers
-      }
+        ...this._wsOptions?.headers,
+      },
     });
     return new NodeWebSocket(ws);
   }

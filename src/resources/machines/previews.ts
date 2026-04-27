@@ -11,7 +11,7 @@ export class Previews extends APIResource {
    * Create preview
    */
   create(params: PreviewCreateParams, options?: RequestOptions): APIPromise<Preview> {
-    const { machine_id, ...body } = params
+    const { machine_id, ...body } = params;
     return this._client.post(path`/v1/machines/${machine_id}/previews`, { body, ...options });
   }
 
@@ -19,7 +19,7 @@ export class Previews extends APIResource {
    * Get preview
    */
   retrieve(params: PreviewRetrieveParams, options?: RequestOptions): APIPromise<Preview> {
-    const { machine_id, preview_id } = params
+    const { machine_id, preview_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}/previews/${preview_id}`, options);
   }
 
@@ -27,20 +27,23 @@ export class Previews extends APIResource {
    * List previews
    */
   list(params: PreviewListParams, options?: RequestOptions): PagePromise<PreviewsCursorPage, Preview> {
-    const { machine_id, ...query } = params
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/previews`, CursorPage<Preview>, { query, ...options });
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/previews`, CursorPage<Preview>, {
+      query,
+      ...options,
+    });
   }
 
   /**
    * Delete preview
    */
   delete(params: PreviewDeleteParams, options?: RequestOptions): APIPromise<Preview> {
-    const { machine_id, preview_id } = params
+    const { machine_id, preview_id } = params;
     return this._client.delete(path`/v1/machines/${machine_id}/previews/${preview_id}`, options);
   }
 }
 
-export type PreviewsCursorPage = CursorPage<Preview>
+export type PreviewsCursorPage = CursorPage<Preview>;
 
 export interface Preview {
   created_at: string;
@@ -133,6 +136,6 @@ export declare namespace Previews {
     type PreviewsCursorPage as PreviewsCursorPage,
     type PreviewRetrieveParams as PreviewRetrieveParams,
     type PreviewListParams as PreviewListParams,
-    type PreviewDeleteParams as PreviewDeleteParams
+    type PreviewDeleteParams as PreviewDeleteParams,
   };
 }
