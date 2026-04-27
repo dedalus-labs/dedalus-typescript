@@ -11,7 +11,7 @@ export class Executions extends APIResource {
    * Create execution
    */
   create(params: ExecutionCreateParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, ...body } = params
+    const { machine_id, ...body } = params;
     return this._client.post(path`/v1/machines/${machine_id}/executions`, { body, ...options });
   }
 
@@ -19,7 +19,7 @@ export class Executions extends APIResource {
    * Get execution
    */
   retrieve(params: ExecutionRetrieveParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, execution_id } = params
+    const { machine_id, execution_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}/executions/${execution_id}`, options);
   }
 
@@ -27,38 +27,48 @@ export class Executions extends APIResource {
    * List executions
    */
   list(params: ExecutionListParams, options?: RequestOptions): PagePromise<ExecutionsCursorPage, Execution> {
-    const { machine_id, ...query } = params
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/executions`, CursorPage<Execution>, { query, ...options });
+    const { machine_id, ...query } = params;
+    return this._client.getAPIList(path`/v1/machines/${machine_id}/executions`, CursorPage<Execution>, {
+      query,
+      ...options,
+    });
   }
 
   /**
    * Delete execution
    */
   delete(params: ExecutionDeleteParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, execution_id } = params
+    const { machine_id, execution_id } = params;
     return this._client.delete(path`/v1/machines/${machine_id}/executions/${execution_id}`, options);
   }
 
   /**
    * List execution events
    */
-  events(params: ExecutionEventsParams, options?: RequestOptions): PagePromise<ExecutionEventsCursorPage, ExecutionEvent> {
-    const { machine_id, execution_id, ...query } = params
-    return this._client.getAPIList(path`/v1/machines/${machine_id}/executions/${execution_id}/events`, CursorPage<ExecutionEvent>, { query, ...options });
+  events(
+    params: ExecutionEventsParams,
+    options?: RequestOptions,
+  ): PagePromise<ExecutionEventsCursorPage, ExecutionEvent> {
+    const { machine_id, execution_id, ...query } = params;
+    return this._client.getAPIList(
+      path`/v1/machines/${machine_id}/executions/${execution_id}/events`,
+      CursorPage<ExecutionEvent>,
+      { query, ...options },
+    );
   }
 
   /**
    * Get execution output
    */
   output(params: ExecutionOutputParams, options?: RequestOptions): APIPromise<ExecutionOutput> {
-    const { machine_id, execution_id } = params
+    const { machine_id, execution_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}/executions/${execution_id}/output`, options);
   }
 }
 
-export type ExecutionsCursorPage = CursorPage<Execution>
+export type ExecutionsCursorPage = CursorPage<Execution>;
 
-export type ExecutionEventsCursorPage = CursorPage<ExecutionEvent>
+export type ExecutionEventsCursorPage = CursorPage<ExecutionEvent>;
 
 export interface ArtifactRef {
   artifact_id: string;
@@ -252,6 +262,6 @@ export declare namespace Executions {
     type ExecutionListParams as ExecutionListParams,
     type ExecutionDeleteParams as ExecutionDeleteParams,
     type ExecutionEventsParams as ExecutionEventsParams,
-    type ExecutionOutputParams as ExecutionOutputParams
+    type ExecutionOutputParams as ExecutionOutputParams,
   };
 }

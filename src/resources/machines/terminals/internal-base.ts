@@ -42,7 +42,7 @@ type WebSocketEvents = Simplify<
     reconnecting: (event: ReconnectingEvent<TerminalsWSParameters>) => void;
     reconnected: () => void;
   } & {
-    [EventType in Exclude<NonNullable<TerminalsAPI.TerminalServerEvent['type']>, 'error'> ]: (
+    [EventType in Exclude<NonNullable<TerminalsAPI.TerminalServerEvent['type']>, 'error'>]: (
       event: Extract<TerminalsAPI.TerminalServerEvent, { type?: EventType }>,
     ) => unknown;
   }
@@ -66,7 +66,11 @@ export abstract class TerminalsEmitter extends EventEmitter<WebSocketEvents> {
 
   protected _onError(event: null, message: string, cause: any): void;
   protected _onError(event: TerminalsAPI.TerminalErrorEvent, message?: string | undefined): void;
-  protected _onError(event: TerminalsAPI.TerminalErrorEvent | null, message?: string | undefined, cause?: any): void {
+  protected _onError(
+    event: TerminalsAPI.TerminalErrorEvent | null,
+    message?: string | undefined,
+    cause?: any,
+  ): void {
     message = message ?? safeJSONStringify(event) ?? 'unknown error';
 
     if (!this._hasListener('error')) {
@@ -90,16 +94,9 @@ export abstract class TerminalsEmitter extends EventEmitter<WebSocketEvents> {
 }
 
 export function buildURL(client: Dedalus, parameters: Record<string, unknown>): URL {
-  const { machine_id, terminal_id, ...query } = parameters ;
+  const { machine_id, terminal_id, ...query } = parameters;
   const endpoint = path`/v1/machines/${machine_id}/terminals/${terminal_id}/stream`;
-  const url = new URL(
-    client.buildURL(
-      endpoint,
-      query,
-      undefined
-      ,
-    ),
-  );
+  const url = new URL(client.buildURL(endpoint, query, undefined));
   url.protocol = url.protocol === 'http:' || url.protocol === 'ws:' ? 'ws:' : 'wss:';
   return url;
 }

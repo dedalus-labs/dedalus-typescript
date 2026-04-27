@@ -1,8 +1,87 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { Artifacts, type Artifact, type ArtifactList, type ArtifactRetrieveParams, type ArtifactListParams, type ArtifactDeleteParams, type ArtifactsCursorPage } from './artifacts';;
-export { Executions, type ArtifactRef, type Execution, type ExecutionCreateParams, type ExecutionEvent, type ExecutionEvents, type ExecutionList, type ExecutionOutput, type ExecutionRetrieveParams, type ExecutionListParams, type ExecutionDeleteParams, type ExecutionEventsParams, type ExecutionOutputParams, type ExecutionsCursorPage, type ExecutionEventsCursorPage } from './executions';;
-export { Machines, type CreateParams, type LifecycleStatus, type Machine, type MachineList, type MachineListItem, type UpdateParams, type MachineCreateParams, type MachineRetrieveParams, type MachineUpdateParams, type MachineListParams, type MachineDeleteParams, type MachineSleepParams, type MachineWakeParams, type MachineWatchParams, type MachineListItemsCursorPage } from './machines';;
-export { Previews, type Preview, type PreviewCreateParams, type PreviewList, type PreviewRetrieveParams, type PreviewListParams, type PreviewDeleteParams, type PreviewsCursorPage } from './previews';;
-export { SSH, type SSHConnection, type SSHHostTrust, type SSHSession, type SSHSessionCreateParams, type SSHSessionList, type SSHCreateParams, type SSHRetrieveParams, type SSHListParams, type SSHDeleteParams, type SSHSessionsCursorPage } from './ssh';;
-export { Terminals, type Terminal, type TerminalClientEvent, type TerminalClosedEvent, type TerminalCreateParams, type TerminalErrorEvent, type TerminalInputEvent, type TerminalList, type TerminalOutputEvent, type TerminalResizeEvent, type TerminalServerEvent, type TerminalRetrieveParams, type TerminalListParams, type TerminalDeleteParams, type TerminalConnectParams, type TerminalsCursorPage } from './terminals';;
+export {
+  Artifacts,
+  type Artifact,
+  type ArtifactList,
+  type ArtifactRetrieveParams,
+  type ArtifactListParams,
+  type ArtifactDeleteParams,
+  type ArtifactsCursorPage,
+} from './artifacts';
+export {
+  Executions,
+  type ArtifactRef,
+  type Execution,
+  type ExecutionCreateParams,
+  type ExecutionEvent,
+  type ExecutionEvents,
+  type ExecutionList,
+  type ExecutionOutput,
+  type ExecutionRetrieveParams,
+  type ExecutionListParams,
+  type ExecutionDeleteParams,
+  type ExecutionEventsParams,
+  type ExecutionOutputParams,
+  type ExecutionsCursorPage,
+  type ExecutionEventsCursorPage,
+} from './executions';
+export {
+  Machines,
+  type CreateParams,
+  type LifecycleStatus,
+  type Machine,
+  type MachineList,
+  type MachineListItem,
+  type UpdateParams,
+  type MachineCreateParams,
+  type MachineRetrieveParams,
+  type MachineUpdateParams,
+  type MachineListParams,
+  type MachineDeleteParams,
+  type MachineSleepParams,
+  type MachineWakeParams,
+  type MachineWatchParams,
+  type MachineListItemsCursorPage,
+} from './machines';
+export {
+  Previews,
+  type Preview,
+  type PreviewCreateParams,
+  type PreviewList,
+  type PreviewRetrieveParams,
+  type PreviewListParams,
+  type PreviewDeleteParams,
+  type PreviewsCursorPage,
+} from './previews';
+export {
+  SSH,
+  type SSHConnection,
+  type SSHHostTrust,
+  type SSHSession,
+  type SSHSessionCreateParams,
+  type SSHSessionList,
+  type SSHCreateParams,
+  type SSHRetrieveParams,
+  type SSHListParams,
+  type SSHDeleteParams,
+  type SSHSessionsCursorPage,
+} from './ssh';
+export {
+  Terminals,
+  type Terminal,
+  type TerminalClientEvent,
+  type TerminalClosedEvent,
+  type TerminalCreateParams,
+  type TerminalErrorEvent,
+  type TerminalInputEvent,
+  type TerminalList,
+  type TerminalOutputEvent,
+  type TerminalResizeEvent,
+  type TerminalServerEvent,
+  type TerminalRetrieveParams,
+  type TerminalListParams,
+  type TerminalDeleteParams,
+  type TerminalConnectParams,
+  type TerminalsCursorPage,
+} from './terminals';
