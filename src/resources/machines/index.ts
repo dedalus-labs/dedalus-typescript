@@ -82,5 +82,6 @@ export {
   type TerminalRetrieveParams,
   type TerminalListParams,
   type TerminalDeleteParams,
+  type TerminalConnectParams,
   type TerminalsCursorPage,
 } from './terminals';

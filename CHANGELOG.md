@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.2.0 (2026-04-28)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **client:** add support for binary messages ([b92dbdd](https://github.com/dedalus-labs/dedalus-typescript/commit/b92dbdd987c664447bb44623167ebfe27dc4b0a4))
+* **client:** add support for path parameters in websockets clients ([5ecd2ff](https://github.com/dedalus-labs/dedalus-typescript/commit/5ecd2ffdafb328f2c1b963f81428e984d0169b67))
+* **client:** add support for queuing messages when waiting for a connection ([5bec735](https://github.com/dedalus-labs/dedalus-typescript/commit/5bec7354271210cc7ff398d9c15ca5f91aa17cc7))
+* **client:** add support for WebSockets in the browser when using simple auth ([61b0484](https://github.com/dedalus-labs/dedalus-typescript/commit/61b048413284392a5d34016198cd63ae8a050c04))
+* **client:** support automatic reconnection for websockets ([076217f](https://github.com/dedalus-labs/dedalus-typescript/commit/076217f4df247fc5724bc56e3778d78b2fb81535))
+* support setting headers via env ([2ccba4c](https://github.com/dedalus-labs/dedalus-typescript/commit/2ccba4cdef79d6b6b566aa0b805933fb582e1c82))
+* **typescript:** expose underlying WebSocket type ([8619824](https://github.com/dedalus-labs/dedalus-typescript/commit/86198244f69fcb2cdfece8122f805843ad4f8a23))
+
+
+### Bug Fixes
+
+* **client:** allow single messages greater than the size of the websockets queue ([266b7dd](https://github.com/dedalus-labs/dedalus-typescript/commit/266b7dd6eea0d97f93bcc1a8f388590ce11111ea))
+* **client:** fix import paths ([9a8d4e0](https://github.com/dedalus-labs/dedalus-typescript/commit/9a8d4e0f66d390f9675da566bca9086bede72688))
+
+
+### Chores
+
+* **ci:** remove release-doctor workflow ([757d6ed](https://github.com/dedalus-labs/dedalus-typescript/commit/757d6ed3b27d9b1514336f43abb87dea4eb17c07))
+* **format:** run eslint and prettier separately ([751a803](https://github.com/dedalus-labs/dedalus-typescript/commit/751a80351f136fa6a7e5fef60fb98fd57e079ff3))
+* **formatter:** run prettier and eslint separately ([5bda3a6](https://github.com/dedalus-labs/dedalus-typescript/commit/5bda3a6dbbb002cd289304245744e60f0d712d8b))
+* **internal:** codegen related update ([acec68d](https://github.com/dedalus-labs/dedalus-typescript/commit/acec68d233795d92575a067a5cbee4bfd7479474))
+* **internal:** codegen related update ([fbb838d](https://github.com/dedalus-labs/dedalus-typescript/commit/fbb838d3a2d86f5a12c240fd2df9d3f3966ffecb))
+* **internal:** codegen related update ([99985b3](https://github.com/dedalus-labs/dedalus-typescript/commit/99985b3a6a8a5a6a9de097359b4db318749d7a2c))
+* **internal:** fix MCP server import ordering ([d57bed9](https://github.com/dedalus-labs/dedalus-typescript/commit/d57bed93a57994b4953ff351a2bc725671caa85f))
+* **internal:** more robust bootstrap script ([cd0c707](https://github.com/dedalus-labs/dedalus-typescript/commit/cd0c7071cc2065876ba6e536811a16a9d56a00e6))
+* **internal:** show error causes in MCP servers when running in local mode ([0197a55](https://github.com/dedalus-labs/dedalus-typescript/commit/0197a55dc171bed19226bc2fb2d3453cf57112b5))
+* **internal:** update docs ordering ([00f66c9](https://github.com/dedalus-labs/dedalus-typescript/commit/00f66c90a419599dd40df8cfabf74e942ab6d590))
+* **mcp-server:** increase local docs search result count from 5 to 10 ([9af8809](https://github.com/dedalus-labs/dedalus-typescript/commit/9af88091530febe30f016c02376897eedfed765d))
+* **mcp-server:** log client info ([3820bd7](https://github.com/dedalus-labs/dedalus-typescript/commit/3820bd78ada7bffc9d80534fdab0e09687c37271))
+* restructure docs search code ([cec7140](https://github.com/dedalus-labs/dedalus-typescript/commit/cec7140f4d122dd23a541dbb617b379cb8983ec8))
+* **tests:** bump steady to v0.22.1 ([c76cacb](https://github.com/dedalus-labs/dedalus-typescript/commit/c76cacbbc7c12b30b57a156e92ef63fd4d0997da))
+* update CLI documentation ([cbeb0c3](https://github.com/dedalus-labs/dedalus-typescript/commit/cbeb0c39bf2e33fc0e1233e82fef3c3f3417c4cc))
+
 ## 0.1.0 (2026-04-02)
 
 Full Changelog: [v0.0.4...v0.1.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.0.4...v0.1.0)

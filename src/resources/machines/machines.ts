@@ -59,6 +59,7 @@ import {
   Terminal,
   TerminalClientEvent,
   TerminalClosedEvent,
+  TerminalConnectParams,
   TerminalCreateParams,
   TerminalDeleteParams,
   TerminalErrorEvent,
@@ -479,5 +480,6 @@ export declare namespace Machines {
     type TerminalRetrieveParams as TerminalRetrieveParams,
     type TerminalListParams as TerminalListParams,
     type TerminalDeleteParams as TerminalDeleteParams,
+    type TerminalConnectParams as TerminalConnectParams,
   };
 }
