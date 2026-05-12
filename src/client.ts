@@ -37,7 +37,9 @@ import {
   Machines,
   UpdateParams,
 } from './resources/machines/machines';
+import { Orgs } from './resources/orgs/orgs';
 import { type Fetch } from './internal/builtin-types';
+import { isRunningInBrowser } from './internal/detect-platform';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
 import { readEnv } from './internal/utils/env';
@@ -183,6 +185,12 @@ export class Dedalus {
       ...opts,
       baseURL: baseURL || `https://dcs.dedaluslabs.ai`,
     };
+
+    if (isRunningInBrowser()) {
+      throw new Errors.DedalusError(
+        "It looks like you're running in a browser-like environment, which is disabled to protect your secret API credentials from attackers. If you have a strong business need for client-side use of this API, please open a GitHub issue with your use-case and security mitigations.",
+      );
+    }
 
     this.baseURL = options.baseURL!;
     this.timeout = options.timeout ?? Dedalus.DEFAULT_TIMEOUT /* 1 minute */;
@@ -821,9 +829,11 @@ export class Dedalus {
 
   static toFile = Uploads.toFile;
 
+  orgs: API.Orgs = new API.Orgs(this);
   machines: API.Machines = new API.Machines(this);
 }
 
+Dedalus.Orgs = Orgs;
 Dedalus.Machines = Machines;
 
 export declare namespace Dedalus {
@@ -831,6 +841,8 @@ export declare namespace Dedalus {
 
   export import CursorPage = Pagination.CursorPage;
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
+
+  export { Orgs as Orgs };
 
   export {
     Machines as Machines,

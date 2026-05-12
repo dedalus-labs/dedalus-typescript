@@ -10,7 +10,7 @@ const client = new Dedalus({
 describe('resource terminals', () => {
   test('create: only required params', async () => {
     const responsePromise = client.machines.terminals.create({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       height: 0,
       width: 0,
     });
@@ -25,7 +25,7 @@ describe('resource terminals', () => {
 
   test('create: required and optional params', async () => {
     const response = await client.machines.terminals.create({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       height: 0,
       width: 0,
       cwd: 'cwd',
@@ -36,7 +36,7 @@ describe('resource terminals', () => {
 
   test('retrieve: only required params', async () => {
     const responsePromise = client.machines.terminals.retrieve({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       terminal_id: 'terminal_id',
     });
     const rawResponse = await responsePromise.asResponse();
@@ -50,13 +50,13 @@ describe('resource terminals', () => {
 
   test('retrieve: required and optional params', async () => {
     const response = await client.machines.terminals.retrieve({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       terminal_id: 'terminal_id',
     });
   });
 
   test('list: only required params', async () => {
-    const responsePromise = client.machines.terminals.list({ machine_id: 'machine_id' });
+    const responsePromise = client.machines.terminals.list({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -68,7 +68,7 @@ describe('resource terminals', () => {
 
   test('list: required and optional params', async () => {
     const response = await client.machines.terminals.list({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       cursor: 'cursor',
       limit: 0,
     });
@@ -76,7 +76,7 @@ describe('resource terminals', () => {
 
   test('delete: only required params', async () => {
     const responsePromise = client.machines.terminals.delete({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       terminal_id: 'terminal_id',
     });
     const rawResponse = await responsePromise.asResponse();
@@ -90,7 +90,7 @@ describe('resource terminals', () => {
 
   test('delete: required and optional params', async () => {
     const response = await client.machines.terminals.delete({
-      machine_id: 'machine_id',
+      machine_id: 'dm-3',
       terminal_id: 'terminal_id',
     });
   });

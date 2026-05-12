@@ -53,7 +53,7 @@ import Dedalus from 'dedalus';
 
 const client = new Dedalus();
 
-const stream = await client.machines.watch({ machine_id: 'machine_id' });
+const stream = await client.machines.watch({ machine_id: 'dm-3' });
 for await (const machine of stream) {
   console.log(machine.machine_id);
 }
@@ -436,7 +436,6 @@ TypeScript >= 4.9 is supported.
 
 The following runtimes are supported:
 
-- Web browsers (Up-to-date Chrome, Firefox, Safari, Edge, and more)
 - Node.js 20 LTS or later ([non-EOL](https://endoflife.date/nodejs)) versions.
 - Deno v1.28.0 or higher.
 - Bun 1.0 or later.
@@ -444,6 +443,9 @@ The following runtimes are supported:
 - Vercel Edge Runtime.
 - Jest 28 or greater with the `"node"` environment (`"jsdom"` is not supported at this time).
 - Nitro v2.6 or greater.
+
+> [!WARNING]
+> Web browser runtimes aren't supported. The SDK will throw an error if used in a browser environment.
 
 Note that React Native is not supported at this time.
 
