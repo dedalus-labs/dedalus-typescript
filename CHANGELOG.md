@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 (2026-05-12)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** add usage endpoints/autosleep ([7df846d](https://github.com/dedalus-labs/dedalus-typescript/commit/7df846d7f00a76eebf8e30e11cfcb269f0dff7ac))
+
 ## 0.3.0 (2026-05-12)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.2.0...v0.3.0)
