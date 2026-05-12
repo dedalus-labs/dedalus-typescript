@@ -52,53 +52,52 @@ type SearchResult = {
 const EMBEDDED_METHODS: MethodEntry[] = [
   {
     name: 'retrieve',
-    endpoint: '/v1/orgs/{org_id}/usage',
+    endpoint: '/v1/usage',
     httpMethod: 'get',
-    summary: 'Get org billed machine usage',
-    description: 'Get org billed machine usage',
-    stainlessPath: '(resource) orgs.usage > (method) retrieve',
-    qualified: 'client.orgs.usage.retrieve',
-    params: ['org_id: string;', 'period_start?: string;'],
+    summary: 'Get usage summary',
+    description: 'Get usage summary',
+    stainlessPath: '(resource) usage > (method) retrieve',
+    qualified: 'client.usage.retrieve',
+    params: ['period_start?: string;'],
     response:
       '{ billed_awake_seconds: number; billed_cpu_millicore_seconds: number; billed_logical_storage_mib_seconds: number; billed_memory_mib_seconds: number; included_storage_gib: number; plan_slug: string; provisioned_storage_gib: number; }',
     markdown:
-      "## retrieve\n\n`client.orgs.usage.retrieve(org_id: string, period_start?: string): { billed_awake_seconds: number; billed_cpu_millicore_seconds: number; billed_logical_storage_mib_seconds: number; billed_memory_mib_seconds: number; included_storage_gib: number; plan_slug: string; provisioned_storage_gib: number; }`\n\n**get** `/v1/orgs/{org_id}/usage`\n\nGet org billed machine usage\n\n### Parameters\n\n- `org_id: string`\n\n- `period_start?: string`\n  Billing period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ billed_awake_seconds: number; billed_cpu_millicore_seconds: number; billed_logical_storage_mib_seconds: number; billed_memory_mib_seconds: number; included_storage_gib: number; plan_slug: string; provisioned_storage_gib: number; }`\n\n  - `billed_awake_seconds: number`\n  - `billed_cpu_millicore_seconds: number`\n  - `billed_logical_storage_mib_seconds: number`\n  - `billed_memory_mib_seconds: number`\n  - `included_storage_gib: number`\n  - `plan_slug: string`\n  - `provisioned_storage_gib: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst orgUsage = await client.orgs.usage.retrieve({ org_id: 'org_id' });\n\nconsole.log(orgUsage);\n```",
+      "## retrieve\n\n`client.usage.retrieve(period_start?: string): { billed_awake_seconds: number; billed_cpu_millicore_seconds: number; billed_logical_storage_mib_seconds: number; billed_memory_mib_seconds: number; included_storage_gib: number; plan_slug: string; provisioned_storage_gib: number; }`\n\n**get** `/v1/usage`\n\nGet usage summary\n\n### Parameters\n\n- `period_start?: string`\n  Billing period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ billed_awake_seconds: number; billed_cpu_millicore_seconds: number; billed_logical_storage_mib_seconds: number; billed_memory_mib_seconds: number; included_storage_gib: number; plan_slug: string; provisioned_storage_gib: number; }`\n\n  - `billed_awake_seconds: number`\n  - `billed_cpu_millicore_seconds: number`\n  - `billed_logical_storage_mib_seconds: number`\n  - `billed_memory_mib_seconds: number`\n  - `included_storage_gib: number`\n  - `plan_slug: string`\n  - `provisioned_storage_gib: number`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst orgUsage = await client.usage.retrieve();\n\nconsole.log(orgUsage);\n```",
     perLanguage: {
       typescript: {
-        method: 'client.orgs.usage.retrieve',
+        method: 'client.usage.retrieve',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst orgUsage = await client.orgs.usage.retrieve({ org_id: 'org_id' });\n\nconsole.log(orgUsage.billed_awake_seconds);",
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst orgUsage = await client.usage.retrieve();\n\nconsole.log(orgUsage.billed_awake_seconds);",
       },
       python: {
-        method: 'orgs.usage.retrieve',
+        method: 'usage.retrieve',
         example:
-          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\norg_usage = client.orgs.usage.retrieve(\n    org_id="org_id",\n)\nprint(org_usage.billed_awake_seconds)',
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\norg_usage = client.usage.retrieve()\nprint(org_usage.billed_awake_seconds)',
       },
       go: {
-        method: 'client.Orgs.Usage.Get',
+        method: 'client.Usage.Get',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\torgUsage, err := client.Orgs.Usage.Get(context.TODO(), dedalus.OrgUsageGetParams{\n\t\tOrgID: "org_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", orgUsage.BilledAwakeSeconds)\n}\n',
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\torgUsage, err := client.Usage.Get(context.TODO(), dedalus.UsageGetParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", orgUsage.BilledAwakeSeconds)\n}\n',
       },
       cli: {
         method: 'usage retrieve',
-        example: "dedalus orgs:usage retrieve \\\n  --api-key 'My API Key' \\\n  --org-id org_id",
+        example: "dedalus usage retrieve \\\n  --api-key 'My API Key'",
       },
       http: {
         example:
-          'curl https://dcs.dedaluslabs.ai/v1/orgs/$ORG_ID/usage \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          'curl https://dcs.dedaluslabs.ai/v1/usage \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
   {
-    name: 'get_machine_usage',
-    endpoint: '/v1/orgs/{org_id}/usage/machines',
+    name: 'machine_compute',
+    endpoint: '/v1/usage/machines/compute',
     httpMethod: 'get',
-    summary: 'List machine usage evidence',
-    description: 'List machine usage evidence',
-    stainlessPath: '(resource) orgs.usage > (method) get_machine_usage',
-    qualified: 'client.orgs.usage.getMachineUsage',
+    summary: 'List machine compute usage breakdown',
+    description: 'List machine compute usage breakdown',
+    stainlessPath: '(resource) usage > (method) machine_compute',
+    qualified: 'client.usage.machineCompute',
     params: [
-      'org_id: string;',
       'granularity?: string;',
       'machine_id?: string;',
       'period_end?: string;',
@@ -107,70 +106,69 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     response:
       '{ granularity: string; period_end: string; period_start: string; rows: { awake_seconds: number; bucket_end: string; bucket_start: string; cpu_millicore_seconds: number; last_window_end: string; machine_id: string; memory_mib_seconds: number; org_metering_bucket_ids: string[]; requested_memory_mib: number; requested_storage_gib: number; requested_vcpu: number; spec_fingerprint: string; stripe_cpu_identifiers: string[]; stripe_memory_identifiers: string[]; window_count: number; latest_stripe_emitted_at?: string; }[]; }',
     markdown:
-      "## get_machine_usage\n\n`client.orgs.usage.getMachineUsage(org_id: string, granularity?: string, machine_id?: string, period_end?: string, period_start?: string): { granularity: string; period_end: string; period_start: string; rows: machine_usage_evidence[]; }`\n\n**get** `/v1/orgs/{org_id}/usage/machines`\n\nList machine usage evidence\n\n### Parameters\n\n- `org_id: string`\n\n- `granularity?: string`\n  Evidence granularity: hour or day. Defaults to hour.\n\n- `machine_id?: string`\n  Optional machine ID filter.\n\n- `period_end?: string`\n  Last UTC evidence date to include (YYYY-MM-DD). Defaults to current time.\n\n- `period_start?: string`\n  Evidence period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ granularity: string; period_end: string; period_start: string; rows: { awake_seconds: number; bucket_end: string; bucket_start: string; cpu_millicore_seconds: number; last_window_end: string; machine_id: string; memory_mib_seconds: number; org_metering_bucket_ids: string[]; requested_memory_mib: number; requested_storage_gib: number; requested_vcpu: number; spec_fingerprint: string; stripe_cpu_identifiers: string[]; stripe_memory_identifiers: string[]; window_count: number; latest_stripe_emitted_at?: string; }[]; }`\n\n  - `granularity: string`\n  - `period_end: string`\n  - `period_start: string`\n  - `rows: { awake_seconds: number; bucket_end: string; bucket_start: string; cpu_millicore_seconds: number; last_window_end: string; machine_id: string; memory_mib_seconds: number; org_metering_bucket_ids: string[]; requested_memory_mib: number; requested_storage_gib: number; requested_vcpu: number; spec_fingerprint: string; stripe_cpu_identifiers: string[]; stripe_memory_identifiers: string[]; window_count: number; latest_stripe_emitted_at?: string; }[]`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machineUsage = await client.orgs.usage.getMachineUsage({ org_id: 'org_id' });\n\nconsole.log(machineUsage);\n```",
+      "## machine_compute\n\n`client.usage.machineCompute(granularity?: string, machine_id?: string, period_end?: string, period_start?: string): { granularity: string; period_end: string; period_start: string; rows: machine_compute_usage_row[]; }`\n\n**get** `/v1/usage/machines/compute`\n\nList machine compute usage breakdown\n\n### Parameters\n\n- `granularity?: string`\n  Usage breakdown granularity: hour or day. Defaults to hour.\n\n- `machine_id?: string`\n  Optional machine ID filter.\n\n- `period_end?: string`\n  Last UTC usage date to include (YYYY-MM-DD). Defaults to current time.\n\n- `period_start?: string`\n  Usage period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ granularity: string; period_end: string; period_start: string; rows: { awake_seconds: number; bucket_end: string; bucket_start: string; cpu_millicore_seconds: number; last_window_end: string; machine_id: string; memory_mib_seconds: number; org_metering_bucket_ids: string[]; requested_memory_mib: number; requested_storage_gib: number; requested_vcpu: number; spec_fingerprint: string; stripe_cpu_identifiers: string[]; stripe_memory_identifiers: string[]; window_count: number; latest_stripe_emitted_at?: string; }[]; }`\n\n  - `granularity: string`\n  - `period_end: string`\n  - `period_start: string`\n  - `rows: { awake_seconds: number; bucket_end: string; bucket_start: string; cpu_millicore_seconds: number; last_window_end: string; machine_id: string; memory_mib_seconds: number; org_metering_bucket_ids: string[]; requested_memory_mib: number; requested_storage_gib: number; requested_vcpu: number; spec_fingerprint: string; stripe_cpu_identifiers: string[]; stripe_memory_identifiers: string[]; window_count: number; latest_stripe_emitted_at?: string; }[]`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machineComputeUsage = await client.usage.machineCompute();\n\nconsole.log(machineComputeUsage);\n```",
     perLanguage: {
       typescript: {
-        method: 'client.orgs.usage.getMachineUsage',
+        method: 'client.usage.machineCompute',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machineUsage = await client.orgs.usage.getMachineUsage({ org_id: 'org_id' });\n\nconsole.log(machineUsage.granularity);",
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machineComputeUsage = await client.usage.machineCompute();\n\nconsole.log(machineComputeUsage.granularity);",
       },
       python: {
-        method: 'orgs.usage.get_machine_usage',
+        method: 'usage.machine_compute',
         example:
-          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine_usage = client.orgs.usage.get_machine_usage(\n    org_id="org_id",\n)\nprint(machine_usage.granularity)',
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine_compute_usage = client.usage.machine_compute()\nprint(machine_compute_usage.granularity)',
       },
       go: {
-        method: 'client.Orgs.Usage.GetMachineUsage',
+        method: 'client.Usage.MachineCompute',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachineUsage, err := client.Orgs.Usage.GetMachineUsage(context.TODO(), dedalus.OrgUsageGetMachineUsageParams{\n\t\tOrgID: "org_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machineUsage.Granularity)\n}\n',
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachineComputeUsage, err := client.Usage.MachineCompute(context.TODO(), dedalus.UsageMachineComputeParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machineComputeUsage.Granularity)\n}\n',
       },
       cli: {
-        method: 'usage get_machine_usage',
-        example: "dedalus orgs:usage get-machine-usage \\\n  --api-key 'My API Key' \\\n  --org-id org_id",
+        method: 'usage machine_compute',
+        example: "dedalus usage machine-compute \\\n  --api-key 'My API Key'",
       },
       http: {
         example:
-          'curl https://dcs.dedaluslabs.ai/v1/orgs/$ORG_ID/usage/machines \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          'curl https://dcs.dedaluslabs.ai/v1/usage/machines/compute \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
   {
-    name: 'get_machine_storage_usage',
-    endpoint: '/v1/orgs/{org_id}/usage/storage/machines',
+    name: 'machine_storage',
+    endpoint: '/v1/usage/machines/storage',
     httpMethod: 'get',
-    summary: 'List machine storage usage evidence',
-    description: 'List machine storage usage evidence',
-    stainlessPath: '(resource) orgs.usage > (method) get_machine_storage_usage',
-    qualified: 'client.orgs.usage.getMachineStorageUsage',
-    params: ['org_id: string;', 'machine_id?: string;', 'period_end?: string;', 'period_start?: string;'],
+    summary: 'List machine storage usage breakdown',
+    description: 'List machine storage usage breakdown',
+    stainlessPath: '(resource) usage > (method) machine_storage',
+    qualified: 'client.usage.machineStorage',
+    params: ['machine_id?: string;', 'period_end?: string;', 'period_start?: string;'],
     response:
       '{ period_end: string; period_start: string; rows: { bucket_end: string; bucket_start: string; logical_storage_bytes: number; machine_id: string; org_metering_bucket_id: string; storage_mib_seconds: number; stripe_storage_identifier: string; latest_stripe_emitted_at?: string; }[]; }',
     markdown:
-      "## get_machine_storage_usage\n\n`client.orgs.usage.getMachineStorageUsage(org_id: string, machine_id?: string, period_end?: string, period_start?: string): { period_end: string; period_start: string; rows: machine_storage_usage_evidence[]; }`\n\n**get** `/v1/orgs/{org_id}/usage/storage/machines`\n\nList machine storage usage evidence\n\n### Parameters\n\n- `org_id: string`\n\n- `machine_id?: string`\n  Optional machine ID filter.\n\n- `period_end?: string`\n  Last UTC evidence date to include (YYYY-MM-DD). Defaults to current time.\n\n- `period_start?: string`\n  Evidence period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ period_end: string; period_start: string; rows: { bucket_end: string; bucket_start: string; logical_storage_bytes: number; machine_id: string; org_metering_bucket_id: string; storage_mib_seconds: number; stripe_storage_identifier: string; latest_stripe_emitted_at?: string; }[]; }`\n\n  - `period_end: string`\n  - `period_start: string`\n  - `rows: { bucket_end: string; bucket_start: string; logical_storage_bytes: number; machine_id: string; org_metering_bucket_id: string; storage_mib_seconds: number; stripe_storage_identifier: string; latest_stripe_emitted_at?: string; }[]`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machineStorageUsage = await client.orgs.usage.getMachineStorageUsage({ org_id: 'org_id' });\n\nconsole.log(machineStorageUsage);\n```",
+      "## machine_storage\n\n`client.usage.machineStorage(machine_id?: string, period_end?: string, period_start?: string): { period_end: string; period_start: string; rows: machine_storage_usage_row[]; }`\n\n**get** `/v1/usage/machines/storage`\n\nList machine storage usage breakdown\n\n### Parameters\n\n- `machine_id?: string`\n  Optional machine ID filter.\n\n- `period_end?: string`\n  Last UTC usage date to include (YYYY-MM-DD). Defaults to current time.\n\n- `period_start?: string`\n  Usage period start (YYYY-MM-DD). Defaults to first of current month.\n\n### Returns\n\n- `{ period_end: string; period_start: string; rows: { bucket_end: string; bucket_start: string; logical_storage_bytes: number; machine_id: string; org_metering_bucket_id: string; storage_mib_seconds: number; stripe_storage_identifier: string; latest_stripe_emitted_at?: string; }[]; }`\n\n  - `period_end: string`\n  - `period_start: string`\n  - `rows: { bucket_end: string; bucket_start: string; logical_storage_bytes: number; machine_id: string; org_metering_bucket_id: string; storage_mib_seconds: number; stripe_storage_identifier: string; latest_stripe_emitted_at?: string; }[]`\n\n### Example\n\n```typescript\nimport Dedalus from 'dedalus';\n\nconst client = new Dedalus();\n\nconst machineStorageUsage = await client.usage.machineStorage();\n\nconsole.log(machineStorageUsage);\n```",
     perLanguage: {
       typescript: {
-        method: 'client.orgs.usage.getMachineStorageUsage',
+        method: 'client.usage.machineStorage',
         example:
-          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machineStorageUsage = await client.orgs.usage.getMachineStorageUsage({ org_id: 'org_id' });\n\nconsole.log(machineStorageUsage.period_end);",
+          "import Dedalus from 'dedalus';\n\nconst client = new Dedalus({\n  apiKey: process.env['DEDALUS_API_KEY'], // This is the default and can be omitted\n});\n\nconst machineStorageUsage = await client.usage.machineStorage();\n\nconsole.log(machineStorageUsage.period_end);",
       },
       python: {
-        method: 'orgs.usage.get_machine_storage_usage',
+        method: 'usage.machine_storage',
         example:
-          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine_storage_usage = client.orgs.usage.get_machine_storage_usage(\n    org_id="org_id",\n)\nprint(machine_storage_usage.period_end)',
+          'import os\nfrom dedalus_sdk import Dedalus\n\nclient = Dedalus(\n    api_key=os.environ.get("DEDALUS_API_KEY"),  # This is the default and can be omitted\n)\nmachine_storage_usage = client.usage.machine_storage()\nprint(machine_storage_usage.period_end)',
       },
       go: {
-        method: 'client.Orgs.Usage.GetMachineStorageUsage',
+        method: 'client.Usage.MachineStorage',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachineStorageUsage, err := client.Orgs.Usage.GetMachineStorageUsage(context.TODO(), dedalus.OrgUsageGetMachineStorageUsageParams{\n\t\tOrgID: "org_id",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machineStorageUsage.PeriodEnd)\n}\n',
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/dedalus-labs/dedalus-go"\n\t"github.com/dedalus-labs/dedalus-go/option"\n)\n\nfunc main() {\n\tclient := dedalus.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tmachineStorageUsage, err := client.Usage.MachineStorage(context.TODO(), dedalus.UsageMachineStorageParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", machineStorageUsage.PeriodEnd)\n}\n',
       },
       cli: {
-        method: 'usage get_machine_storage_usage',
-        example:
-          "dedalus orgs:usage get-machine-storage-usage \\\n  --api-key 'My API Key' \\\n  --org-id org_id",
+        method: 'usage machine_storage',
+        example: "dedalus usage machine-storage \\\n  --api-key 'My API Key'",
       },
       http: {
         example:
-          'curl https://dcs.dedaluslabs.ai/v1/orgs/$ORG_ID/usage/storage/machines \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
+          'curl https://dcs.dedaluslabs.ai/v1/usage/machines/storage \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
       },
     },
   },
