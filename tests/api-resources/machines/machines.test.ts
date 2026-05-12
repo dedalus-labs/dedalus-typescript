@@ -28,11 +28,12 @@ describe('resource machines', () => {
       memory_mib: 0,
       storage_gib: 0,
       vcpu: 0,
+      autosleep: 'autosleep',
     });
   });
 
   test('retrieve: only required params', async () => {
-    const responsePromise = client.machines.retrieve({ machine_id: 'machine_id' });
+    const responsePromise = client.machines.retrieve({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -43,11 +44,11 @@ describe('resource machines', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.machines.retrieve({ machine_id: 'machine_id' });
+    const response = await client.machines.retrieve({ machine_id: 'dm-3' });
   });
 
   test('update: only required params', async () => {
-    const responsePromise = client.machines.update({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const responsePromise = client.machines.update({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -59,8 +60,8 @@ describe('resource machines', () => {
 
   test('update: required and optional params', async () => {
     const response = await client.machines.update({
-      machine_id: 'machine_id',
-      'If-Match': 'If-Match',
+      machine_id: 'dm-3',
+      autosleep: 'autosleep',
       memory_mib: 0,
       storage_gib: 0,
       vcpu: 0,
@@ -86,7 +87,7 @@ describe('resource machines', () => {
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.machines.delete({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const responsePromise = client.machines.delete({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -97,11 +98,11 @@ describe('resource machines', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.machines.delete({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const response = await client.machines.delete({ machine_id: 'dm-3' });
   });
 
   test('sleep: only required params', async () => {
-    const responsePromise = client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const responsePromise = client.machines.sleep({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -112,11 +113,11 @@ describe('resource machines', () => {
   });
 
   test('sleep: required and optional params', async () => {
-    const response = await client.machines.sleep({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const response = await client.machines.sleep({ machine_id: 'dm-3' });
   });
 
   test('wake: only required params', async () => {
-    const responsePromise = client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const responsePromise = client.machines.wake({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -127,11 +128,11 @@ describe('resource machines', () => {
   });
 
   test('wake: required and optional params', async () => {
-    const response = await client.machines.wake({ machine_id: 'machine_id', 'If-Match': 'If-Match' });
+    const response = await client.machines.wake({ machine_id: 'dm-3' });
   });
 
   test('watch: only required params', async () => {
-    const responsePromise = client.machines.watch({ machine_id: 'machine_id' });
+    const responsePromise = client.machines.watch({ machine_id: 'dm-3' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -142,9 +143,6 @@ describe('resource machines', () => {
   });
 
   test('watch: required and optional params', async () => {
-    const response = await client.machines.watch({
-      machine_id: 'machine_id',
-      'Last-Event-ID': 'Last-Event-ID',
-    });
+    const response = await client.machines.watch({ machine_id: 'dm-3', 'Last-Event-ID': 'Last-Event-ID' });
   });
 });

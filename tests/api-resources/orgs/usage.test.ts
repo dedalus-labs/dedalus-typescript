@@ -7,12 +7,9 @@ const client = new Dedalus({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource artifacts', () => {
+describe('resource usage', () => {
   test('retrieve: only required params', async () => {
-    const responsePromise = client.machines.artifacts.retrieve({
-      machine_id: 'dm-3',
-      artifact_id: 'artifact_id',
-    });
+    const responsePromise = client.orgs.usage.retrieve({ org_id: 'org_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -23,14 +20,11 @@ describe('resource artifacts', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.machines.artifacts.retrieve({
-      machine_id: 'dm-3',
-      artifact_id: 'artifact_id',
-    });
+    const response = await client.orgs.usage.retrieve({ org_id: 'org_id', period_start: 'period_start' });
   });
 
-  test('list: only required params', async () => {
-    const responsePromise = client.machines.artifacts.list({ machine_id: 'dm-3' });
+  test('getMachineStorageUsage: only required params', async () => {
+    const responsePromise = client.orgs.usage.getMachineStorageUsage({ org_id: 'org_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -40,19 +34,17 @@ describe('resource artifacts', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('list: required and optional params', async () => {
-    const response = await client.machines.artifacts.list({
-      machine_id: 'dm-3',
-      cursor: 'cursor',
-      limit: 0,
+  test('getMachineStorageUsage: required and optional params', async () => {
+    const response = await client.orgs.usage.getMachineStorageUsage({
+      org_id: 'org_id',
+      machine_id: 'machine_id',
+      period_end: 'period_end',
+      period_start: 'period_start',
     });
   });
 
-  test('delete: only required params', async () => {
-    const responsePromise = client.machines.artifacts.delete({
-      machine_id: 'dm-3',
-      artifact_id: 'artifact_id',
-    });
+  test('getMachineUsage: only required params', async () => {
+    const responsePromise = client.orgs.usage.getMachineUsage({ org_id: 'org_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -62,10 +54,13 @@ describe('resource artifacts', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('delete: required and optional params', async () => {
-    const response = await client.machines.artifacts.delete({
-      machine_id: 'dm-3',
-      artifact_id: 'artifact_id',
+  test('getMachineUsage: required and optional params', async () => {
+    const response = await client.orgs.usage.getMachineUsage({
+      org_id: 'org_id',
+      granularity: 'granularity',
+      machine_id: 'machine_id',
+      period_end: 'period_end',
+      period_start: 'period_start',
     });
   });
 });

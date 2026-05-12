@@ -106,12 +106,8 @@ export class Machines extends APIResource {
    * Update machine
    */
   update(params: MachineUpdateParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch, ...body } = params;
-    return this._client.patch(path`/v1/machines/${machine_id}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
-    });
+    const { machine_id, ...body } = params;
+    return this._client.patch(path`/v1/machines/${machine_id}`, { body, ...options });
   }
 
   /**
@@ -128,33 +124,24 @@ export class Machines extends APIResource {
    * Destroy machine
    */
   delete(params: MachineDeleteParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params;
-    return this._client.delete(path`/v1/machines/${machine_id}`, {
-      ...options,
-      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
-    });
+    const { machine_id } = params;
+    return this._client.delete(path`/v1/machines/${machine_id}`, options);
   }
 
   /**
    * Sleep a running machine
    */
   sleep(params: MachineSleepParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params;
-    return this._client.post(path`/v1/machines/${machine_id}/sleep`, {
-      ...options,
-      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
-    });
+    const { machine_id } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/sleep`, options);
   }
 
   /**
    * Wake a sleeping machine
    */
   wake(params: MachineWakeParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, 'If-Match': ifMatch } = params;
-    return this._client.post(path`/v1/machines/${machine_id}/wake`, {
-      ...options,
-      headers: buildHeaders([{ 'If-Match': ifMatch }, options?.headers]),
-    });
+    const { machine_id } = params;
+    return this._client.post(path`/v1/machines/${machine_id}/wake`, options);
   }
 
   /**
@@ -195,6 +182,12 @@ export interface CreateParams {
    * CPU in vCPUs.
    */
   vcpu: number;
+
+  /**
+   * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h,
+   * 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
+   */
+  autosleep?: string;
 }
 
 export interface LifecycleStatus {
@@ -223,6 +216,11 @@ export interface LifecycleStatus {
 }
 
 export interface Machine {
+  /**
+   * Seconds of inactivity before autosleep. 0 disables autosleep.
+   */
+  autosleep_seconds: number;
+
   desired_state: 'running' | 'sleeping' | 'destroyed';
 
   machine_id: string;
@@ -249,6 +247,11 @@ export interface MachineList {
 }
 
 export interface MachineListItem {
+  /**
+   * Seconds of inactivity before autosleep. 0 disables autosleep.
+   */
+  autosleep_seconds: number;
+
   created_at: string;
 
   desired_state: 'running' | 'sleeping' | 'destroyed';
@@ -271,6 +274,12 @@ export interface MachineListItem {
 }
 
 export interface UpdateParams {
+  /**
+   * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h,
+   * 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
+   */
+  autosleep?: string;
+
   /**
    * Memory in MiB.
    */
@@ -302,6 +311,12 @@ export interface MachineCreateParams {
    * CPU in vCPUs.
    */
   vcpu: number;
+
+  /**
+   * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h,
+   * 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
+   */
+  autosleep?: string;
 }
 
 export interface MachineRetrieveParams {
@@ -315,9 +330,10 @@ export interface MachineUpdateParams {
   machine_id: string;
 
   /**
-   * Header param
+   * Body param: Idle window before autosleep. Accepts fixed duration units like 30s,
+   * 30m, 2h, 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
    */
-  'If-Match': string;
+  autosleep?: string;
 
   /**
    * Body param: Memory in MiB.
@@ -338,39 +354,15 @@ export interface MachineUpdateParams {
 export interface MachineListParams extends CursorPageParams {}
 
 export interface MachineDeleteParams {
-  /**
-   * Path param
-   */
   machine_id: string;
-
-  /**
-   * Header param
-   */
-  'If-Match': string;
 }
 
 export interface MachineSleepParams {
-  /**
-   * Path param
-   */
   machine_id: string;
-
-  /**
-   * Header param
-   */
-  'If-Match': string;
 }
 
 export interface MachineWakeParams {
-  /**
-   * Path param
-   */
   machine_id: string;
-
-  /**
-   * Header param
-   */
-  'If-Match': string;
 }
 
 export interface MachineWatchParams {
