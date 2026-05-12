@@ -18,3 +18,4 @@ export {
   type MachineWatchParams,
   type MachineListItemsCursorPage,
 } from './machines/machines';
+export { Orgs } from './orgs/orgs';
