@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 (2026-05-12)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** add org usage endpoints, machine autosleep, remove If-Match headers ([ecee810](https://github.com/dedalus-labs/dedalus-typescript/commit/ecee810ef403ce92089c8679dd33c51205e2381e))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([7dce5bc](https://github.com/dedalus-labs/dedalus-typescript/commit/7dce5bce89af69529630c6ed6666fc8a28af2a74))
+
 ## 0.2.0 (2026-04-29)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.1.0...v0.2.0)
