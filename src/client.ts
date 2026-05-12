@@ -20,6 +20,17 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
+  MachineComputeUsage,
+  MachineComputeUsageRow,
+  MachineStorageUsage,
+  MachineStorageUsageRow,
+  OrgUsage,
+  Usage,
+  UsageMachineComputeParams,
+  UsageMachineStorageParams,
+  UsageRetrieveParams,
+} from './resources/usage';
+import {
   CreateParams,
   LifecycleStatus,
   Machine,
@@ -37,7 +48,6 @@ import {
   Machines,
   UpdateParams,
 } from './resources/machines/machines';
-import { Orgs } from './resources/orgs/orgs';
 import { type Fetch } from './internal/builtin-types';
 import { isRunningInBrowser } from './internal/detect-platform';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
@@ -829,11 +839,11 @@ export class Dedalus {
 
   static toFile = Uploads.toFile;
 
-  orgs: API.Orgs = new API.Orgs(this);
+  usage: API.Usage = new API.Usage(this);
   machines: API.Machines = new API.Machines(this);
 }
 
-Dedalus.Orgs = Orgs;
+Dedalus.Usage = Usage;
 Dedalus.Machines = Machines;
 
 export declare namespace Dedalus {
@@ -842,7 +852,17 @@ export declare namespace Dedalus {
   export import CursorPage = Pagination.CursorPage;
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
-  export { Orgs as Orgs };
+  export {
+    Usage as Usage,
+    type MachineComputeUsage as MachineComputeUsage,
+    type MachineComputeUsageRow as MachineComputeUsageRow,
+    type MachineStorageUsage as MachineStorageUsage,
+    type MachineStorageUsageRow as MachineStorageUsageRow,
+    type OrgUsage as OrgUsage,
+    type UsageRetrieveParams as UsageRetrieveParams,
+    type UsageMachineComputeParams as UsageMachineComputeParams,
+    type UsageMachineStorageParams as UsageMachineStorageParams,
+  };
 
   export {
     Machines as Machines,

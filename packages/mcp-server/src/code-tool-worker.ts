@@ -108,9 +108,9 @@ function getTSDiagnostics(code: string): string[] {
 
 const fuse = new Fuse(
   [
-    'client.orgs.usage.getMachineStorageUsage',
-    'client.orgs.usage.getMachineUsage',
-    'client.orgs.usage.retrieve',
+    'client.usage.machineCompute',
+    'client.usage.machineStorage',
+    'client.usage.retrieve',
     'client.machines.create',
     'client.machines.delete',
     'client.machines.list',

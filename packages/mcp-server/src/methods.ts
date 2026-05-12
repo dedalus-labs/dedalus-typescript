@@ -11,22 +11,22 @@ export type SdkMethod = {
 
 export const sdkMethods: SdkMethod[] = [
   {
-    clientCallName: 'client.orgs.usage.retrieve',
-    fullyQualifiedName: 'orgs.usage.retrieve',
+    clientCallName: 'client.usage.retrieve',
+    fullyQualifiedName: 'usage.retrieve',
     httpMethod: 'get',
-    httpPath: '/v1/orgs/{org_id}/usage',
+    httpPath: '/v1/usage',
   },
   {
-    clientCallName: 'client.orgs.usage.getMachineStorageUsage',
-    fullyQualifiedName: 'orgs.usage.getMachineStorageUsage',
+    clientCallName: 'client.usage.machineCompute',
+    fullyQualifiedName: 'usage.machineCompute',
     httpMethod: 'get',
-    httpPath: '/v1/orgs/{org_id}/usage/storage/machines',
+    httpPath: '/v1/usage/machines/compute',
   },
   {
-    clientCallName: 'client.orgs.usage.getMachineUsage',
-    fullyQualifiedName: 'orgs.usage.getMachineUsage',
+    clientCallName: 'client.usage.machineStorage',
+    fullyQualifiedName: 'usage.machineStorage',
     httpMethod: 'get',
-    httpPath: '/v1/orgs/{org_id}/usage/machines',
+    httpPath: '/v1/usage/machines/storage',
   },
   {
     clientCallName: 'client.machines.create',
