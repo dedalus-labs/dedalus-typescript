@@ -1,20 +1,18 @@
-# Orgs
-
-## Usage
+# Usage
 
 Types:
 
-- <code><a href="./src/resources/orgs/usage.ts">MachineStorageUsage</a></code>
-- <code><a href="./src/resources/orgs/usage.ts">MachineStorageUsageEvidence</a></code>
-- <code><a href="./src/resources/orgs/usage.ts">MachineUsage</a></code>
-- <code><a href="./src/resources/orgs/usage.ts">MachineUsageEvidence</a></code>
-- <code><a href="./src/resources/orgs/usage.ts">OrgUsage</a></code>
+- <code><a href="./src/resources/usage.ts">MachineComputeUsage</a></code>
+- <code><a href="./src/resources/usage.ts">MachineComputeUsageRow</a></code>
+- <code><a href="./src/resources/usage.ts">MachineStorageUsage</a></code>
+- <code><a href="./src/resources/usage.ts">MachineStorageUsageRow</a></code>
+- <code><a href="./src/resources/usage.ts">OrgUsage</a></code>
 
 Methods:
 
-- <code title="get /v1/orgs/{org_id}/usage">client.orgs.usage.<a href="./src/resources/orgs/usage.ts">retrieve</a>({ ...params }) -> OrgUsage</code>
-- <code title="get /v1/orgs/{org_id}/usage/storage/machines">client.orgs.usage.<a href="./src/resources/orgs/usage.ts">getMachineStorageUsage</a>({ ...params }) -> MachineStorageUsage</code>
-- <code title="get /v1/orgs/{org_id}/usage/machines">client.orgs.usage.<a href="./src/resources/orgs/usage.ts">getMachineUsage</a>({ ...params }) -> MachineUsage</code>
+- <code title="get /v1/usage">client.usage.<a href="./src/resources/usage.ts">retrieve</a>({ ...params }) -> OrgUsage</code>
+- <code title="get /v1/usage/machines/compute">client.usage.<a href="./src/resources/usage.ts">machineCompute</a>({ ...params }) -> MachineComputeUsage</code>
+- <code title="get /v1/usage/machines/storage">client.usage.<a href="./src/resources/usage.ts">machineStorage</a>({ ...params }) -> MachineStorageUsage</code>
 
 # Machines
 

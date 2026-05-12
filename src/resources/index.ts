@@ -18,4 +18,14 @@ export {
   type MachineWatchParams,
   type MachineListItemsCursorPage,
 } from './machines/machines';
-export { Orgs } from './orgs/orgs';
+export {
+  Usage,
+  type MachineComputeUsage,
+  type MachineComputeUsageRow,
+  type MachineStorageUsage,
+  type MachineStorageUsageRow,
+  type OrgUsage,
+  type UsageRetrieveParams,
+  type UsageMachineComputeParams,
+  type UsageMachineStorageParams,
+} from './usage';
