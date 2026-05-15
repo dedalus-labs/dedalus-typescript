@@ -93,6 +93,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'usage retrieve',
         example: "dedalus usage retrieve \\\n  --api-key 'My API Key'",
       },
+      csharp: {
+        method: 'Usage.Retrieve',
+        example:
+          'UsageRetrieveParams parameters = new();\n\nvar orgUsage = await client.Usage.Retrieve(parameters);\n\nConsole.WriteLine(orgUsage);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/usage \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -147,6 +152,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'usage machine_compute',
         example: "dedalus usage machine-compute \\\n  --api-key 'My API Key'",
       },
+      csharp: {
+        method: 'Usage.MachineCompute',
+        example:
+          'UsageMachineComputeParams parameters = new();\n\nvar machineComputeUsage = await client.Usage.MachineCompute(parameters);\n\nConsole.WriteLine(machineComputeUsage);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/usage/machines/compute \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -196,6 +206,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'usage machine_storage',
         example: "dedalus usage machine-storage \\\n  --api-key 'My API Key'",
       },
+      csharp: {
+        method: 'Usage.MachineStorage',
+        example:
+          'UsageMachineStorageParams parameters = new();\n\nvar machineStorageUsage = await client.Usage.MachineStorage(parameters);\n\nConsole.WriteLine(machineStorageUsage);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/usage/machines/storage \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -244,6 +259,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'machines list',
         example: "dedalus machines list \\\n  --api-key 'My API Key'",
+      },
+      csharp: {
+        method: 'Machines.List',
+        example:
+          'MachineListParams parameters = new();\n\nvar page = await client.Machines.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -295,6 +315,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines create \\\n  --api-key 'My API Key' \\\n  --memory-mib 0 \\\n  --storage-gib 0 \\\n  --vcpu 0",
       },
+      csharp: {
+        method: 'Machines.Create',
+        example:
+          'MachineCreateParams parameters = new()\n{\n    MemoryMiB = 0,\n    StorageGiB = 0,\n    Vcpu = 0,\n};\n\nvar machine = await client.Machines.Create(parameters);\n\nConsole.WriteLine(machine);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "memory_mib": 0,\n          "storage_gib": 0,\n          "vcpu": 0\n        }\'',
@@ -343,6 +368,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'machines retrieve',
         example: "dedalus machines retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Retrieve',
+        example:
+          'MachineRetrieveParams parameters = new() { MachineID = "dm-3" };\n\nvar machine = await client.Machines.Retrieve(parameters);\n\nConsole.WriteLine(machine);',
       },
       http: {
         example:
@@ -399,6 +429,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'machines update',
         example: "dedalus machines update \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
       },
+      csharp: {
+        method: 'Machines.Update',
+        example:
+          'MachineUpdateParams parameters = new() { MachineID = "dm-3" };\n\nvar machine = await client.Machines.Update(parameters);\n\nConsole.WriteLine(machine);',
+      },
       http: {
         example:
           "curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"Authorization: Bearer $DEDALUS_API_KEY\" \\\n    -d '{}'",
@@ -447,6 +482,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'machines delete',
         example: "dedalus machines delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Delete',
+        example:
+          'MachineDeleteParams parameters = new() { MachineID = "dm-3" };\n\nvar machine = await client.Machines.Delete(parameters);\n\nConsole.WriteLine(machine);',
       },
       http: {
         example:
@@ -498,6 +538,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'machines watch',
         example: "dedalus machines watch \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
       },
+      csharp: {
+        method: 'Machines.WatchStreaming',
+        example:
+          'MachineWatchParams parameters = new() { MachineID = "dm-3" };\n\nawait foreach (var machine in client.Machines.WatchStreaming(parameters))\n{\n    Console.WriteLine(machine);\n}',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/status/stream \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -546,6 +591,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'machines sleep',
         example: "dedalus machines sleep \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Sleep',
+        example:
+          'MachineSleepParams parameters = new() { MachineID = "dm-3" };\n\nvar machine = await client.Machines.Sleep(parameters);\n\nConsole.WriteLine(machine);',
       },
       http: {
         example:
@@ -596,6 +646,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'machines wake',
         example: "dedalus machines wake \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
       },
+      csharp: {
+        method: 'Machines.Wake',
+        example:
+          'MachineWakeParams parameters = new() { MachineID = "dm-3" };\n\nvar machine = await client.Machines.Wake(parameters);\n\nConsole.WriteLine(machine);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/wake \\\n    -X POST \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -644,6 +699,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'artifacts list',
         example: "dedalus machines:artifacts list \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Artifacts.List',
+        example:
+          'ArtifactListParams parameters = new() { MachineID = "dm-3" };\n\nvar page = await client.Machines.Artifacts.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -695,6 +755,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:artifacts retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --artifact-id artifact_id",
       },
+      csharp: {
+        method: 'Machines.Artifacts.Retrieve',
+        example:
+          'ArtifactRetrieveParams parameters = new()\n{\n    MachineID = "dm-3",\n    ArtifactID = "artifact_id",\n};\n\nvar artifact = await client.Machines.Artifacts.Retrieve(parameters);\n\nConsole.WriteLine(artifact);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -745,6 +810,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:artifacts delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --artifact-id artifact_id",
       },
+      csharp: {
+        method: 'Machines.Artifacts.Delete',
+        example:
+          'ArtifactDeleteParams parameters = new()\n{\n    MachineID = "dm-3",\n    ArtifactID = "artifact_id",\n};\n\nvar artifact = await client.Machines.Artifacts.Delete(parameters);\n\nConsole.WriteLine(artifact);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/artifacts/$ARTIFACT_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -793,6 +863,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'previews list',
         example: "dedalus machines:previews list \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Previews.List',
+        example:
+          'PreviewListParams parameters = new() { MachineID = "dm-3" };\n\nvar page = await client.Machines.Previews.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -849,6 +924,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:previews create \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --port 0",
       },
+      csharp: {
+        method: 'Machines.Previews.Create',
+        example:
+          'PreviewCreateParams parameters = new()\n{\n    MachineID = "dm-3",\n    Port = 0,\n};\n\nvar preview = await client.Machines.Previews.Create(parameters);\n\nConsole.WriteLine(preview);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "port": 0\n        }\'',
@@ -898,6 +978,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'previews retrieve',
         example:
           "dedalus machines:previews retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --preview-id preview_id",
+      },
+      csharp: {
+        method: 'Machines.Previews.Retrieve',
+        example:
+          'PreviewRetrieveParams parameters = new()\n{\n    MachineID = "dm-3",\n    PreviewID = "preview_id",\n};\n\nvar preview = await client.Machines.Previews.Retrieve(parameters);\n\nConsole.WriteLine(preview);',
       },
       http: {
         example:
@@ -949,6 +1034,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:previews delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --preview-id preview_id",
       },
+      csharp: {
+        method: 'Machines.Previews.Delete',
+        example:
+          'PreviewDeleteParams parameters = new()\n{\n    MachineID = "dm-3",\n    PreviewID = "preview_id",\n};\n\nvar preview = await client.Machines.Previews.Delete(parameters);\n\nConsole.WriteLine(preview);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/previews/$PREVIEW_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -997,6 +1087,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'ssh list',
         example: "dedalus machines:ssh list \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Ssh.List',
+        example:
+          'SshListParams parameters = new() { MachineID = "dm-3" };\n\nvar page = await client.Machines.Ssh.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -1048,6 +1143,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:ssh create \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --public-key public_key",
       },
+      csharp: {
+        method: 'Machines.Ssh.Create',
+        example:
+          'SshCreateParams parameters = new()\n{\n    MachineID = "dm-3",\n    PublicKey = "public_key",\n};\n\nvar sshSession = await client.Machines.Ssh.Create(parameters);\n\nConsole.WriteLine(sshSession);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "public_key": "public_key"\n        }\'',
@@ -1097,6 +1197,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'ssh retrieve',
         example:
           "dedalus machines:ssh retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --session-id session_id",
+      },
+      csharp: {
+        method: 'Machines.Ssh.Retrieve',
+        example:
+          'SshRetrieveParams parameters = new()\n{\n    MachineID = "dm-3",\n    SessionID = "session_id",\n};\n\nvar sshSession = await client.Machines.Ssh.Retrieve(parameters);\n\nConsole.WriteLine(sshSession);',
       },
       http: {
         example:
@@ -1148,6 +1253,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:ssh delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --session-id session_id",
       },
+      csharp: {
+        method: 'Machines.Ssh.Delete',
+        example:
+          'SshDeleteParams parameters = new()\n{\n    MachineID = "dm-3",\n    SessionID = "session_id",\n};\n\nvar sshSession = await client.Machines.Ssh.Delete(parameters);\n\nConsole.WriteLine(sshSession);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/ssh/$SESSION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -1196,6 +1306,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'executions list',
         example: "dedalus machines:executions list \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Executions.List',
+        example:
+          'ExecutionListParams parameters = new() { MachineID = "dm-3" };\n\nvar page = await client.Machines.Executions.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -1254,6 +1369,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:executions create \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --command string",
       },
+      csharp: {
+        method: 'Machines.Executions.Create',
+        example:
+          'ExecutionCreateParams parameters = new()\n{\n    MachineID = "dm-3",\n    Command =\n    [\n        "string"\n    ],\n};\n\nvar execution = await client.Machines.Executions.Create(parameters);\n\nConsole.WriteLine(execution);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "command": [\n            "string"\n          ]\n        }\'',
@@ -1303,6 +1423,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'executions retrieve',
         example:
           "dedalus machines:executions retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --execution-id execution_id",
+      },
+      csharp: {
+        method: 'Machines.Executions.Retrieve',
+        example:
+          'ExecutionRetrieveParams parameters = new()\n{\n    MachineID = "dm-3",\n    ExecutionID = "execution_id",\n};\n\nvar execution = await client.Machines.Executions.Retrieve(parameters);\n\nConsole.WriteLine(execution);',
       },
       http: {
         example:
@@ -1354,6 +1479,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:executions delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --execution-id execution_id",
       },
+      csharp: {
+        method: 'Machines.Executions.Delete',
+        example:
+          'ExecutionDeleteParams parameters = new()\n{\n    MachineID = "dm-3",\n    ExecutionID = "execution_id",\n};\n\nvar execution = await client.Machines.Executions.Delete(parameters);\n\nConsole.WriteLine(execution);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -1403,6 +1533,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'executions output',
         example:
           "dedalus machines:executions output \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --execution-id execution_id",
+      },
+      csharp: {
+        method: 'Machines.Executions.Output',
+        example:
+          'ExecutionOutputParams parameters = new()\n{\n    MachineID = "dm-3",\n    ExecutionID = "execution_id",\n};\n\nvar executionOutput = await client.Machines.Executions.Output(parameters);\n\nConsole.WriteLine(executionOutput);',
       },
       http: {
         example:
@@ -1454,6 +1589,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:executions events \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --execution-id execution_id",
       },
+      csharp: {
+        method: 'Machines.Executions.Events',
+        example:
+          'ExecutionEventsParams parameters = new()\n{\n    MachineID = "dm-3",\n    ExecutionID = "execution_id",\n};\n\nvar page = await client.Machines.Executions.Events(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/executions/$EXECUTION_ID/events \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -1502,6 +1642,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       cli: {
         method: 'terminals list',
         example: "dedalus machines:terminals list \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3",
+      },
+      csharp: {
+        method: 'Machines.Terminals.List',
+        example:
+          'TerminalListParams parameters = new() { MachineID = "dm-3" };\n\nvar page = await client.Machines.Terminals.List(parameters);\nawait foreach (var item in page.Paginate())\n{\n    Console.WriteLine(item);\n}',
       },
       http: {
         example:
@@ -1560,6 +1705,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:terminals create \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --height 0 \\\n  --width 0",
       },
+      csharp: {
+        method: 'Machines.Terminals.Create',
+        example:
+          'TerminalCreateParams parameters = new()\n{\n    MachineID = "dm-3",\n    Height = 0,\n    Width = 0,\n};\n\nvar terminal = await client.Machines.Terminals.Create(parameters);\n\nConsole.WriteLine(terminal);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals \\\n    -H \'Content-Type: application/json\' \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY" \\\n    -d \'{\n          "height": 0,\n          "width": 0\n        }\'',
@@ -1609,6 +1759,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         method: 'terminals retrieve',
         example:
           "dedalus machines:terminals retrieve \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --terminal-id terminal_id",
+      },
+      csharp: {
+        method: 'Machines.Terminals.Retrieve',
+        example:
+          'TerminalRetrieveParams parameters = new()\n{\n    MachineID = "dm-3",\n    TerminalID = "terminal_id",\n};\n\nvar terminal = await client.Machines.Terminals.Retrieve(parameters);\n\nConsole.WriteLine(terminal);',
       },
       http: {
         example:
@@ -1660,6 +1815,11 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:terminals delete \\\n  --api-key 'My API Key' \\\n  --machine-id dm-3 \\\n  --terminal-id terminal_id",
       },
+      csharp: {
+        method: 'Machines.Terminals.Delete',
+        example:
+          'TerminalDeleteParams parameters = new()\n{\n    MachineID = "dm-3",\n    TerminalID = "terminal_id",\n};\n\nvar terminal = await client.Machines.Terminals.Delete(parameters);\n\nConsole.WriteLine(terminal);',
+      },
       http: {
         example:
           'curl https://dcs.dedaluslabs.ai/v1/machines/$MACHINE_ID/terminals/$TERMINAL_ID \\\n    -X DELETE \\\n    -H "Authorization: Bearer $DEDALUS_API_KEY"',
@@ -1702,6 +1862,10 @@ const EMBEDDED_METHODS: MethodEntry[] = [
         example:
           "dedalus machines:terminals connect \\\n  --api-key 'My API Key' \\\n  --machine-id machine_id \\\n  --terminal-id terminal_id",
       },
+      csharp: {
+        example:
+          'TerminalConnectParams parameters = new()\n{\n    MachineID = "machine_id",\n    TerminalID = "terminal_id",\n};\n\nawait client.Machines.Terminals.Connect(parameters);',
+      },
     },
   },
 ];
@@ -1711,6 +1875,11 @@ const EMBEDDED_READMES: { language: string; content: string }[] = [
     language: 'cli',
     content:
       "# Dedalus CLI\n\nThe official CLI for the [Dedalus REST API](https://docs.dedaluslabs.ai).\n\nIt is generated with [Stainless](https://www.stainless.com/).\n\n<!-- x-release-please-start-version -->\n\n## Installation\n\n### Installing with Homebrew\n\n~~~sh\nbrew install dedalus-labs/tap/dedalus\n~~~\n\n### Installing with Go\n\nTo test or install the CLI locally, you need [Go](https://go.dev/doc/install) version 1.22 or later installed.\n\n~~~sh\ngo install 'github.com/dedalus-labs/dedalus-cli/cmd/dedalus@latest'\n~~~\n\nOnce you have run `go install`, the binary is placed in your Go bin directory:\n\n- **Default location**: `$HOME/go/bin` (or `$GOPATH/bin` if GOPATH is set)\n- **Check your path**: Run `go env GOPATH` to see the base directory\n\nIf commands aren't found after installation, add the Go bin directory to your PATH:\n\n~~~sh\n# Add to your shell profile (.zshrc, .bashrc, etc.)\nexport PATH=\"$PATH:$(go env GOPATH)/bin\"\n~~~\n\n<!-- x-release-please-end -->\n\n### Running Locally\n\nAfter cloning the git repository for this project, you can use the\n`scripts/run` script to run the tool locally:\n\n~~~sh\n./scripts/run args...\n~~~\n\n## Usage\n\nThe CLI follows a resource-based command structure:\n\n~~~sh\ndedalus [resource] <command> [flags...]\n~~~\n\n~~~sh\ndedalus machines create \\\n  --api-key 'My API Key' \\\n  --memory-mib 2048 \\\n  --storage-gib 10 \\\n  --vcpu 1\n~~~\n\nFor details about specific commands, use the `--help` flag.\n\n### Environment variables\n\n| Environment variable | Description                                   | Required | Default value |\n| -------------------- | --------------------------------------------- | -------- | ------------- |\n| `DEDALUS_API_KEY`    | Dedalus API key sent as Authorization Bearer. | no       | `null`        |\n| `DEDALUS_X_API_KEY`  | Dedalus API key sent as x-api-key header.     | no       | `null`        |\n| `DEDALUS_ORG_ID`     | Organization ID header for all DCS requests.  | no       | `null`        |\n\n### Global flags\n\n- `--api-key` - Dedalus API key sent as Authorization Bearer. (can also be set with `DEDALUS_API_KEY` env var)\n- `--x-api-key` - Dedalus API key sent as x-api-key header. (can also be set with `DEDALUS_X_API_KEY` env var)\n- `--dedalus-org-id` - Organization ID header for all DCS requests. (can also be set with `DEDALUS_ORG_ID` env var)\n- `--help` - Show command line usage\n- `--debug` - Enable debug logging (includes HTTP request/response details)\n- `--version`, `-v` - Show the CLI version\n- `--base-url` - Use a custom API backend URL\n- `--format` - Change the output format (`auto`, `explore`, `json`, `jsonl`, `pretty`, `raw`, `yaml`)\n- `--format-error` - Change the output format for errors (`auto`, `explore`, `json`, `jsonl`, `pretty`, `raw`, `yaml`)\n- `--transform` - Transform the data output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)\n- `--transform-error` - Transform the error output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)\n\n### Passing files as arguments\n\nTo pass files to your API, you can use the `@myfile.ext` syntax:\n\n~~~bash\ndedalus <command> --arg @abe.jpg\n~~~\n\nFiles can also be passed inside JSON or YAML blobs:\n\n~~~bash\ndedalus <command> --arg '{image: \"@abe.jpg\"}'\n# Equivalent:\ndedalus <command> <<YAML\narg:\n  image: \"@abe.jpg\"\nYAML\n~~~\n\nIf you need to pass a string literal that begins with an `@` sign, you can\nescape the `@` sign to avoid accidentally passing a file.\n\n~~~bash\ndedalus <command> --username '\\@abe'\n~~~\n\n#### Explicit encoding\n\nFor JSON endpoints, the CLI tool does filetype sniffing to determine whether the\nfile contents should be sent as a string literal (for plain text files) or as a\nbase64-encoded string literal (for binary files). If you need to explicitly send\nthe file as either plain text or base64-encoded data, you can use\n`@file://myfile.txt` (for string encoding) or `@data://myfile.dat` (for\nbase64-encoding). Note that absolute paths will begin with `@file://` or\n`@data://`, followed by a third `/` (for example, `@file:///tmp/file.txt`).\n\n~~~bash\ndedalus <command> --arg @data://file.txt\n~~~\n\n## Linking different Go SDK versions\n\nYou can link the CLI against a different version of the Dedalus Go SDK\nfor development purposes using the `./scripts/link` script.\n\nTo link to a specific version from a repository (version can be a branch,\ngit tag, or commit hash):\n\n~~~bash\n./scripts/link github.com/org/repo@version\n~~~\n\nTo link to a local copy of the SDK:\n\n~~~bash\n./scripts/link ../path/to/dedalus-go\n~~~\n\nIf you run the link script without any arguments, it will default to `../dedalus-go`.\n",
+  },
+  {
+    language: 'csharp',
+    content:
+      '# Dedalus C# API Library\n\nThe Dedalus C# SDK provides convenient access to the [Dedalus REST API](https://docs.dedaluslabs.ai) from applications written in   C#.\n\n## Installation\n\n```bash\ngit clone git@github.com:stainless-sdks/dedalus-csharp.git\ndotnet add reference dedalus-csharp/src/Dedalus\n```\n\n## Requirements\n\nThis library requires .NET Standard 2.0 or later.\n\n## Usage\n\nSee the [`examples`](examples) directory for complete and runnable examples.\n\n```csharp\nDedalusClient client = new();\n\nMachineCreateParams parameters = new()\n{\n    MemoryMiB = 2048,\n    StorageGiB = 10,\n    Vcpu = 1,\n};\n\nvar machine = await client.Machines.Create(parameters);\n\nConsole.WriteLine(machine);\n```',
   },
   {
     language: 'go',
