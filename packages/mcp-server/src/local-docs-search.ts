@@ -2229,7 +2229,7 @@ const EMBEDDED_READMES: { language: string; content: string }[] = [
   {
     language: 'php',
     content:
-      '# Dedalus PHP API Library\n\nThe Dedalus PHP library provides convenient access to the Dedalus REST API from any PHP 8.1.0+ application.\n\n## Installation\n\nTo use this package, install via Composer by adding the following to your application\'s `composer.json`:\n\n```json\n{\n  "repositories": [\n    {\n      "type": "vcs",\n      "url": "git@github.com:stainless-sdks/dedalus-php.git"\n    }\n  ],\n  "require": {\n    "org-placeholder/dedalus": "dev-main"\n  }\n}\n```\n\n## Usage\n\n```php\n<?php\n\n$client = new Client(apiKey: getenv(\'DEDALUS_API_KEY\') ?: \'My API Key\');\n\n$machine = $client->machines->create(memoryMiB: 2048, storageGiB: 10, vcpu: 1);\n\nvar_dump($machine->machine_id);\n```',
+      '# Dedalus PHP API Library\n\nThe Dedalus PHP library provides convenient access to the Dedalus REST API from any PHP 8.1.0+ application.\n\n## Installation\n\nTo use this package, install via Composer by adding the following to your application\'s `composer.json`:\n\n<!-- x-release-please-start-version -->\n```json\n{\n  "repositories": [\n    {\n      "type": "vcs",\n      "url": "git@github.com:dedalus-labs/dedalus-php.git"\n    }\n  ],\n  "require": {\n    "org-placeholder/dedalus": "dev-main"\n  }\n}\n```\n<!-- x-release-please-end -->\n\n## Usage\n\n```php\n<?php\n\n$client = new Client(apiKey: getenv(\'DEDALUS_API_KEY\') ?: \'My API Key\');\n\n$machine = $client->machines->create(memoryMiB: 2048, storageGiB: 10, vcpu: 1);\n\nvar_dump($machine->machine_id);\n```',
   },
   {
     language: 'python',
