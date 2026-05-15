@@ -2209,7 +2209,7 @@ const EMBEDDED_READMES: { language: string; content: string }[] = [
   {
     language: 'csharp',
     content:
-      '# Dedalus C# API Library\n\nThe Dedalus C# SDK provides convenient access to the [Dedalus REST API](https://docs.dedaluslabs.ai) from applications written in   C#.\n\n## Installation\n\n```bash\ngit clone git@github.com:stainless-sdks/dedalus-csharp.git\ndotnet add reference dedalus-csharp/src/Dedalus\n```\n\n## Requirements\n\nThis library requires .NET Standard 2.0 or later.\n\n## Usage\n\nSee the [`examples`](examples) directory for complete and runnable examples.\n\n```csharp\nDedalusClient client = new();\n\nMachineCreateParams parameters = new()\n{\n    MemoryMiB = 2048,\n    StorageGiB = 10,\n    Vcpu = 1,\n};\n\nvar machine = await client.Machines.Create(parameters);\n\nConsole.WriteLine(machine);\n```',
+      '# Dedalus C# API Library\n\nThe Dedalus C# SDK provides convenient access to the [Dedalus REST API](https://docs.dedaluslabs.ai) from applications written in   C#.\n\n## Installation\n\n```bash\ngit clone git@github.com:dedalus-labs/dedalus-csharp.git\ndotnet add reference dedalus-csharp/src/Dedalus\n```\n\n## Requirements\n\nThis library requires .NET Standard 2.0 or later.\n\n## Usage\n\nSee the [`examples`](examples) directory for complete and runnable examples.\n\n```csharp\nDedalusClient client = new();\n\nMachineCreateParams parameters = new()\n{\n    MemoryMiB = 2048,\n    StorageGiB = 10,\n    Vcpu = 1,\n};\n\nvar machine = await client.Machines.Create(parameters);\n\nConsole.WriteLine(machine);\n```',
   },
   {
     language: 'go',
