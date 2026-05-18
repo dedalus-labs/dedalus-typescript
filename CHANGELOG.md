@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.4.1 (2026-05-18)
+
+Full Changelog: [v0.4.0...v0.4.1](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.4.1)
+
+### Bug Fixes
+
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([6e1859c](https://github.com/dedalus-labs/dedalus-typescript/commit/6e1859c8b2debbae5427c282744e706e8c02dd7b))
+
+
+### Chores
+
+* configure new SDK language ([6b68956](https://github.com/dedalus-labs/dedalus-typescript/commit/6b68956600107ed25ea17d5262d961d0164a9dd9))
+* configure new SDK language ([1d18b8d](https://github.com/dedalus-labs/dedalus-typescript/commit/1d18b8da20cc77e9bd527a3c3ea87a8a63d4470a))
+* configure new SDK language ([e3842ad](https://github.com/dedalus-labs/dedalus-typescript/commit/e3842adbbad581256df3849241e71ba57d8ec386))
+* configure new SDK language ([f89cb5d](https://github.com/dedalus-labs/dedalus-typescript/commit/f89cb5d8535b9ba6e650bdda0cd2a6d836d071b2))
+* configure new SDK language ([84cbe52](https://github.com/dedalus-labs/dedalus-typescript/commit/84cbe5246bf596d6ae65b8900bd71ea778d91f05))
+* **tests:** remove redundant File import ([7226125](https://github.com/dedalus-labs/dedalus-typescript/commit/72261254409c99fbb91ac8ae19b0220f2aaffbff))
+* update SDK settings ([66989d7](https://github.com/dedalus-labs/dedalus-typescript/commit/66989d7653c0e287fc849986884fd4cd3f60ddf3))
+* update SDK settings ([b84a9d9](https://github.com/dedalus-labs/dedalus-typescript/commit/b84a9d911a60f81d25ee69f4dabb5c46f3ce45a3))
+* update SDK settings ([d8273e8](https://github.com/dedalus-labs/dedalus-typescript/commit/d8273e83c4494fbab6407584929adfa4c28b0cce))
+* update SDK settings ([57f24ae](https://github.com/dedalus-labs/dedalus-typescript/commit/57f24ae07c7acb0fb28b667dc267eb1c73aa205d))
+* update SDK settings ([6ce506a](https://github.com/dedalus-labs/dedalus-typescript/commit/6ce506a7697e83c99ab5f6baf82d648c8500bdec))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)
