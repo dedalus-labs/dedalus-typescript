@@ -1,31 +1,8 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-export {
-  Machines,
-  type CreateParams,
-  type LifecycleStatus,
-  type Machine,
-  type MachineList,
-  type MachineListItem,
-  type UpdateParams,
-  type MachineCreateParams,
-  type MachineRetrieveParams,
-  type MachineUpdateParams,
-  type MachineListParams,
-  type MachineDeleteParams,
-  type MachineSleepParams,
-  type MachineWakeParams,
-  type MachineWatchParams,
-  type MachineListItemsCursorPage,
-} from './machines/machines';
-export {
-  Usage,
-  type MachineComputeUsage,
-  type MachineComputeUsageRow,
-  type MachineStorageUsage,
-  type MachineStorageUsageRow,
-  type OrgUsage,
-  type UsageRetrieveParams,
-  type UsageMachineComputeParams,
-  type UsageMachineStorageParams,
-} from './usage';
+export { MachineLifecycle } from "./machine-lifecycle/machine-lifecycle";
+export type { CreateMachineRequest, UpdateMachineRequest, CreateExecutionRequest, CreatePreviewRequest, CreateSSHSessionRequest, CreateTerminalRequest, MachineLifecycleListParams, MachineLifecycleListResponse, MachineLifecycleCreateParams, MachineLifecycleCreateResponse, MachineLifecycleDeleteParams, MachineLifecycleDeleteResponse, MachineLifecycleRetrieveParams, MachineLifecycleRetrieveResponse, MachineLifecyclePatchParams, MachineLifecyclePatchResponse, MachineLifecycleListArtifactsParams, MachineLifecycleListArtifactsResponse, MachineLifecycleDeleteArtifactParams, MachineLifecycleDeleteArtifactResponse, MachineLifecycleRetrieveArtifactParams, MachineLifecycleRetrieveArtifactResponse, MachineLifecycleListExecutionsParams, MachineLifecycleListExecutionsResponse, MachineLifecycleCreateExecutionParams, MachineLifecycleCreateExecutionResponse, MachineLifecycleDeleteExecutionParams, MachineLifecycleDeleteExecutionResponse, MachineLifecycleRetrieveExecutionParams, MachineLifecycleRetrieveExecutionResponse, MachineLifecycleListExecutionEventsParams, MachineLifecycleListExecutionEventsResponse, MachineLifecycleListExecutionOutputParams, MachineLifecycleListExecutionOutputResponse, MachineLifecycleListPreviewsParams, MachineLifecycleListPreviewsResponse, MachineLifecycleCreatePreviewParams, MachineLifecycleCreatePreviewResponse, MachineLifecycleDeletePreviewParams, MachineLifecycleDeletePreviewResponse, MachineLifecycleRetrievePreviewParams, MachineLifecycleRetrievePreviewResponse, MachineLifecycleSleepParams, MachineLifecycleSleepResponse, MachineLifecycleListSSHSessionsParams, MachineLifecycleListSSHSessionsResponse, MachineLifecycleCreateSSHSessionParams, MachineLifecycleCreateSSHSessionResponse, MachineLifecycleDeleteSSHSessionParams, MachineLifecycleDeleteSSHSessionResponse, MachineLifecycleRetrieveSSHSessionParams, MachineLifecycleRetrieveSSHSessionResponse, MachineLifecycleWatchStatusParams, MachineLifecycleWatchStatusResponse, MachineLifecycleListTerminalsParams, MachineLifecycleListTerminalsResponse, MachineLifecycleCreateTerminalParams, MachineLifecycleCreateTerminalResponse, MachineLifecycleDeleteTerminalParams, MachineLifecycleDeleteTerminalResponse, MachineLifecycleRetrieveTerminalParams, MachineLifecycleRetrieveTerminalResponse, MachineLifecycleConnectTerminalParams, MachineLifecycleWakeParams, MachineLifecycleWakeResponse } from "./machine-lifecycle/machine-lifecycle";
+export { MachineLifecycle as MachineLifecycleResource } from "./machine-lifecycle/machine-lifecycle";
+export { Usage } from "./usage/usage";
+export type { UsageListParams, UsageListResponse } from "./usage/usage";
+export { Usage as UsageResource } from "./usage/usage";

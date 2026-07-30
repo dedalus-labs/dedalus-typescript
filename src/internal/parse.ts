@@ -1,4 +1,4 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
 import type { FinalRequestOptions } from './request-options';
 import { Stream } from '../core/streaming';
@@ -25,6 +25,12 @@ export async function defaultParseResponse<T>(client: Dedalus, props: APIRespons
 
       if (props.options.__streamClass) {
         return props.options.__streamClass.fromSSEResponse(response, props.controller, client) as any;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (contentType?.includes('ndjson') || contentType?.includes('jsonl')) {
+        if (!response.body) throw new Error('Attempted to iterate over a response with no body');
+        return Stream.fromReadableStream(response.body, props.controller, client) as any;
       }
 
       return Stream.fromSSEResponse(response, props.controller, client) as any;

@@ -1,87 +1,94 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-import type { RequestInit, RequestInfo, BodyInit } from './internal/builtin-types';
-import type { HTTPMethod, PromiseOrValue, MergedRequestInit, FinalizedRequestInit } from './internal/types';
-import { uuid4 } from './internal/utils/uuid';
-import { validatePositiveInteger, isAbsoluteURL, safeJSON } from './internal/utils/values';
-import { sleep } from './internal/utils/sleep';
-export type { Logger, LogLevel } from './internal/utils/log';
-import { castToError, isAbortError } from './internal/errors';
+import { APIPromise } from './api-promise';
 import type { APIResponseProps } from './internal/parse';
+import * as Errors from './error';
+import { uuid4 } from './internal/utils/uuid';
+import { validatePositiveInteger, isAbsoluteURL, safeJSON, isEmptyObj } from './internal/utils/values';
+import { sleep } from './internal/utils/sleep';
+import { castToError, isAbortError } from './internal/errors';
 import { getPlatformHeaders } from './internal/detect-platform';
 import * as Shims from './internal/shims';
 import * as Opts from './internal/request-options';
-import { stringifyQuery } from './internal/utils/query';
-import { VERSION } from './version';
-import * as Errors from './core/error';
-import * as Pagination from './core/pagination';
-import { AbstractPage, type CursorPageParams, CursorPageResponse } from './core/pagination';
-import * as Uploads from './core/uploads';
-import * as API from './resources/index';
-import { APIPromise } from './core/api-promise';
-import {
-  MachineComputeUsage,
-  MachineComputeUsageRow,
-  MachineStorageUsage,
-  MachineStorageUsageRow,
-  OrgUsage,
-  Usage,
-  UsageMachineComputeParams,
-  UsageMachineStorageParams,
-  UsageRetrieveParams,
-} from './resources/usage';
-import {
-  CreateParams,
-  LifecycleStatus,
-  Machine,
-  MachineCreateParams,
-  MachineDeleteParams,
-  MachineList,
-  MachineListItem,
-  MachineListItemsCursorPage,
-  MachineListParams,
-  MachineRetrieveParams,
-  MachineSleepParams,
-  MachineUpdateParams,
-  MachineWakeParams,
-  MachineWatchParams,
-  Machines,
-  UpdateParams,
-} from './resources/machines/machines';
-import { type Fetch } from './internal/builtin-types';
-import { isRunningInBrowser } from './internal/detect-platform';
-import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
-import { FinalRequestOptions, RequestOptions } from './internal/request-options';
 import { readEnv } from './internal/utils/env';
-import {
-  type LogLevel,
-  type Logger,
-  formatRequestDetails,
-  loggerFor,
-  parseLogLevel,
-} from './internal/utils/log';
-import { isEmptyObj } from './internal/utils/values';
+import { formatRequestDetails, loggerFor, parseLogLevel, type LogLevel, type Logger } from './internal/utils/log';
+export type { Logger, LogLevel } from './internal/utils/log';
+import type { RequestInit, RequestInfo, BodyInit, Fetch } from './internal/builtin-types';
+import { buildHeaders, type HeadersLike } from './internal/headers';
+import type { FinalRequestOptions, RequestOptions } from './internal/request-options';
+import type { HTTPMethod, FinalizedRequestInit, MergedRequestInit, PromiseOrValue } from './internal/types';
+import { stringify as stringifyQuery } from './internal/qs/stringify';
+import type { StringifyOptions } from './internal/qs/types';
+import { toFile } from './core/uploads';
+import { VERSION } from './version';
+import { MachineLifecycle, type CreateMachineRequest, type UpdateMachineRequest, type CreateExecutionRequest, type CreatePreviewRequest, type CreateSSHSessionRequest, type CreateTerminalRequest, type MachineLifecycleListResponse, type MachineLifecycleCreateResponse, type MachineLifecycleDeleteResponse, type MachineLifecycleRetrieveResponse, type MachineLifecyclePatchResponse, type MachineLifecycleListArtifactsResponse, type MachineLifecycleDeleteArtifactResponse, type MachineLifecycleRetrieveArtifactResponse, type MachineLifecycleListExecutionsResponse, type MachineLifecycleCreateExecutionResponse, type MachineLifecycleDeleteExecutionResponse, type MachineLifecycleRetrieveExecutionResponse, type MachineLifecycleListExecutionEventsResponse, type MachineLifecycleListExecutionOutputResponse, type MachineLifecycleListPreviewsResponse, type MachineLifecycleCreatePreviewResponse, type MachineLifecycleDeletePreviewResponse, type MachineLifecycleRetrievePreviewResponse, type MachineLifecycleSleepResponse, type MachineLifecycleListSSHSessionsResponse, type MachineLifecycleCreateSSHSessionResponse, type MachineLifecycleDeleteSSHSessionResponse, type MachineLifecycleRetrieveSSHSessionResponse, type MachineLifecycleWatchStatusResponse, type MachineLifecycleListTerminalsResponse, type MachineLifecycleCreateTerminalResponse, type MachineLifecycleDeleteTerminalResponse, type MachineLifecycleRetrieveTerminalResponse, type MachineLifecycleWakeResponse, type MachineLifecycleListParams, type MachineLifecycleCreateParams, type MachineLifecycleDeleteParams, type MachineLifecycleRetrieveParams, type MachineLifecyclePatchParams, type MachineLifecycleListArtifactsParams, type MachineLifecycleDeleteArtifactParams, type MachineLifecycleRetrieveArtifactParams, type MachineLifecycleListExecutionsParams, type MachineLifecycleCreateExecutionParams, type MachineLifecycleDeleteExecutionParams, type MachineLifecycleRetrieveExecutionParams, type MachineLifecycleListExecutionEventsParams, type MachineLifecycleListExecutionOutputParams, type MachineLifecycleListPreviewsParams, type MachineLifecycleCreatePreviewParams, type MachineLifecycleDeletePreviewParams, type MachineLifecycleRetrievePreviewParams, type MachineLifecycleSleepParams, type MachineLifecycleListSSHSessionsParams, type MachineLifecycleCreateSSHSessionParams, type MachineLifecycleDeleteSSHSessionParams, type MachineLifecycleRetrieveSSHSessionParams, type MachineLifecycleWatchStatusParams, type MachineLifecycleListTerminalsParams, type MachineLifecycleCreateTerminalParams, type MachineLifecycleDeleteTerminalParams, type MachineLifecycleRetrieveTerminalParams, type MachineLifecycleConnectTerminalParams, type MachineLifecycleWakeParams } from "./resources/machine-lifecycle/machine-lifecycle";
+import { Usage, type UsageListResponse, type UsageListParams } from "./resources/usage/usage";
+
+export type AuthTokenProvider = () => string | Promise<string>;
+
+const queryArrayFormat: NonNullable<StringifyOptions["arrayFormat"]> = "comma";
+const queryAllowDots = false;
+
+const environments = {
+  production: "https://api.dedaluslabs.ai",
+  official_dcs_api: "https://dcs.dedaluslabs.ai",
+};
+type Environment = keyof typeof environments;
 
 export interface ClientOptions {
   /**
-   * Dedalus API key sent as Authorization Bearer.
+   * API key authentication using X-API-Key header
    */
-  apiKey?: string | null | undefined;
+  apiKeyAuth?: string | AuthTokenProvider | undefined;
 
   /**
-   * Dedalus API key sent as x-api-key header.
+   * Dedalus API key in Authorization: Bearer <key>.
    */
-  xAPIKey?: string | null | undefined;
+  bearerAuth?: string | AuthTokenProvider | undefined;
 
   /**
-   * Organization ID header for all DCS requests.
+   * API key authentication using Bearer token
+   */
+  bearer?: string | AuthTokenProvider | undefined;
+
+  /**
+   * Provider name for BYOK mode.
+   */
+  provider?: string | null | undefined;
+
+  /**
+   * Provider API key for BYOK mode.
+   */
+  providerKey?: string | null | undefined;
+
+  /**
+   * Model identifier for BYOK provider.
+   */
+  providerModel?: string | null | undefined;
+
+  /**
+   * MCP Authorization Server URL.
+   */
+  asBaseURL?: string | null | undefined;
+
+  /**
+   * Organization ID for request scoping.
    */
   dedalusOrgID?: string | null | undefined;
 
   /**
+   * Specifies the environment to use for the API.
+   *
+   * Each environment maps to a different base URL:
+   * - `production` corresponds to `https://api.dedaluslabs.ai`
+   * - `official_dcs_api` corresponds to `https://dcs.dedaluslabs.ai`
+   */
+  environment?: Environment | undefined;
+
+  /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
    *
-   * Defaults to process.env['DEDALUS_BASE_URL'].
+   * Defaults to process.env["DEDALUS_BASE_URL"].
    */
   baseURL?: string | null | undefined;
 
@@ -95,6 +102,7 @@ export interface ClientOptions {
    * @unit milliseconds
    */
   timeout?: number | undefined;
+
   /**
    * Additional `RequestInit` options to be passed to `fetch` calls.
    * Properties will be overridden by per-request `fetchOptions`.
@@ -135,7 +143,7 @@ export interface ClientOptions {
   /**
    * Set the log level.
    *
-   * Defaults to process.env['DEDALUS_LOG'] or 'warn' if it isn't set.
+   * Defaults to process.env["DEDALUS_LOG"] or 'warn' if it isn't set.
    */
   logLevel?: LogLevel | undefined;
 
@@ -147,12 +155,19 @@ export interface ClientOptions {
   logger?: Logger | undefined;
 }
 
+export type DedalusOptions = ClientOptions;
+
 /**
  * API Client for interfacing with the Dedalus API.
  */
 export class Dedalus {
-  apiKey: string | null;
-  xAPIKey: string | null;
+  apiKeyAuth: string | AuthTokenProvider | undefined;
+  bearerAuth: string | AuthTokenProvider | undefined;
+  bearer: string | AuthTokenProvider | undefined;
+  provider: string | null;
+  providerKey: string | null;
+  providerModel: string | null;
+  asBaseURL: string | null;
   dedalusOrgID: string | null;
 
   baseURL: string;
@@ -161,19 +176,26 @@ export class Dedalus {
   logger: Logger;
   logLevel: LogLevel | undefined;
   fetchOptions: MergedRequestInit | undefined;
-
   private fetch: Fetch;
   #encoder: Opts.RequestEncoder;
   protected idempotencyHeader?: string;
+  private _baseURLOverridden: boolean;
+  private _defaultBaseURL: string;
   private _options: ClientOptions;
 
   /**
    * API Client for interfacing with the Dedalus API.
    *
-   * @param {string | null | undefined} [opts.apiKey=process.env['DEDALUS_API_KEY'] ?? null]
-   * @param {string | null | undefined} [opts.xAPIKey=process.env['DEDALUS_X_API_KEY'] ?? null]
-   * @param {string | null | undefined} [opts.dedalusOrgID=process.env['DEDALUS_ORG_ID'] ?? null]
-   * @param {string} [opts.baseURL=process.env['DEDALUS_BASE_URL'] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
+   * @param {string | AuthTokenProvider | undefined} [opts.apiKeyAuth=process.env["API_KEY_AUTH"] ?? undefined]
+   * @param {string | AuthTokenProvider | undefined} [opts.bearerAuth=process.env["BEARER_AUTH"] ?? undefined]
+   * @param {string | AuthTokenProvider | undefined} [opts.bearer=process.env["BEARER"] ?? undefined]
+   * @param {string | null | undefined} [opts.provider=process.env["DEDALUS_PROVIDER"] ?? null]
+   * @param {string | null | undefined} [opts.providerKey=process.env["DEDALUS_PROVIDER_KEY"] ?? null]
+   * @param {string | null | undefined} [opts.providerModel=process.env["DEDALUS_PROVIDER_MODEL"] ?? null]
+   * @param {string | null | undefined} [opts.asBaseURL=process.env["DEDALUS_AS_URL"] ?? null]
+   * @param {string | null | undefined} [opts.dedalusOrgID=process.env["DEDALUS_ORG_ID"] ?? null]
+   * @param {Environment} [opts.environment=production] - Specifies the environment URL to use for the API.
+   * @param {string} [opts.baseURL=process.env["DEDALUS_BASE_URL"] ?? https://api.dedaluslabs.ai] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -182,27 +204,34 @@ export class Dedalus {
    * @param {Record<string, string | undefined>} opts.defaultQuery - Default query parameters to include with every request to the API.
    */
   constructor({
-    baseURL = readEnv('DEDALUS_BASE_URL'),
-    apiKey = readEnv('DEDALUS_API_KEY') ?? null,
-    xAPIKey = readEnv('DEDALUS_X_API_KEY') ?? null,
-    dedalusOrgID = readEnv('DEDALUS_ORG_ID') ?? null,
+    baseURL = readEnv("DEDALUS_BASE_URL"),
+    apiKeyAuth = readEnv("API_KEY_AUTH"),
+    bearerAuth = readEnv("BEARER_AUTH"),
+    bearer = readEnv("BEARER"),
+    provider = readEnv("DEDALUS_PROVIDER") ?? null,
+    providerKey = readEnv("DEDALUS_PROVIDER_KEY") ?? null,
+    providerModel = readEnv("DEDALUS_PROVIDER_MODEL") ?? null,
+    asBaseURL = readEnv("DEDALUS_AS_URL") ?? null,
+    dedalusOrgID = readEnv("DEDALUS_ORG_ID") ?? null,
     ...opts
   }: ClientOptions = {}) {
     const options: ClientOptions = {
-      apiKey,
-      xAPIKey,
+      apiKeyAuth,
+      bearerAuth,
+      bearer,
+      provider,
+      providerKey,
+      providerModel,
+      asBaseURL,
       dedalusOrgID,
       ...opts,
-      baseURL: baseURL || `https://dcs.dedaluslabs.ai`,
+      baseURL: baseURL || null,
     };
-
-    if (isRunningInBrowser()) {
-      throw new Errors.DedalusError(
-        "It looks like you're running in a browser-like environment, which is disabled to protect your secret API credentials from attackers. If you have a strong business need for client-side use of this API, please open a GitHub issue with your use-case and security mitigations.",
-      );
-    }
-
-    this.baseURL = options.baseURL!;
+    const environment = options.environment ?? "production";
+    const baseURLOverridden = baseURL !== null && baseURL !== undefined && baseURL !== "";
+    if (baseURLOverridden && options.environment) throw new Errors.DedalusError("Ambiguous URL; The `baseURL` option (or DEDALUS_BASE_URL env var) and the `environment` option are given. If you want to use the environment you must pass baseURL: null");
+    const defaultBaseURL = environments[environment];
+    this.baseURL = options.baseURL || defaultBaseURL;
     this.timeout = options.timeout ?? Dedalus.DEFAULT_TIMEOUT /* 1 minute */;
     this.logger = options.logger ?? console;
     const defaultLogLevel = 'warn';
@@ -210,14 +239,14 @@ export class Dedalus {
     this.logLevel = defaultLogLevel;
     this.logLevel =
       parseLogLevel(options.logLevel, 'ClientOptions.logLevel', this) ??
-      parseLogLevel(readEnv('DEDALUS_LOG'), "process.env['DEDALUS_LOG']", this) ??
+      parseLogLevel(readEnv("DEDALUS_LOG"), "process.env[\"DEDALUS_LOG\"]", this) ??
       defaultLogLevel;
     this.fetchOptions = options.fetchOptions;
     this.maxRetries = options.maxRetries ?? 2;
     this.fetch = options.fetch ?? Shims.getDefaultFetch();
     this.#encoder = Opts.FallbackEncoder;
 
-    const customHeadersEnv = readEnv('DEDALUS_CUSTOM_HEADERS');
+    const customHeadersEnv = readEnv("DEDALUS_CUSTOM_HEADERS");
     if (customHeadersEnv) {
       const parsed: Record<string, string> = {};
       for (const line of customHeadersEnv.split('\n')) {
@@ -229,89 +258,55 @@ export class Dedalus {
       options.defaultHeaders = { ...parsed, ...options.defaultHeaders };
     }
 
-    this._options = options;
-    this.idempotencyHeader = 'Idempotency-Key';
+    this._options = { ...options, baseURL: baseURLOverridden ? this.baseURL : undefined, environment };
+    this._baseURLOverridden = baseURLOverridden;
+    this._defaultBaseURL = defaultBaseURL;
+    this.idempotencyHeader = "Idempotency-Key";
 
-    this.apiKey = apiKey;
-    this.xAPIKey = xAPIKey;
+    this.apiKeyAuth = apiKeyAuth;
+    this.bearerAuth = bearerAuth;
+    this.bearer = bearer;
+    this.provider = provider;
+    this.providerKey = providerKey;
+    this.providerModel = providerModel;
+    this.asBaseURL = asBaseURL;
     this.dedalusOrgID = dedalusOrgID;
   }
 
-  /**
-   * Create a new client instance re-using the same options given to the current client with optional overriding.
-   */
   withOptions(options: Partial<ClientOptions>): this {
-    const client = new (this.constructor as any as new (props: ClientOptions) => typeof this)({
+    const client = new (this.constructor as new (props: ClientOptions) => this)({
       ...this._options,
-      baseURL: this.baseURL,
+      ...(this.#baseURLOverridden() ? { baseURL: this.baseURL } : {}),
       maxRetries: this.maxRetries,
       timeout: this.timeout,
       logger: this.logger,
       logLevel: this.logLevel,
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
-      apiKey: this.apiKey,
-      xAPIKey: this.xAPIKey,
+      apiKeyAuth: this.apiKeyAuth,
+      bearerAuth: this.bearerAuth,
+      bearer: this.bearer,
+      provider: this.provider,
+      providerKey: this.providerKey,
+      providerModel: this.providerModel,
+      asBaseURL: this.asBaseURL,
       dedalusOrgID: this.dedalusOrgID,
       ...options,
     });
     return client;
   }
 
-  /**
-   * Check whether the base URL is set to its default.
-   */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://dcs.dedaluslabs.ai';
+    // A named environment selects a default URL; only explicit overrides should bypass per-request defaults.
+    return this._baseURLOverridden || this.baseURL !== this._defaultBaseURL;
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
     return this._options.defaultQuery;
   }
 
-  protected validateHeaders({ values, nulls }: NullableHeaders) {
-    if (this.xAPIKey && values.get('x-api-key')) {
-      return;
-    }
-    if (nulls.has('x-api-key')) {
-      return;
-    }
-
-    if (this.apiKey && values.get('authorization')) {
-      return;
-    }
-    if (nulls.has('authorization')) {
-      return;
-    }
-
-    throw new Error(
-      'Could not resolve authentication method. Expected either xAPIKey or apiKey to be set. Or for one of the "x-api-key" or "Authorization" headers to be explicitly omitted',
-    );
-  }
-
-  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.apiKeyAuth(opts), await this.bearerAuth(opts)]);
-  }
-
-  protected async apiKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.xAPIKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ 'x-api-key': this.xAPIKey }]);
-  }
-
-  protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.apiKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
-  }
-
-  /**
-   * Basic re-implementation of `qs.stringify` for primitive types.
-   */
   protected stringifyQuery(query: object | Record<string, unknown>): string {
-    return stringifyQuery(query);
+    return stringifyQuery(query, { arrayFormat: queryArrayFormat, allowDots: queryAllowDots });
   }
 
   private getUserAgent(): string {
@@ -319,12 +314,12 @@ export class Dedalus {
   }
 
   protected defaultIdempotencyKey(): string {
-    return `stainless-node-retry-${uuid4()}`;
+    return `scalar-node-retry-${uuid4()}`;
   }
 
   protected makeStatusError(
     status: number,
-    error: Object,
+    error: object | undefined,
     message: string | undefined,
     headers: Headers,
   ): Errors.APIError {
@@ -337,10 +332,12 @@ export class Dedalus {
     defaultBaseURL?: string | undefined,
   ): string {
     const baseURL = (!this.#baseURLOverridden() && defaultBaseURL) || this.baseURL;
+    // Guarantee exactly one "/" between baseURL and path so that bases without a trailing slash
+    // and paths without a leading slash do not fuse into a malformed URL (e.g. ".../v1" + "widgets").
     const url =
       isAbsoluteURL(path) ?
         new URL(path)
-      : new URL(baseURL + (baseURL.endsWith('/') && path.startsWith('/') ? path.slice(1) : path));
+      : new URL((baseURL.endsWith('/') ? baseURL : baseURL + '/') + (path.startsWith('/') ? path.slice(1) : path));
 
     const defaultQuery = this.defaultQuery();
     const pathQuery = Object.fromEntries(url.searchParams);
@@ -348,7 +345,7 @@ export class Dedalus {
       query = { ...pathQuery, ...defaultQuery, ...query };
     }
 
-    if (typeof query === 'object' && query && !Array.isArray(query)) {
+    if (typeof query === "object" && query && !Array.isArray(query)) {
       url.search = this.stringifyQuery(query);
     }
 
@@ -398,7 +395,7 @@ export class Dedalus {
   ): APIPromise<Rsp> {
     return this.request(
       Promise.resolve(opts).then((opts) => {
-        return { method, path, ...opts };
+        return { method, path, ...opts } as FinalRequestOptions;
       }),
     );
   }
@@ -567,36 +564,7 @@ export class Dedalus {
     return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
   }
 
-  getAPIList<Item, PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>>(
-    path: string,
-    Page: new (...args: any[]) => PageClass,
-    opts?: PromiseOrValue<RequestOptions>,
-  ): Pagination.PagePromise<PageClass, Item> {
-    return this.requestAPIList(
-      Page,
-      opts && 'then' in opts ?
-        opts.then((opts) => ({ method: 'get', path, ...opts }))
-      : { method: 'get', path, ...opts },
-    );
-  }
-
-  requestAPIList<
-    Item = unknown,
-    PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>,
-  >(
-    Page: new (...args: ConstructorParameters<typeof Pagination.AbstractPage>) => PageClass,
-    options: PromiseOrValue<FinalRequestOptions>,
-  ): Pagination.PagePromise<PageClass, Item> {
-    const request = this.makeRequest(options, null, undefined);
-    return new Pagination.PagePromise<PageClass, Item>(this as any as Dedalus, request, Page);
-  }
-
-  async fetchWithTimeout(
-    url: RequestInfo,
-    init: RequestInit | undefined,
-    ms: number,
-    controller: AbortController,
-  ): Promise<Response> {
+  async fetchWithTimeout(url: RequestInfo, init: RequestInit | undefined, ms: number, controller: AbortController): Promise<Response> {
     const { signal, method, ...options } = init || {};
     const abort = this._makeAbort(controller);
     if (signal) signal.addEventListener('abort', abort, { once: true });
@@ -678,9 +646,18 @@ export class Dedalus {
       }
     }
 
-    // If the API asks us to wait a certain amount of time, just do what it
-    // says, but otherwise calculate a default
-    if (timeoutMillis === undefined) {
+    // If the API asks us to wait a certain amount of time, just do what it says,
+    // but cap server-provided delays at 60s so an oversized or malformed Retry-After
+    // (e.g. `retry-after-ms: 999999999`, a past HTTP-date, or a value that Date.parse
+    // failed on) cannot block retries for an unbounded amount of time. Otherwise fall
+    // back to the default exponential-backoff calculation.
+    const maxRetryAfterMillis = 60 * 1000;
+    if (
+      timeoutMillis === undefined ||
+      !Number.isFinite(timeoutMillis) ||
+      timeoutMillis <= 0 ||
+      timeoutMillis > maxRetryAfterMillis
+    ) {
       const maxRetries = options.maxRetries ?? this.maxRetries;
       timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
     }
@@ -715,7 +692,7 @@ export class Dedalus {
     if ('timeout' in options) validatePositiveInteger('timeout', options.timeout);
     options.timeout = options.timeout ?? this.timeout;
     const { bodyHeaders, body } = this.buildBody({ options });
-    const reqHeaders = await this.buildHeaders({ options: inputOptions, method, bodyHeaders, retryCount });
+    const reqHeaders = await this.buildHeaders({ options, method, bodyHeaders, retryCount, url });
 
     const req: FinalizedRequestInit = {
       method,
@@ -723,11 +700,12 @@ export class Dedalus {
       ...(options.signal && { signal: options.signal }),
       ...((globalThis as any).ReadableStream &&
         body instanceof (globalThis as any).ReadableStream && { duplex: 'half' }),
-      ...(body && { body }),
+      // `buildBody` already collapses no-body into `undefined`; here we only need to drop that
+      // sentinel. A truthiness spread would also strip an intentional empty-string body.
+      ...(body !== undefined && { body }),
       ...((this.fetchOptions as any) ?? {}),
       ...((options.fetchOptions as any) ?? {}),
     };
-
     return { req, url, timeout: options.timeout };
   }
 
@@ -736,11 +714,13 @@ export class Dedalus {
     method,
     bodyHeaders,
     retryCount,
+    url,
   }: {
     options: FinalRequestOptions;
     method: HTTPMethod;
     bodyHeaders: HeadersLike;
     retryCount: number;
+    url: string;
   }): Promise<Headers> {
     let idempotencyHeaders: HeadersLike = {};
     if (this.idempotencyHeader && method !== 'get') {
@@ -753,18 +733,22 @@ export class Dedalus {
       {
         Accept: 'application/json',
         'User-Agent': this.getUserAgent(),
-        'X-Stainless-Retry-Count': String(retryCount),
-        ...(options.timeout ? { 'X-Stainless-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
+        'X-Scalar-Retry-Count': String(retryCount),
+        ...(options.timeout ? { 'X-Scalar-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
-        'X-Dedalus-Org-Id': this.dedalusOrgID,
+        ...{ "X-SDK-Version": "1.0.0" },
+        'X-Provider': this.provider,
+        'X-Provider-Key': this.providerKey,
+        'X-Provider-Model': this.providerModel,
       },
       await this.authHeaders(options),
       this._options.defaultHeaders,
       bodyHeaders,
       options.headers,
     ]);
+    appendAuthCookies(headers.values, await this.authCookiesAsync());
 
-    this.validateHeaders(headers);
+    this.validateAuth(url, headers.values, options);
 
     return headers.values;
   }
@@ -779,7 +763,11 @@ export class Dedalus {
     bodyHeaders: HeadersLike;
     body: BodyInit | undefined;
   } {
-    if (!body) {
+    // Skip only `null`/`undefined` so an intentional empty-string (or 0/false) payload still
+    // reaches the encoder. A plain `!body` check would silently drop those falsy-but-valid bodies,
+    // and `null` must be excluded here too because the iterator check below uses `in`, which
+    // throws on null.
+    if (body == null) {
       return { bodyHeaders: undefined, body: undefined };
     }
     const headers = buildHeaders([rawHeaders]);
@@ -788,9 +776,12 @@ export class Dedalus {
       ArrayBuffer.isView(body) ||
       body instanceof ArrayBuffer ||
       body instanceof DataView ||
-      (typeof body === 'string' &&
-        // Preserve legacy string encoding behavior for now
-        headers.values.has('content-type')) ||
+      // Always pass strings through verbatim. The previous guard required a caller-set
+      // `content-type` and otherwise fell through to `FallbackEncoder`, which JSON.stringifies
+      // the value and labels it `application/json` — silently quoting plain-text payloads and
+      // mislabeling them as JSON. fetch defaults a string body to `text/plain;charset=UTF-8`
+      // when no `content-type` is set, which is a safer default than misclaiming JSON.
+      typeof body === 'string' ||
       // `Blob` is superset of `File`
       ((globalThis as any).Blob && body instanceof (globalThis as any).Blob) ||
       // `FormData` -> `multipart/form-data`
@@ -820,6 +811,72 @@ export class Dedalus {
     }
   }
 
+  private validateAuth(url: string, headers: Headers, options: FinalRequestOptions): void {
+    if (headers.has("x-api-key")) return;
+    if (headerExplicitlyOmitted(options.headers, "x-api-key")) return;
+    if (headers.has("Authorization")) return;
+    if (headerExplicitlyOmitted(options.headers, "Authorization")) return;
+    throw new Errors.AuthenticationError(401, {}, "Could not resolve authentication method. Expected x-api-key or Authorization to be set.", headers);
+  }
+
+  authHeadersSync(): Record<string, string> {
+    const headers: Record<string, string> = {};
+    const apiKeyAuth = this.resolveAuthOptionSync("apiKeyAuth", this.apiKeyAuth);
+    if (apiKeyAuth) headers["x-api-key"] = apiKeyAuth;
+    const bearerAuth = this.resolveAuthOptionSync("bearerAuth", this.bearerAuth);
+    if (bearerAuth) headers['Authorization'] = `Bearer ${bearerAuth}`;
+    const bearer = this.resolveAuthOptionSync("bearer", this.bearer);
+    if (bearer) headers['Authorization'] = `Bearer ${bearer}`;
+    return headers;
+  }
+
+  webSocketAuthHeaders(): Record<string, string> {
+    const bearerAuth = this.resolveAuthOptionSync("bearerAuth", this.bearerAuth);
+    if (bearerAuth) return { Authorization: `Bearer ${bearerAuth}` };
+    const apiKeyAuth = this.resolveAuthOptionSync("apiKeyAuth", this.apiKeyAuth);
+    if (apiKeyAuth) return { "x-api-key": apiKeyAuth };
+    return {};
+  }
+
+  protected async authHeaders(options: FinalRequestOptions): Promise<HeadersLike | undefined> {
+    return buildHeaders([await this.authHeadersAsync()]);
+  }
+
+  private async authQueryAsync(): Promise<Record<string, string>> {
+    const query: Record<string, string> = {};
+    return query;
+  }
+
+  private async authCookiesAsync(): Promise<Record<string, string>> {
+    const cookies: Record<string, string> = {};
+    return cookies;
+  }
+
+  private async authHeadersAsync(): Promise<Record<string, string>> {
+    const headers: Record<string, string> = {};
+    const apiKeyAuth = await this.resolveAuthOption("apiKeyAuth", this.apiKeyAuth);
+    if (apiKeyAuth) headers["x-api-key"] = apiKeyAuth;
+    const bearerAuth = await this.resolveAuthOption("bearerAuth", this.bearerAuth);
+    if (bearerAuth) headers['Authorization'] = `Bearer ${bearerAuth}`;
+    const bearer = await this.resolveAuthOption("bearer", this.bearer);
+    if (bearer) headers['Authorization'] = `Bearer ${bearer}`;
+    return headers;
+  }
+
+  private async resolveAuthOption(optionName: string, value: string | AuthTokenProvider | null | undefined): Promise<string | undefined> {
+    if (value == null) return undefined;
+    const token = typeof value === "function" ? await value() : value;
+    if (!token) throw new Errors.DedalusError(`Expected '${optionName}' to resolve to a non-empty string.`);
+    return token;
+  }
+
+  private resolveAuthOptionSync(optionName: string, value: string | AuthTokenProvider | null | undefined): string | undefined {
+    if (value == null) return undefined;
+    const token = typeof value === "function" ? value() : value;
+    if (typeof token !== "string" || !token) throw new Errors.DedalusError(`Expected '${optionName}' to resolve to a non-empty string.`);
+    return token;
+  }
+
   static Dedalus = this;
   static DEFAULT_TIMEOUT = 60000; // 1 minute
 
@@ -837,49 +894,112 @@ export class Dedalus {
   static PermissionDeniedError = Errors.PermissionDeniedError;
   static UnprocessableEntityError = Errors.UnprocessableEntityError;
 
-  static toFile = Uploads.toFile;
+  static toFile = toFile;
 
-  usage: API.Usage = new API.Usage(this);
-  machines: API.Machines = new API.Machines(this);
+  machineLifecycle: MachineLifecycle = new MachineLifecycle(this);
+  usage: Usage = new Usage(this);
 }
 
+Dedalus.MachineLifecycle = MachineLifecycle;
 Dedalus.Usage = Usage;
-Dedalus.Machines = Machines;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
-
-  export import CursorPage = Pagination.CursorPage;
-  export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
+  export {
+    MachineLifecycle as MachineLifecycle,
+    type CreateMachineRequest as CreateMachineRequest,
+    type UpdateMachineRequest as UpdateMachineRequest,
+    type CreateExecutionRequest as CreateExecutionRequest,
+    type CreatePreviewRequest as CreatePreviewRequest,
+    type CreateSSHSessionRequest as CreateSSHSessionRequest,
+    type CreateTerminalRequest as CreateTerminalRequest,
+    type MachineLifecycleListResponse as MachineLifecycleListResponse,
+    type MachineLifecycleCreateResponse as MachineLifecycleCreateResponse,
+    type MachineLifecycleDeleteResponse as MachineLifecycleDeleteResponse,
+    type MachineLifecycleRetrieveResponse as MachineLifecycleRetrieveResponse,
+    type MachineLifecyclePatchResponse as MachineLifecyclePatchResponse,
+    type MachineLifecycleListArtifactsResponse as MachineLifecycleListArtifactsResponse,
+    type MachineLifecycleDeleteArtifactResponse as MachineLifecycleDeleteArtifactResponse,
+    type MachineLifecycleRetrieveArtifactResponse as MachineLifecycleRetrieveArtifactResponse,
+    type MachineLifecycleListExecutionsResponse as MachineLifecycleListExecutionsResponse,
+    type MachineLifecycleCreateExecutionResponse as MachineLifecycleCreateExecutionResponse,
+    type MachineLifecycleDeleteExecutionResponse as MachineLifecycleDeleteExecutionResponse,
+    type MachineLifecycleRetrieveExecutionResponse as MachineLifecycleRetrieveExecutionResponse,
+    type MachineLifecycleListExecutionEventsResponse as MachineLifecycleListExecutionEventsResponse,
+    type MachineLifecycleListExecutionOutputResponse as MachineLifecycleListExecutionOutputResponse,
+    type MachineLifecycleListPreviewsResponse as MachineLifecycleListPreviewsResponse,
+    type MachineLifecycleCreatePreviewResponse as MachineLifecycleCreatePreviewResponse,
+    type MachineLifecycleDeletePreviewResponse as MachineLifecycleDeletePreviewResponse,
+    type MachineLifecycleRetrievePreviewResponse as MachineLifecycleRetrievePreviewResponse,
+    type MachineLifecycleSleepResponse as MachineLifecycleSleepResponse,
+    type MachineLifecycleListSSHSessionsResponse as MachineLifecycleListSSHSessionsResponse,
+    type MachineLifecycleCreateSSHSessionResponse as MachineLifecycleCreateSSHSessionResponse,
+    type MachineLifecycleDeleteSSHSessionResponse as MachineLifecycleDeleteSSHSessionResponse,
+    type MachineLifecycleRetrieveSSHSessionResponse as MachineLifecycleRetrieveSSHSessionResponse,
+    type MachineLifecycleWatchStatusResponse as MachineLifecycleWatchStatusResponse,
+    type MachineLifecycleListTerminalsResponse as MachineLifecycleListTerminalsResponse,
+    type MachineLifecycleCreateTerminalResponse as MachineLifecycleCreateTerminalResponse,
+    type MachineLifecycleDeleteTerminalResponse as MachineLifecycleDeleteTerminalResponse,
+    type MachineLifecycleRetrieveTerminalResponse as MachineLifecycleRetrieveTerminalResponse,
+    type MachineLifecycleWakeResponse as MachineLifecycleWakeResponse,
+    type MachineLifecycleListParams as MachineLifecycleListParams,
+    type MachineLifecycleCreateParams as MachineLifecycleCreateParams,
+    type MachineLifecycleDeleteParams as MachineLifecycleDeleteParams,
+    type MachineLifecycleRetrieveParams as MachineLifecycleRetrieveParams,
+    type MachineLifecyclePatchParams as MachineLifecyclePatchParams,
+    type MachineLifecycleListArtifactsParams as MachineLifecycleListArtifactsParams,
+    type MachineLifecycleDeleteArtifactParams as MachineLifecycleDeleteArtifactParams,
+    type MachineLifecycleRetrieveArtifactParams as MachineLifecycleRetrieveArtifactParams,
+    type MachineLifecycleListExecutionsParams as MachineLifecycleListExecutionsParams,
+    type MachineLifecycleCreateExecutionParams as MachineLifecycleCreateExecutionParams,
+    type MachineLifecycleDeleteExecutionParams as MachineLifecycleDeleteExecutionParams,
+    type MachineLifecycleRetrieveExecutionParams as MachineLifecycleRetrieveExecutionParams,
+    type MachineLifecycleListExecutionEventsParams as MachineLifecycleListExecutionEventsParams,
+    type MachineLifecycleListExecutionOutputParams as MachineLifecycleListExecutionOutputParams,
+    type MachineLifecycleListPreviewsParams as MachineLifecycleListPreviewsParams,
+    type MachineLifecycleCreatePreviewParams as MachineLifecycleCreatePreviewParams,
+    type MachineLifecycleDeletePreviewParams as MachineLifecycleDeletePreviewParams,
+    type MachineLifecycleRetrievePreviewParams as MachineLifecycleRetrievePreviewParams,
+    type MachineLifecycleSleepParams as MachineLifecycleSleepParams,
+    type MachineLifecycleListSSHSessionsParams as MachineLifecycleListSSHSessionsParams,
+    type MachineLifecycleCreateSSHSessionParams as MachineLifecycleCreateSSHSessionParams,
+    type MachineLifecycleDeleteSSHSessionParams as MachineLifecycleDeleteSSHSessionParams,
+    type MachineLifecycleRetrieveSSHSessionParams as MachineLifecycleRetrieveSSHSessionParams,
+    type MachineLifecycleWatchStatusParams as MachineLifecycleWatchStatusParams,
+    type MachineLifecycleListTerminalsParams as MachineLifecycleListTerminalsParams,
+    type MachineLifecycleCreateTerminalParams as MachineLifecycleCreateTerminalParams,
+    type MachineLifecycleDeleteTerminalParams as MachineLifecycleDeleteTerminalParams,
+    type MachineLifecycleRetrieveTerminalParams as MachineLifecycleRetrieveTerminalParams,
+    type MachineLifecycleConnectTerminalParams as MachineLifecycleConnectTerminalParams,
+    type MachineLifecycleWakeParams as MachineLifecycleWakeParams,
+  };
 
   export {
     Usage as Usage,
-    type MachineComputeUsage as MachineComputeUsage,
-    type MachineComputeUsageRow as MachineComputeUsageRow,
-    type MachineStorageUsage as MachineStorageUsage,
-    type MachineStorageUsageRow as MachineStorageUsageRow,
-    type OrgUsage as OrgUsage,
-    type UsageRetrieveParams as UsageRetrieveParams,
-    type UsageMachineComputeParams as UsageMachineComputeParams,
-    type UsageMachineStorageParams as UsageMachineStorageParams,
-  };
-
-  export {
-    Machines as Machines,
-    type CreateParams as CreateParams,
-    type LifecycleStatus as LifecycleStatus,
-    type Machine as Machine,
-    type MachineList as MachineList,
-    type MachineListItem as MachineListItem,
-    type UpdateParams as UpdateParams,
-    type MachineListItemsCursorPage as MachineListItemsCursorPage,
-    type MachineCreateParams as MachineCreateParams,
-    type MachineRetrieveParams as MachineRetrieveParams,
-    type MachineUpdateParams as MachineUpdateParams,
-    type MachineListParams as MachineListParams,
-    type MachineDeleteParams as MachineDeleteParams,
-    type MachineSleepParams as MachineSleepParams,
-    type MachineWakeParams as MachineWakeParams,
-    type MachineWatchParams as MachineWatchParams,
+    type UsageListResponse as UsageListResponse,
+    type UsageListParams as UsageListParams,
   };
 }
+
+
+const headerExplicitlyOmitted = (source: HeadersLike | undefined, name: string): boolean => {
+  if (!source || Array.isArray(source) || source instanceof Headers) return false;
+  const target = name.toLowerCase();
+  return Object.entries(source).some(([key, value]) => key.toLowerCase() === target && value === null);
+};
+
+const appendAuthCookies = (headers: Headers, cookies: Record<string, string>): void => {
+  for (const [name, value] of Object.entries(cookies)) {
+    if (cookieHeaderHas(headers.get("Cookie"), name)) continue;
+    const cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+    const existing = headers.get("Cookie");
+    headers.set("Cookie", existing ? existing + "; " + cookie : cookie);
+  }
+};
+
+const cookieHeaderHas = (value: string | null, name: string): boolean => {
+  if (!value) return false;
+  const target = encodeURIComponent(name) + "=";
+  return value.split(";").some((cookie) => cookie.trim().startsWith(target));
+};
+
