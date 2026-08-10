@@ -15,3 +15,10 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - run: npm install
       - run: npm run build
+      # Verification only, never auto-fix: the SDK is generated formatted, so a diff here means
+      # either hand-edited custom code or a regenerate that was not committed. Auto-fixing would
+      # make the pushed bytes differ from generator output. `format` without `--write` is already
+      # check-only and exits non-zero on a diff; Biome has no `--check` flag, and `biome ci` is
+      # avoided so enabling the linter in this repo's biome.json cannot fail CI on generator-owned
+      # code the shipped config deliberately exempts.
+      - run: npx --yes @biomejs/biome@2.5.7 format .

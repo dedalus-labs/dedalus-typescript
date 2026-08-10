@@ -1,10 +1,10 @@
 {
   "name": "dedalus",
-  "version": "0.1.5",
+  "version": "0.1.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marclave/dedalus-typescript.git"
+    "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
   },
   "type": "module",
   "sideEffects": false,
@@ -17,12 +17,6 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
       "default": "./dist/esm/index.js"
-    },
-    "./resources/*": {
-      "types": "./dist/esm/resources/*.d.ts",
-      "import": "./dist/esm/resources/*.js",
-      "require": "./dist/cjs/resources/*.js",
-      "default": "./dist/esm/resources/*.js"
     },
     "./*.mjs": {
       "types": "./dist/esm/*.d.ts",
@@ -44,28 +38,17 @@
   },
   "files": [
     "dist",
-    "api.md"
+    "api.md",
+    "SKILL.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node scripts/finalize-build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.cjs.json --noEmit",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "ws": "^8.18.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/node": "^20.17.0",
-    "@types/ws": "^8.5.13",
     "typescript": "^6.0.0"
-  },
-  "peerDependencies": {
-    "ws": "^8.18.0"
-  },
-  "peerDependenciesMeta": {
-    "ws": {
-      "optional": true
-    }
   },
   "license": "Apache-2.0"
 }
