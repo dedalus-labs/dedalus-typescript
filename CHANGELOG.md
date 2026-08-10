@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0) (2026-08-10)
+
+
+### Features
+
+* **api:** initial SDK generation ([094ae45](https://github.com/dedalus-labs/dedalus-typescript/commit/094ae45d186d29ee7a68e6b1c55a73397448313a))
+
+
+### Chores
+
+* **api:** regenerate SDK ([14dbf7f](https://github.com/dedalus-labs/dedalus-typescript/commit/14dbf7f4a2f2537bdd37e4b8785a5307292a2f63))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)
