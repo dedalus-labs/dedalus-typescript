@@ -2,12 +2,7 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "extra-files": [
-        "src/version.ts"
-      ],
-      "versioning": "prerelease",
-      "prerelease-type": "next",
-      "prerelease": true
+      "extra-files": ["src/version.ts"]
     }
   },
   "bump-minor-pre-major": true,
