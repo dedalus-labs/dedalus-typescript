@@ -2,11 +2,12 @@
   "name": "dedalus",
   "version": "0.1.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
-  "author": "Dedalus",
+  "author": "Dedalus <oss@dedaluslabs.ai>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
   },
+  "homepage": "https://docs.dedaluslabs.ai",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
@@ -47,9 +48,21 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.cjs.json --noEmit",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
   "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/ws": "^8.5.13",
     "typescript": "^6.0.0"
   },
-  "license": "Apache-2.0"
+  "peerDependencies": {
+    "ws": "^8.18.0"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
+  },
+  "license": "MIT"
 }

@@ -15,19 +15,92 @@ npm install dedalus
 
 ## Client setup and authentication
 
+```ts
+import Dedalus from 'dedalus';
+
+const client = new Dedalus({
+  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+});
+```
+
 Provide credentials using the options below. Environment variables are read automatically when the target runtime supports them:
 
-- `apiKey` (env: `DEDALUS_API_KEY`) — API key authentication using Bearer token
-- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — API key authentication using X-API-Key header
-- `bearerAuth` (env: `DEDALUS_BEARER_AUTH`) — Dedalus API key in Authorization: Bearer <key>.
+- `apiKey` (env: `DEDALUS_API_KEY`) — Dedalus API key in Authorization: Bearer <key>.
+- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — Dedalus API key. Alternative to Bearer token.
 
 ## Calling operations
 
+```ts
+import Dedalus from 'dedalus';
+
+const client = new Dedalus({
+  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+});
+
+const orgUsage = await client.usage.retrieve();
+
+console.log(orgUsage);
+```
+
 Method names, parameter shapes, and response types are generated from the API description — do not guess them. Look up the exact call signature in [api.md](../../../api.md) before writing a call.
+
+## Pagination
+
+List endpoints return paginated results you can iterate directly; the SDK fetches subsequent pages for you.
+
+```ts
+const page = await client.machines.list();
+```
+
+## Streaming
+
+Streaming endpoints return an iterator that yields results as the server emits them.
+
+```ts
+const stream = await client.machines.watch({
+  machine_id: 'machineID',
+});
+
+for await (const machine of stream) {
+  console.log(machine);
+}
+```
+
+## WebSockets
+
+WebSocket endpoints open a persistent connection you can send messages to and receive messages from.
+
+```ts
+const connection = client.machines.terminals.connect({
+  machine_id: 'machineID',
+  terminal_id: 'terminalID',
+});
+
+try {
+  for await (const message of connection) {
+    console.log(message);
+  }
+} finally {
+  connection.close();
+}
+```
 
 ## Error handling
 
 Non-success responses throw generated API errors. Error objects expose status, headers, response body, and request metadata where the target runtime supports it.
+
+```ts
+import { APIError } from 'dedalus';
+
+try {
+  const orgUsage = await client.usage.retrieve();
+} catch (err) {
+  if (err instanceof APIError) {
+    console.log(err.status, err.name, err.headers);
+  }
+  throw err;
+}
+```
 
 ## Requirements
 

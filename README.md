@@ -9,12 +9,16 @@ The full API of this library can be found in [api.md](./api.md).
 ## Contents
 
 - [Installation](#installation)
+- [Usage](#usage)
 - [API Reference](./api.md)
+- [Streaming](#streaming)
+- [WebSockets](#websockets)
 - [Authentication](#authentication)
 - [Errors](#errors)
 - [Client Options](#client-options)
 - [Request Options](#request-options)
 - [Retries and Timeouts](#retries-and-timeouts)
+- [Pagination](#pagination)
 - [Helpers](#helpers)
 - [Logging](#logging)
 - [Requirements](#requirements)
@@ -29,27 +33,97 @@ npm install dedalus
 
 <br />
 
+## Usage
+
+```ts
+import Dedalus from 'dedalus';
+
+const client = new Dedalus({
+  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+});
+
+const orgUsage = await client.usage.retrieve();
+
+console.log(orgUsage);
+```
+
+The examples in the following sections assume a `client` configured as shown above.
+
+See the [API reference](./api.md) for every available operation.
+
+<br />
+
+## Streaming
+
+Streaming endpoints return an async iterator that yields results as the server emits them.
+
+```ts
+const stream = await client.machines.watch({
+  machine_id: 'machineID',
+});
+
+for await (const machine of stream) {
+  console.log(machine);
+}
+```
+
+<br />
+
+## WebSockets
+
+WebSocket endpoints open a persistent connection you can send messages to and receive messages from.
+
+```ts
+const connection = client.machines.terminals.connect({
+  machine_id: 'machineID',
+  terminal_id: 'terminalID',
+});
+
+try {
+  for await (const message of connection) {
+    console.log(message);
+  }
+} finally {
+  connection.close();
+}
+```
+
+<br />
+
 ## Authentication
 
 Pass credentials to the generated client constructor. Environment variables are read automatically when supported by the target runtime.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
-| `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
-| `bearerAuth` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_BEARER_AUTH. |
+| `apiKey` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_API_KEY. |
+| `xAPIKey` | `string \| provider` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
-- `Bearer` bearer token
 
 <br />
 
 ## Errors
 
 Non-success responses throw generated API errors. Error objects expose status, headers, response body, and request metadata where the target runtime supports it.
+
+```ts
+import { APIError } from 'dedalus';
+
+try {
+  const orgUsage = await client.usage.retrieve();
+} catch (err) {
+  if (err instanceof APIError) {
+    console.log(err.status, err.name, err.headers);
+  }
+  throw err;
+}
+```
+
+Documented error statuses: `400`, `401`, `403`, `409`, `429`, `500`, `502`, `503`, `default`.
 
 <br />
 
@@ -69,9 +143,8 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
-| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
-| `bearerAuth` | `string \| AuthTokenProvider` | `process.env["DEDALUS_BEARER_AUTH"]` | Dedalus API key in Authorization: Bearer <key>. |
+| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key in Authorization: Bearer <key>. |
+| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |
@@ -102,6 +175,16 @@ const client = new Dedalus({
 ## Retries and Timeouts
 
 Generated clients support request timeouts and retry temporary failures such as network errors, 408, 409, 429, and 5xx responses. Retry delays honor `Retry-After` headers when present. Tune the retry and timeout client options shown above, or override them per request.
+
+<br />
+
+## Pagination
+
+List endpoints return paginated results you can iterate directly; the SDK fetches subsequent pages for you.
+
+```ts
+const page = await client.machines.list();
+```
 
 <br />
 
