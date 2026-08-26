@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.5.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0) (2026-08-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** 2 breaking changes to the SDK surface.
+    - URL of environment `production` changed from `https://api.dedaluslabs.ai` to `https://dcs.dedaluslabs.ai`.
+    - Removed `bearer` auth scheme `Bearer`.
+
+### Features
+
+* **api:** initial SDK generation ([094ae45](https://github.com/dedalus-labs/dedalus-typescript/commit/094ae45d186d29ee7a68e6b1c55a73397448313a))
+* **api:** update environment production (+88 more changes) ([ff5cc62](https://github.com/dedalus-labs/dedalus-typescript/commit/ff5cc62a628571b554d268dd3e3b914b518c3f3d))
+
+
+### Chores
+
+* **api:** regenerate SDK ([769f240](https://github.com/dedalus-labs/dedalus-typescript/commit/769f240e1d030e33d062ef98744bc149bb55f401))
+* **api:** regenerate SDK ([14dbf7f](https://github.com/dedalus-labs/dedalus-typescript/commit/14dbf7f4a2f2537bdd37e4b8785a5307292a2f63))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)
