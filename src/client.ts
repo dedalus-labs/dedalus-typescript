@@ -19,7 +19,7 @@ import {
 } from './internal/utils/log';
 export type { Logger, LogLevel } from './internal/utils/log';
 import type { RequestInit, RequestInfo, BodyInit, Fetch } from './internal/builtin-types';
-import { buildHeaders, type HeadersLike } from './internal/headers';
+import { buildHeaders, type HeadersLike, type NullableHeaders } from './internal/headers';
 import type { FinalRequestOptions, RequestOptions } from './internal/request-options';
 import type { HTTPMethod, FinalizedRequestInit, MergedRequestInit, PromiseOrValue } from './internal/types';
 import { stringifyQuery } from './internal/utils/query';
@@ -679,7 +679,16 @@ export class Dedalus {
     if ('timeout' in options) validatePositiveInteger('timeout', options.timeout);
     options.timeout = options.timeout ?? this.timeout;
     const { bodyHeaders, body } = this.buildBody({ options });
-    const reqHeaders = await this.buildHeaders({ options, method, bodyHeaders, retryCount, url });
+    // Headers read the caller's own options, not the copy defaulted above: `X-Scalar-Timeout`
+    // reports an explicit per-request timeout, and the idempotency key written back here has to
+    // land where the retry can see it.
+    const reqHeaders = await this.buildHeaders({
+      options: inputOptions,
+      method,
+      bodyHeaders,
+      retryCount,
+      url,
+    });
 
     const req: FinalizedRequestInit = {
       method,
@@ -798,15 +807,15 @@ export class Dedalus {
     }
   }
 
-  private validateAuth(url: string, headers: Headers, options: FinalRequestOptions): void {
+  protected validateAuth(url: string, headers: Headers, options: FinalRequestOptions): void {
     if (headers.has('Authorization')) return;
     if (headerExplicitlyOmitted(options.headers, 'Authorization')) return;
     if (headers.has('x-api-key')) return;
     if (headerExplicitlyOmitted(options.headers, 'x-api-key')) return;
     throw new Errors.AuthenticationError(
       401,
-      {},
-      'Could not resolve authentication method. Expected Authorization or x-api-key to be set.',
+      undefined,
+      'Could not resolve authentication method. Expected either apiKey, bearerAuth or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
       headers,
     );
   }
@@ -830,8 +839,36 @@ export class Dedalus {
     return {};
   }
 
-  protected async authHeaders(options: FinalRequestOptions): Promise<HeadersLike | undefined> {
-    return buildHeaders([await this.authHeadersAsync()]);
+  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    return buildHeaders([
+      await this.bearerAuth2(opts),
+      await this.apiKeyAuth(opts),
+      await this.bearerAuth3(opts),
+    ]);
+  }
+
+  protected async bearerAuth2(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const apiKey = await this.resolveAuthOption('apiKey', this.apiKey);
+    if (apiKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${apiKey}` }]);
+  }
+
+  protected async apiKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const xAPIKey = await this.resolveAuthOption('xAPIKey', this.xAPIKey);
+    if (xAPIKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ 'x-api-key': xAPIKey }]);
+  }
+
+  protected async bearerAuth3(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const bearerAuth = await this.resolveAuthOption('bearerAuth', this.bearerAuth);
+    if (bearerAuth == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${bearerAuth}` }]);
   }
 
   private async authQueryAsync(): Promise<Record<string, string>> {
@@ -842,17 +879,6 @@ export class Dedalus {
   private async authCookiesAsync(): Promise<Record<string, string>> {
     const cookies: Record<string, string> = {};
     return cookies;
-  }
-
-  private async authHeadersAsync(): Promise<Record<string, string>> {
-    const headers: Record<string, string> = {};
-    const apiKey = await this.resolveAuthOption('apiKey', this.apiKey);
-    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
-    const xAPIKey = await this.resolveAuthOption('xAPIKey', this.xAPIKey);
-    if (xAPIKey) headers['x-api-key'] = xAPIKey;
-    const bearerAuth = await this.resolveAuthOption('bearerAuth', this.bearerAuth);
-    if (bearerAuth) headers['Authorization'] = `Bearer ${bearerAuth}`;
-    return headers;
   }
 
   private async resolveAuthOption(

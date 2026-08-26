@@ -2,6 +2,7 @@
   "name": "dedalus",
   "version": "0.1.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
+  "author": "Dedalus",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
