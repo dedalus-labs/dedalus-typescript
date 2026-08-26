@@ -2,7 +2,14 @@
   "$schema": "https://biomejs.dev/schemas/2.5.7/schema.json",
   "root": true,
   "files": {
-    "includes": ["**/*.{js,mjs,cjs,ts,json}", "!dist", "!node_modules", "!coverage"]
+    "includes": [
+      "**/*.{js,mjs,cjs,ts,json}",
+      "!dist",
+      "!node_modules",
+      "!coverage",
+      "!scalar-sdk.manifest.json",
+      "!openapi.augmented.json"
+    ]
   },
   "formatter": {
     "enabled": true,

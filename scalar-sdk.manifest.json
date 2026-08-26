@@ -1,13 +1,21 @@
 {
   "name": "Dedalus",
   "slug": "dedalus",
-  "generatorVersion": "0.23.6",
-  "servers": ["https://dcs.dedaluslabs.ai"],
+  "generatorVersion": "0.30.0",
+  "servers": [
+    "https://dcs.dedaluslabs.ai"
+  ],
   "environments": {
     "production": "https://api.dedaluslabs.ai"
   },
-  "environmentOrder": ["production"],
-  "auth": ["apiKey", "bearer", "bearer"],
+  "environmentOrder": [
+    "production"
+  ],
+  "auth": [
+    "apiKey",
+    "bearer",
+    "bearer"
+  ],
   "authDetails": [
     {
       "kind": "apiKey",
