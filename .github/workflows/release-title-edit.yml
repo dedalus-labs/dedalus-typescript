@@ -31,7 +31,7 @@ jobs:
     # runs, the retitled version and the committed one disagree, and it turns red. The merge is
     # blocked loudly instead of releasing the old version.
     if: >-
-      ${{ github.event.pull_request.base.ref == 'candidate'
+      ${{ github.event.pull_request.base.ref == 'main'
       && startsWith(github.event.pull_request.title, 'release: ') }}
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +73,7 @@ jobs:
     #
     # Both signals are required here, unlike the read-only check above, and each covers what the
     # other cannot. The author, because this job pushes with `contents: write` and a title is
-    # free text — anyone able to open a pull request against candidate could otherwise
+    # free text — anyone able to open a pull request against main could otherwise
     # name a version and have it committed to scalar-next. `user.login` is set by GitHub when
     # the pull request is opened and cannot be forged by whoever edits the title afterwards.
     # The title, because those accounts open pull requests other than release PRs, and retitling
@@ -89,7 +89,7 @@ jobs:
       && github.event.changes.title != null
       && github.event.sender.type != 'Bot'
       && github.event.pull_request.state == 'open'
-      && github.event.pull_request.base.ref == 'candidate'
+      && github.event.pull_request.base.ref == 'main'
       && (github.event.pull_request.user.login == 'scalar-docs[bot]'
       || github.event.pull_request.user.login == 'scalar-docs-staging[bot]'
       || github.event.pull_request.user.login == 'scalar-docs-development[bot]')
