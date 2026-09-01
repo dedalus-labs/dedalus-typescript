@@ -9,7 +9,10 @@ const client = new Dedalus({
 
 describe('resource ssh', () => {
   test('create: only required params', async () => {
-    const responsePromise = client.machines.ssh.create({ machine_id: 'dm-3', public_key: 'public_key' });
+    const responsePromise = client.machines.ssh.create({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      public_key: 'public_key',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -20,11 +23,17 @@ describe('resource ssh', () => {
   });
 
   test('create: required and optional params', async () => {
-    const response = await client.machines.ssh.create({ machine_id: 'dm-3', public_key: 'public_key' });
+    const response = await client.machines.ssh.create({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      public_key: 'public_key',
+    });
   });
 
   test('retrieve: only required params', async () => {
-    const responsePromise = client.machines.ssh.retrieve({ machine_id: 'dm-3', session_id: 'session_id' });
+    const responsePromise = client.machines.ssh.retrieve({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      session_id: 'session_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -35,11 +44,16 @@ describe('resource ssh', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.machines.ssh.retrieve({ machine_id: 'dm-3', session_id: 'session_id' });
+    const response = await client.machines.ssh.retrieve({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      session_id: 'session_id',
+    });
   });
 
   test('list: only required params', async () => {
-    const responsePromise = client.machines.ssh.list({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.ssh.list({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -51,14 +65,17 @@ describe('resource ssh', () => {
 
   test('list: required and optional params', async () => {
     const response = await client.machines.ssh.list({
-      machine_id: 'dm-3',
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
       cursor: 'cursor',
       limit: 0,
     });
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.machines.ssh.delete({ machine_id: 'dm-3', session_id: 'session_id' });
+    const responsePromise = client.machines.ssh.delete({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      session_id: 'session_id',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -69,6 +86,9 @@ describe('resource ssh', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.machines.ssh.delete({ machine_id: 'dm-3', session_id: 'session_id' });
+    const response = await client.machines.ssh.delete({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+      session_id: 'session_id',
+    });
   });
 });

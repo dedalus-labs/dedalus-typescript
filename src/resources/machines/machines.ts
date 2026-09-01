@@ -1,16 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as ArtifactsAPI from './artifacts';
-import {
-  Artifact,
-  ArtifactDeleteParams,
-  ArtifactList,
-  ArtifactListParams,
-  ArtifactRetrieveParams,
-  Artifacts,
-  ArtifactsCursorPage,
-} from './artifacts';
 import * as ExecutionsAPI from './executions';
 import {
   ArtifactRef,
@@ -29,17 +19,6 @@ import {
   Executions,
   ExecutionsCursorPage,
 } from './executions';
-import * as PreviewsAPI from './previews';
-import {
-  Preview,
-  PreviewCreateParams,
-  PreviewDeleteParams,
-  PreviewList,
-  PreviewListParams,
-  PreviewRetrieveParams,
-  Previews,
-  PreviewsCursorPage,
-} from './previews';
 import * as SSHAPI from './ssh';
 import {
   SSH,
@@ -54,38 +33,14 @@ import {
   SSHSessionList,
   SSHSessionsCursorPage,
 } from './ssh';
-import * as TerminalsAPI from './terminals/terminals';
-import {
-  Terminal,
-  TerminalClientEvent,
-  TerminalClosedEvent,
-  TerminalConnectParams,
-  TerminalCreateParams,
-  TerminalDeleteParams,
-  TerminalErrorEvent,
-  TerminalInputEvent,
-  TerminalList,
-  TerminalListParams,
-  TerminalOutputEvent,
-  TerminalResizeEvent,
-  TerminalRetrieveParams,
-  TerminalServerEvent,
-  Terminals,
-  TerminalsCursorPage,
-} from './terminals/terminals';
 import { APIPromise } from '../../core/api-promise';
 import { CursorPage, type CursorPageParams, PagePromise } from '../../core/pagination';
-import { Stream } from '../../core/streaming';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Machines extends APIResource {
-  artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
-  previews: PreviewsAPI.Previews = new PreviewsAPI.Previews(this._client);
   ssh: SSHAPI.SSH = new SSHAPI.SSH(this._client);
   executions: ExecutionsAPI.Executions = new ExecutionsAPI.Executions(this._client);
-  terminals: TerminalsAPI.Terminals = new TerminalsAPI.Terminals(this._client);
 
   /**
    * Create machine
@@ -97,7 +52,7 @@ export class Machines extends APIResource {
   /**
    * Get machine
    */
-  retrieve(params: MachineRetrieveParams, options?: RequestOptions): APIPromise<Machine> {
+  retrieve(params: MachineRetrieveParams, options?: RequestOptions): APIPromise<MachineRetrieveResponse> {
     const { machine_id } = params;
     return this._client.get(path`/v1/machines/${machine_id}`, options);
   }
@@ -143,51 +98,31 @@ export class Machines extends APIResource {
     const { machine_id } = params;
     return this._client.post(path`/v1/machines/${machine_id}/wake`, options);
   }
-
-  /**
-   * Streams machine lifecycle updates over Server-Sent Events. Each `status` event
-   * contains a full `LifecycleResponse` payload. The stream closes after the machine
-   * reaches its current desired state.
-   */
-  watch(params: MachineWatchParams, options?: RequestOptions): APIPromise<Stream<Machine>> {
-    const { machine_id, 'Last-Event-ID': lastEventID } = params;
-    return this._client.get(path`/v1/machines/${machine_id}/status/stream`, {
-      ...options,
-      headers: buildHeaders([
-        {
-          Accept: 'text/event-stream',
-          ...(lastEventID != null ? { 'Last-Event-ID': lastEventID } : undefined),
-        },
-        options?.headers,
-      ]),
-      stream: true,
-    }) as APIPromise<Stream<Machine>>;
-  }
 }
 
 export type MachineListItemsCursorPage = CursorPage<MachineListItem>;
 
 export interface CreateParams {
   /**
-   * Memory in MiB.
-   */
-  memory_mib: number;
-
-  /**
-   * Storage in GiB.
-   */
-  storage_gib: number;
-
-  /**
-   * CPU in vCPUs.
-   */
-  vcpu: number;
-
-  /**
    * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h,
    * 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
    */
   autosleep?: string;
+
+  /**
+   * Memory in MiB.
+   */
+  memory_mib?: number;
+
+  /**
+   * Storage in GiB.
+   */
+  storage_gib?: number;
+
+  /**
+   * CPU in vCPUs.
+   */
+  vcpu?: number;
 }
 
 export interface LifecycleStatus {
@@ -230,7 +165,16 @@ export interface Machine {
    */
   memory_mib: number;
 
-  status: LifecycleStatus;
+  phase:
+    | 'accepted'
+    | 'placement_pending'
+    | 'starting'
+    | 'running'
+    | 'stopping'
+    | 'sleeping'
+    | 'destroying'
+    | 'destroyed'
+    | 'failed';
 
   storage_gib: number;
 
@@ -263,7 +207,16 @@ export interface MachineListItem {
    */
   memory_mib: number;
 
-  status: LifecycleStatus;
+  phase:
+    | 'accepted'
+    | 'placement_pending'
+    | 'starting'
+    | 'running'
+    | 'stopping'
+    | 'sleeping'
+    | 'destroying'
+    | 'destroyed'
+    | 'failed';
 
   storage_gib: number;
 
@@ -296,27 +249,52 @@ export interface UpdateParams {
   vcpu?: number;
 }
 
-export interface MachineCreateParams {
+export interface MachineRetrieveResponse {
+  /**
+   * Seconds of inactivity before autosleep. 0 disables autosleep.
+   */
+  autosleep_seconds: number;
+
+  desired_state: 'running' | 'sleeping' | 'destroyed';
+
+  machine_id: string;
+
   /**
    * Memory in MiB.
    */
   memory_mib: number;
 
-  /**
-   * Storage in GiB.
-   */
+  status: LifecycleStatus;
+
   storage_gib: number;
 
   /**
    * CPU in vCPUs.
    */
   vcpu: number;
+}
 
+export interface MachineCreateParams {
   /**
    * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h,
    * 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
    */
   autosleep?: string;
+
+  /**
+   * Memory in MiB.
+   */
+  memory_mib?: number;
+
+  /**
+   * Storage in GiB.
+   */
+  storage_gib?: number;
+
+  /**
+   * CPU in vCPUs.
+   */
+  vcpu?: number;
 }
 
 export interface MachineRetrieveParams {
@@ -365,24 +343,8 @@ export interface MachineWakeParams {
   machine_id: string;
 }
 
-export interface MachineWatchParams {
-  /**
-   * Path param: Machine identifier.
-   */
-  machine_id: string;
-
-  /**
-   * Header param: Optional resourceVersion bookmark used to resume a previous
-   * stream.
-   */
-  'Last-Event-ID'?: string;
-}
-
-Machines.Artifacts = Artifacts;
-Machines.Previews = Previews;
 Machines.SSH = SSH;
 Machines.Executions = Executions;
-Machines.Terminals = Terminals;
 
 export declare namespace Machines {
   export {
@@ -392,6 +354,7 @@ export declare namespace Machines {
     type MachineList as MachineList,
     type MachineListItem as MachineListItem,
     type UpdateParams as UpdateParams,
+    type MachineRetrieveResponse as MachineRetrieveResponse,
     type MachineListItemsCursorPage as MachineListItemsCursorPage,
     type MachineCreateParams as MachineCreateParams,
     type MachineRetrieveParams as MachineRetrieveParams,
@@ -400,28 +363,6 @@ export declare namespace Machines {
     type MachineDeleteParams as MachineDeleteParams,
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
-    type MachineWatchParams as MachineWatchParams,
-  };
-
-  export {
-    Artifacts as Artifacts,
-    type Artifact as Artifact,
-    type ArtifactList as ArtifactList,
-    type ArtifactsCursorPage as ArtifactsCursorPage,
-    type ArtifactRetrieveParams as ArtifactRetrieveParams,
-    type ArtifactListParams as ArtifactListParams,
-    type ArtifactDeleteParams as ArtifactDeleteParams,
-  };
-
-  export {
-    Previews as Previews,
-    type Preview as Preview,
-    type PreviewCreateParams as PreviewCreateParams,
-    type PreviewList as PreviewList,
-    type PreviewsCursorPage as PreviewsCursorPage,
-    type PreviewRetrieveParams as PreviewRetrieveParams,
-    type PreviewListParams as PreviewListParams,
-    type PreviewDeleteParams as PreviewDeleteParams,
   };
 
   export {
@@ -454,24 +395,5 @@ export declare namespace Machines {
     type ExecutionDeleteParams as ExecutionDeleteParams,
     type ExecutionEventsParams as ExecutionEventsParams,
     type ExecutionOutputParams as ExecutionOutputParams,
-  };
-
-  export {
-    Terminals as Terminals,
-    type Terminal as Terminal,
-    type TerminalClientEvent as TerminalClientEvent,
-    type TerminalClosedEvent as TerminalClosedEvent,
-    type TerminalCreateParams as TerminalCreateParams,
-    type TerminalErrorEvent as TerminalErrorEvent,
-    type TerminalInputEvent as TerminalInputEvent,
-    type TerminalList as TerminalList,
-    type TerminalOutputEvent as TerminalOutputEvent,
-    type TerminalResizeEvent as TerminalResizeEvent,
-    type TerminalServerEvent as TerminalServerEvent,
-    type TerminalsCursorPage as TerminalsCursorPage,
-    type TerminalRetrieveParams as TerminalRetrieveParams,
-    type TerminalListParams as TerminalListParams,
-    type TerminalDeleteParams as TerminalDeleteParams,
-    type TerminalConnectParams as TerminalConnectParams,
   };
 }
