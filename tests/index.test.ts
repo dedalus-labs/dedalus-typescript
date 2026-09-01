@@ -460,14 +460,7 @@ describe('idempotency', () => {
       baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
       apiKey: 'My API Key',
     });
-    await client.machines.create(
-      {
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
-      },
-      { idempotencyKey: 'my-idempotency-key' },
-    );
+    await client.machines.create({}, { idempotencyKey: 'my-idempotency-key' });
   });
 });
 

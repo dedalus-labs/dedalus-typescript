@@ -8,12 +8,8 @@ const client = new Dedalus({
 });
 
 describe('resource machines', () => {
-  test('create: only required params', async () => {
-    const responsePromise = client.machines.create({
-      memory_mib: 0,
-      storage_gib: 0,
-      vcpu: 0,
-    });
+  test('create', async () => {
+    const responsePromise = client.machines.create({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -23,17 +19,10 @@ describe('resource machines', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('create: required and optional params', async () => {
-    const response = await client.machines.create({
-      memory_mib: 0,
-      storage_gib: 0,
-      vcpu: 0,
-      autosleep: 'autosleep',
-    });
-  });
-
   test('retrieve: only required params', async () => {
-    const responsePromise = client.machines.retrieve({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.retrieve({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -44,11 +33,13 @@ describe('resource machines', () => {
   });
 
   test('retrieve: required and optional params', async () => {
-    const response = await client.machines.retrieve({ machine_id: 'dm-3' });
+    const response = await client.machines.retrieve({
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
+    });
   });
 
   test('update: only required params', async () => {
-    const responsePromise = client.machines.update({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.update({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -60,7 +51,7 @@ describe('resource machines', () => {
 
   test('update: required and optional params', async () => {
     const response = await client.machines.update({
-      machine_id: 'dm-3',
+      machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c',
       autosleep: 'autosleep',
       memory_mib: 0,
       storage_gib: 0,
@@ -87,7 +78,7 @@ describe('resource machines', () => {
   });
 
   test('delete: only required params', async () => {
-    const responsePromise = client.machines.delete({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.delete({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -98,11 +89,11 @@ describe('resource machines', () => {
   });
 
   test('delete: required and optional params', async () => {
-    const response = await client.machines.delete({ machine_id: 'dm-3' });
+    const response = await client.machines.delete({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
   });
 
   test('sleep: only required params', async () => {
-    const responsePromise = client.machines.sleep({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.sleep({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -113,11 +104,11 @@ describe('resource machines', () => {
   });
 
   test('sleep: required and optional params', async () => {
-    const response = await client.machines.sleep({ machine_id: 'dm-3' });
+    const response = await client.machines.sleep({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
   });
 
   test('wake: only required params', async () => {
-    const responsePromise = client.machines.wake({ machine_id: 'dm-3' });
+    const responsePromise = client.machines.wake({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -128,21 +119,6 @@ describe('resource machines', () => {
   });
 
   test('wake: required and optional params', async () => {
-    const response = await client.machines.wake({ machine_id: 'dm-3' });
-  });
-
-  test('watch: only required params', async () => {
-    const responsePromise = client.machines.watch({ machine_id: 'dm-3' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('watch: required and optional params', async () => {
-    const response = await client.machines.watch({ machine_id: 'dm-3', 'Last-Event-ID': 'Last-Event-ID' });
+    const response = await client.machines.wake({ machine_id: 'dm-ecc2efdd-ddfa-31a9-c6f1-b833d337aa7c' });
   });
 });

@@ -44,24 +44,6 @@ const machine = await client.machines.create({
 console.log(machine.machine_id);
 ```
 
-## Streaming responses
-
-We provide support for streaming responses using Server Sent Events (SSE).
-
-```ts
-import Dedalus from 'dedalus';
-
-const client = new Dedalus();
-
-const stream = await client.machines.watch({ machine_id: 'dm-3' });
-for await (const machine of stream) {
-  console.log(machine.machine_id);
-}
-```
-
-If you need to cancel a stream, you can `break` from the loop
-or call `stream.controller.abort()`.
-
 ### Request & Response types
 
 This library includes TypeScript definitions for all request params and response fields. You may import and use them like so:

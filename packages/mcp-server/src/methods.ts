@@ -11,24 +11,6 @@ export type SdkMethod = {
 
 export const sdkMethods: SdkMethod[] = [
   {
-    clientCallName: 'client.usage.retrieve',
-    fullyQualifiedName: 'usage.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/usage',
-  },
-  {
-    clientCallName: 'client.usage.machineCompute',
-    fullyQualifiedName: 'usage.machineCompute',
-    httpMethod: 'get',
-    httpPath: '/v1/usage/machines/compute',
-  },
-  {
-    clientCallName: 'client.usage.machineStorage',
-    fullyQualifiedName: 'usage.machineStorage',
-    httpMethod: 'get',
-    httpPath: '/v1/usage/machines/storage',
-  },
-  {
     clientCallName: 'client.machines.create',
     fullyQualifiedName: 'machines.create',
     httpMethod: 'post',
@@ -69,54 +51,6 @@ export const sdkMethods: SdkMethod[] = [
     fullyQualifiedName: 'machines.wake',
     httpMethod: 'post',
     httpPath: '/v1/machines/{machine_id}/wake',
-  },
-  {
-    clientCallName: 'client.machines.watch',
-    fullyQualifiedName: 'machines.watch',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/status/stream',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.retrieve',
-    fullyQualifiedName: 'machines.artifacts.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.list',
-    fullyQualifiedName: 'machines.artifacts.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/artifacts',
-  },
-  {
-    clientCallName: 'client.machines.artifacts.delete',
-    fullyQualifiedName: 'machines.artifacts.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-  },
-  {
-    clientCallName: 'client.machines.previews.create',
-    fullyQualifiedName: 'machines.previews.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/previews',
-  },
-  {
-    clientCallName: 'client.machines.previews.retrieve',
-    fullyQualifiedName: 'machines.previews.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
-  },
-  {
-    clientCallName: 'client.machines.previews.list',
-    fullyQualifiedName: 'machines.previews.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/previews',
-  },
-  {
-    clientCallName: 'client.machines.previews.delete',
-    fullyQualifiedName: 'machines.previews.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/previews/{preview_id}',
   },
   {
     clientCallName: 'client.machines.ssh.create',
@@ -178,31 +112,6 @@ export const sdkMethods: SdkMethod[] = [
     httpMethod: 'get',
     httpPath: '/v1/machines/{machine_id}/executions/{execution_id}/output',
   },
-  {
-    clientCallName: 'client.machines.terminals.create',
-    fullyQualifiedName: 'machines.terminals.create',
-    httpMethod: 'post',
-    httpPath: '/v1/machines/{machine_id}/terminals',
-  },
-  {
-    clientCallName: 'client.machines.terminals.retrieve',
-    fullyQualifiedName: 'machines.terminals.retrieve',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-  },
-  {
-    clientCallName: 'client.machines.terminals.list',
-    fullyQualifiedName: 'machines.terminals.list',
-    httpMethod: 'get',
-    httpPath: '/v1/machines/{machine_id}/terminals',
-  },
-  {
-    clientCallName: 'client.machines.terminals.delete',
-    fullyQualifiedName: 'machines.terminals.delete',
-    httpMethod: 'delete',
-    httpPath: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-  },
-  { clientCallName: 'client.machines.terminals.connect', fullyQualifiedName: 'machines.terminals.connect' },
 ];
 
 function allowedMethodsForCodeTool(options: McpOptions | undefined): SdkMethod[] | undefined {
