@@ -79,7 +79,8 @@ import { Stream } from '../../core/streaming';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
-import { retryWithBackoff } from '../../core/retry';
+import { loggerFor } from '../../internal/utils/log';
+import { retryWithBackoff, type RetryOptions } from '../../core/retry';
 
 export class Machines extends APIResource {
   artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
@@ -94,21 +95,34 @@ export class Machines extends APIResource {
   create(body: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
     return this._client.post('/v1/machines', { body, ...options });
   }
-    async createWithRetry(
+
+  /**
+   * Create a machine with an explicit retry policy.
+   *
+   * Prefer `create(body, { maxRetries })` when you only need more HTTP retries —
+   * the client already backs off on 408/409/429/5xx and connection errors.
+   *
+   * Use this helper when you need `onRetry`, custom delays, or a Retry-After
+   * floor that is never jittered. Inner HTTP retries are disabled so the two
+   * layers cannot nest and multiply attempts.
+   */
+  async createWithRetry(
     body: MachineCreateParams,
-    options?: RequestOptions
+    options?: RequestOptions,
+    retry?: RetryOptions,
   ): Promise<Machine> {
-    return retryWithBackoff(
-      () => this.create(body, options),
-      {
-        maxRetries: 3,
-        onRetry: (attempt, error) => {
-          console.warn(
-            `[Dedalus] Retry ${attempt} for machine creation: ${error.message}`
-          );
-        },
-      }
-    );
+    const { maxRetries = this._client.maxRetries, onRetry, ...rest } = retry ?? {};
+
+    return retryWithBackoff(() => this.create(body, { ...options, maxRetries: 0 }), {
+      maxRetries,
+      ...rest,
+      onRetry: (event) => {
+        loggerFor(this._client).info(
+          `[Dedalus] retrying machine create (attempt ${event.attempt}, ${event.delayMs}ms, ${event.reason})`,
+        );
+        onRetry?.(event);
+      },
+    });
   }
 
   /**

@@ -21,3 +21,12 @@ export {
   PermissionDeniedError,
   UnprocessableEntityError,
 } from './core/error';
+export {
+  retryWithBackoff,
+  calculateDelay,
+  parseRetryAfterMs,
+  isRetryable,
+  type RetryOptions,
+  type RetryEvent,
+  type DelayDecision,
+} from './core/retry';
