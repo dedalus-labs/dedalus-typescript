@@ -79,6 +79,7 @@ import { Stream } from '../../core/streaming';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
+import { retryWithBackoff } from '../../core/retry';
 
 export class Machines extends APIResource {
   artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
@@ -92,6 +93,22 @@ export class Machines extends APIResource {
    */
   create(body: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
     return this._client.post('/v1/machines', { body, ...options });
+  }
+    async createWithRetry(
+    body: MachineCreateParams,
+    options?: RequestOptions
+  ): Promise<Machine> {
+    return retryWithBackoff(
+      () => this.create(body, options),
+      {
+        maxRetries: 3,
+        onRetry: (attempt, error) => {
+          console.warn(
+            `[Dedalus] Retry ${attempt} for machine creation: ${error.message}`
+          );
+        },
+      }
+    );
   }
 
   /**
