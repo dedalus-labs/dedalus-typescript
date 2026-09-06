@@ -80,7 +80,21 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 import { loggerFor } from '../../internal/utils/log';
+import { sleep } from '../../internal/utils/sleep';
 import { retryWithBackoff, type RetryOptions } from '../../core/retry';
+
+export type MachinePhase = LifecycleStatus['phase'];
+
+export interface WaitOptions {
+  /** Maximum time to wait before rejecting. @default 120_000 */
+  timeoutMs?: number;
+  /** Poll interval when using retrieve. @default 1_500 */
+  pollIntervalMs?: number;
+  /** Abort the wait early. */
+  signal?: AbortSignal;
+  /** Called on every observed machine state (including the first). */
+  onStatus?: (machine: Machine) => void;
+}
 
 export class Machines extends APIResource {
   artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
@@ -123,6 +137,96 @@ export class Machines extends APIResource {
         onRetry?.(event);
       },
     });
+  }
+
+  /**
+   * Create a machine (with optional retries) and wait until it reaches `running`.
+   */
+  async createAndWait(
+    body: MachineCreateParams,
+    options?: RequestOptions & { retry?: RetryOptions; wait?: WaitOptions },
+  ): Promise<Machine> {
+    const machine = await this.createWithRetry(body, options, options?.retry);
+    return this.waitUntilRunning(machine.machine_id, options?.wait);
+  }
+
+  /**
+   * Poll until `predicate` returns true for the machine, or until timeout / abort.
+   */
+  async waitUntil(
+    machineId: string,
+    predicate: (machine: Machine) => boolean,
+    options: WaitOptions = {},
+  ): Promise<Machine> {
+    const {
+      timeoutMs = 120_000,
+      pollIntervalMs = 1_500,
+      signal,
+      onStatus,
+    } = options;
+
+    const started = Date.now();
+
+    const throwIfAborted = () => {
+      if (signal?.aborted) {
+        const err = new Error('waitUntil aborted');
+        err.name = 'AbortError';
+        throw err;
+      }
+    };
+
+    // Immediate check
+    throwIfAborted();
+    let machine = await this.retrieve({ machine_id: machineId });
+    onStatus?.(machine);
+    if (predicate(machine)) return machine;
+
+    while (true) {
+      throwIfAborted();
+
+      const elapsed = Date.now() - started;
+      if (elapsed >= timeoutMs) {
+        throw new Error(
+          `Timed out waiting for machine ${machineId} after ${timeoutMs}ms (last phase: ${machine.status.phase})`,
+        );
+      }
+
+      // Terminal failure states should not be waited through indefinitely
+      if (machine.status.phase === 'failed' || machine.status.phase === 'destroyed') {
+        throw new Error(
+          `Machine ${machineId} reached terminal phase '${machine.status.phase}'` +
+            (machine.status.last_error ? `: ${machine.status.last_error}` : ''),
+        );
+      }
+
+      const remaining = timeoutMs - elapsed;
+      await sleep(Math.min(pollIntervalMs, remaining));
+
+      throwIfAborted();
+      machine = await this.retrieve({ machine_id: machineId });
+      onStatus?.(machine);
+
+      if (predicate(machine)) return machine;
+    }
+  }
+
+  /**
+   * Wait until the machine reaches phase `running`.
+   */
+  async waitUntilRunning(machineId: string, options?: WaitOptions): Promise<Machine> {
+    return this.waitUntil(machineId, (m) => m.status.phase === 'running', options);
+  }
+
+  /**
+   * Wait until the machine reaches one of the given phases.
+   */
+  async waitUntilPhase(
+    machineId: string,
+    phase: MachinePhase | MachinePhase[],
+    options?: WaitOptions,
+  ): Promise<Machine> {
+    const phases = Array.isArray(phase) ? phase : [phase];
+    return this.waitUntil(machineId, (m) => phases.includes(m.status.phase), options);
   }
 
   /**
@@ -432,6 +536,8 @@ export declare namespace Machines {
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
     type MachineWatchParams as MachineWatchParams,
+    type MachinePhase as MachinePhase,
+    type WaitOptions as WaitOptions,
   };
 
   export {
