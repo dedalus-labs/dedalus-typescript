@@ -21,3 +21,25 @@ export {
   PermissionDeniedError,
   UnprocessableEntityError,
 } from './core/error';
+export {
+  retryWithBackoff,
+  calculateDelay,
+  parseRetryAfterMs,
+  isRetryable,
+  type RetryOptions,
+  type RetryEvent,
+  type DelayDecision,
+} from './core/retry';
+export {
+  waitUntil,
+  waitUntilRunning,
+  waitUntilPhase,
+  createAndWait,
+  type WaitOptions,
+  type MachinePhase,
+  type MachineWaitClient,
+  MachineWaitError,
+  MachineWaitTimeoutError,
+  MachineTerminalError,
+  MachineWaitAbortError,
+} from './lib/machine-wait';

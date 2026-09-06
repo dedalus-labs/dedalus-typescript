@@ -79,6 +79,17 @@ import { Stream } from '../../core/streaming';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
+import { loggerFor } from '../../internal/utils/log';
+import { retryWithBackoff, type RetryOptions } from '../../core/retry';
+import {
+  waitUntil as libWaitUntil,
+  waitUntilRunning as libWaitUntilRunning,
+  waitUntilPhase as libWaitUntilPhase,
+  type WaitOptions,
+  type MachinePhase,
+} from '../../lib/machine-wait';
+
+export type { WaitOptions, MachinePhase };
 
 export class Machines extends APIResource {
   artifacts: ArtifactsAPI.Artifacts = new ArtifactsAPI.Artifacts(this._client);
@@ -92,6 +103,73 @@ export class Machines extends APIResource {
    */
   create(body: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
     return this._client.post('/v1/machines', { body, ...options });
+  }
+
+  /**
+   * Create a machine with an explicit retry policy.
+   *
+   * Prefer `create(body, { maxRetries })` when you only need more HTTP retries —
+   * the client already backs off on 408/409/429/5xx and connection errors.
+   *
+   * Use this helper when you need `onRetry`, custom delays, or a Retry-After
+   * floor that is never jittered. Inner HTTP retries are disabled so the two
+   * layers cannot nest and multiply attempts.
+   */
+  async createWithRetry(
+    body: MachineCreateParams,
+    options?: RequestOptions,
+    retry?: RetryOptions,
+  ): Promise<Machine> {
+    const { maxRetries = this._client.maxRetries, onRetry, ...rest } = retry ?? {};
+
+    return retryWithBackoff(() => this.create(body, { ...options, maxRetries: 0 }), {
+      maxRetries,
+      ...rest,
+      onRetry: (event) => {
+        loggerFor(this._client).info(
+          `[Dedalus] retrying machine create (attempt ${event.attempt}, ${event.delayMs}ms, ${event.reason})`,
+        );
+        onRetry?.(event);
+      },
+    });
+  }
+
+  /**
+   * Create a machine (with optional retries) and wait until it reaches `running`.
+   * Uses watch SSE by default; falls back to polling.
+   */
+  async createAndWait(
+    body: MachineCreateParams,
+    options?: RequestOptions & { retry?: RetryOptions; wait?: WaitOptions },
+  ): Promise<Machine> {
+    const machine = await this.createWithRetry(body, options, options?.retry);
+    return this.waitUntilRunning(machine.machine_id, options?.wait);
+  }
+
+  /**
+   * Wait until `predicate` returns true. Prefer watch stream; poll on failure.
+   * Implementation lives in `src/lib/machine-wait.ts` (non-generated).
+   */
+  waitUntil(
+    machineId: string,
+    predicate: (machine: Machine) => boolean,
+    options?: WaitOptions,
+  ): Promise<Machine> {
+    return libWaitUntil(this, machineId, predicate, options);
+  }
+
+  /** Wait until the machine reaches phase `running`. */
+  waitUntilRunning(machineId: string, options?: WaitOptions): Promise<Machine> {
+    return libWaitUntilRunning(this, machineId, options);
+  }
+
+  /** Wait until the machine reaches one of the given phases. */
+  waitUntilPhase(
+    machineId: string,
+    phase: MachinePhase | MachinePhase[],
+    options?: WaitOptions,
+  ): Promise<Machine> {
+    return libWaitUntilPhase(this, machineId, phase, options);
   }
 
   /**
@@ -401,6 +479,8 @@ export declare namespace Machines {
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
     type MachineWatchParams as MachineWatchParams,
+    type MachinePhase as MachinePhase,
+    type WaitOptions as WaitOptions,
   };
 
   export {
