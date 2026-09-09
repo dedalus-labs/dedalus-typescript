@@ -81,9 +81,10 @@ const page = await client.machines.list();
 
 ```ts
 const machine = await client.machines.create({
-  memory_mib: 0,
-  storage_gib: 0,
-  vcpu: 0,
+  autosleep: '300s',
+  memory_mib: 4096,
+  storage_gib: 10,
+  vcpu: 1,
 });
 ```
 
