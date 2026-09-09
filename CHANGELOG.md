@@ -1,5 +1,49 @@
 # Changelog
 
+## [0.5.0-next](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0-next) (2026-09-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** 6 breaking changes to the SDK surface.
+    - Property `create_params.memory_mib` is no longer required.
+    - Property `create_params.memory_mib` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `create_params.storage_gib` is no longer required.
+    - Property `create_params.storage_gib` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `create_params.vcpu` is no longer required.
+    - Property `create_params.vcpu` type changed from `number<double>` to `number<double>`.
+* **api:** 13 breaking changes to the SDK surface.
+    - Pagination configuration of `machines.list` changed.
+    - Pagination configuration of `machines.artifacts.list` changed.
+    - Pagination configuration of `machines.ports.list` changed.
+    - Pagination configuration of `machines.ssh.list` changed.
+    - Pagination configuration of `machines.executions.list` changed.
+    - Pagination configuration of `machines.executions.events` changed.
+    - Pagination configuration of `machines.terminals.list` changed.
+    - Property `machine.autosleep_seconds` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `machine_detail_response.autosleep_seconds` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `machine_list_item.autosleep_seconds` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `network_gateway.kind` type changed from `enum(ssh | port)` to `enum(ssh | port)`.
+    - Property `network_gateway.port` type changed from `integer<int64>` to `integer<int64>`.
+    - Property `network_gateway.protocol` type changed from `enum(ssh | https)` to `enum(ssh | https)`.
+* **api:** 2 breaking changes to the SDK surface.
+    - URL of environment `production` changed from `https://api.dedaluslabs.ai` to `https://dcs.dedaluslabs.ai`.
+    - Removed `bearer` auth scheme `Bearer`.
+
+### Features
+
+* **api:** initial SDK generation ([094ae45](https://github.com/dedalus-labs/dedalus-typescript/commit/094ae45d186d29ee7a68e6b1c55a73397448313a))
+* **api:** update environment production (+88 more changes) ([ff5cc62](https://github.com/dedalus-labs/dedalus-typescript/commit/ff5cc62a628571b554d268dd3e3b914b518c3f3d))
+* **api:** update pagination of machines.list (+46 more changes) ([9647a21](https://github.com/dedalus-labs/dedalus-typescript/commit/9647a2145162f33e8efd1064b4d35ffe89bebdaf))
+* **api:** update property create_params.memory_mib (+5 more changes) ([000397d](https://github.com/dedalus-labs/dedalus-typescript/commit/000397dbf7692764f9f58f39ed8f880365e3ea21))
+
+
+### Chores
+
+* **api:** regenerate SDK ([769f240](https://github.com/dedalus-labs/dedalus-typescript/commit/769f240e1d030e33d062ef98744bc149bb55f401))
+* **api:** regenerate SDK ([14dbf7f](https://github.com/dedalus-labs/dedalus-typescript/commit/14dbf7f4a2f2537bdd37e4b8785a5307292a2f63))
+* **api:** update generated SDK content ([f90ed66](https://github.com/dedalus-labs/dedalus-typescript/commit/f90ed662db15d44abd8b4425808e29e85669d3e5))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)
