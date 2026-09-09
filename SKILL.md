@@ -39,9 +39,10 @@ const client = new Dedalus({
 });
 
 const machine = await client.machines.create({
-  memory_mib: 0,
-  storage_gib: 0,
-  vcpu: 0,
+  autosleep: '300s',
+  memory_mib: 4096,
+  storage_gib: 10,
+  vcpu: 1,
 });
 
 console.log(machine.machine_id);
@@ -99,9 +100,10 @@ import { APIError } from 'dedalus';
 
 try {
   const machine = await client.machines.create({
-    memory_mib: 0,
-    storage_gib: 0,
-    vcpu: 0,
+    autosleep: '300s',
+    memory_mib: 4096,
+    storage_gib: 10,
+    vcpu: 1,
   });
 } catch (err) {
   if (err instanceof APIError) {

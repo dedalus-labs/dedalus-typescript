@@ -70,9 +70,10 @@ const cases: {
     label: 'required params',
     run: async () => {
       const machine = await client.machines.create({
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
+        autosleep: '300s',
+        memory_mib: 4096,
+        storage_gib: 10,
+        vcpu: 1,
       });
     },
   },
@@ -85,10 +86,10 @@ const cases: {
     run: async () => {
       const machine = await client.machines.create({
         'X-Dedalus-Org-Id': 'xDedalusOrgID',
-        autosleep: '',
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
+        autosleep: '300s',
+        memory_mib: 4096,
+        storage_gib: 10,
+        vcpu: 1,
       });
     },
   },
