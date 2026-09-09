@@ -4,6 +4,7 @@ import { APIResource } from '../../resource';
 import { APIPromise } from '../../api-promise';
 import { CursorPage, type CursorPageParams, type PagePromise } from '../../core/pagination';
 import type { RequestOptions } from '../../internal/request-options';
+import { buildHeaders } from '../../internal/headers';
 import { path as __scalarPath } from '../../internal/utils/path';
 
 export class Ports extends APIResource {
@@ -22,10 +23,14 @@ export class Ports extends APIResource {
    * ```
    */
   list(params: PortListParams, options?: RequestOptions): PagePromise<PortsCursorPage, Port> {
-    const { machine_id, ...query } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(__scalarPath`/v1/machines/${machine_id}/ports`, CursorPage<Port>, {
       query,
       ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -45,8 +50,15 @@ export class Ports extends APIResource {
    * ```
    */
   create(params: PortCreateParams, options?: RequestOptions): APIPromise<Port> {
-    const { machine_id, ...body } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/ports`, { body, ...options });
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/ports`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -65,8 +77,14 @@ export class Ports extends APIResource {
    * ```
    */
   retrieve(params: PortRetrieveParams, options?: RequestOptions): APIPromise<Port> {
-    const { machine_id, port_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/ports/${port_id}`, options);
+    const { machine_id, port_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/ports/${port_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -85,8 +103,14 @@ export class Ports extends APIResource {
    * ```
    */
   delete(params: PortDeleteParams, options?: RequestOptions): APIPromise<Port> {
-    const { machine_id, port_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/ports/${port_id}`, options);
+    const { machine_id, port_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/ports/${port_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -135,11 +159,16 @@ export interface PortList {
 
 export interface PortListParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type PortsCursorPage = CursorPage<Port>;
@@ -153,6 +182,10 @@ export interface PortCreateParams {
    */
   machine_id: string;
   /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
+  /**
    * Body param
    * @format int64
    */
@@ -165,32 +198,44 @@ export interface PortCreateParams {
 
 export interface PortRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   port_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface PortDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   port_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace Ports {
   export {

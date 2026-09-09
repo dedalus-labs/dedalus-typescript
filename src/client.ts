@@ -29,17 +29,6 @@ import { stringifyQuery } from './internal/utils/query';
 import { toFile } from './core/uploads';
 import { VERSION } from './version';
 import {
-  Usage,
-  type OrgUsage,
-  type MachineComputeUsage,
-  type MachineComputeUsageRow,
-  type MachineStorageUsage,
-  type MachineStorageUsageRow,
-  type UsageRetrieveParams,
-  type UsageMachineComputeParams,
-  type UsageMachineStorageParams,
-} from './resources/usage';
-import {
   Machines,
   type Machine,
   type MachineList,
@@ -64,22 +53,58 @@ import {
   type NetworkGateway,
   type NetworkRetrieveParams,
 } from './resources/networks';
+import {
+  Usage,
+  type OrgUsage,
+  type MachineComputeUsage,
+  type MachineComputeUsageRow,
+  type MachineStorageUsage,
+  type MachineStorageUsageRow,
+  type UsageRetrieveParams,
+  type UsageMachineComputeParams,
+  type UsageMachineStorageParams,
+} from './resources/usage';
 
 export type AuthTokenProvider = () => string | Promise<string>;
 
 export interface ClientOptions {
   /**
-   * Dedalus API key sent as Authorization Bearer.
+   * Dedalus API key for Bearer token authentication.
    */
   apiKey?: string | AuthTokenProvider | null | undefined;
 
   /**
-   * Dedalus API key sent as x-api-key header.
+   * Dedalus API key for X-API-Key header authentication.
    */
   xAPIKey?: string | AuthTokenProvider | null | undefined;
 
   /**
-   * Organization ID header for all DCS requests.
+   * Dedalus API key in Authorization: Bearer <key>.
+   */
+  bearerAuth?: string | AuthTokenProvider | undefined;
+
+  /**
+   * Provider name for BYOK mode.
+   */
+  provider?: string | null | undefined;
+
+  /**
+   * Provider API key for BYOK mode.
+   */
+  providerKey?: string | null | undefined;
+
+  /**
+   * Model identifier for BYOK provider.
+   */
+  providerModel?: string | null | undefined;
+
+  /**
+   * MCP Authorization Server URL.
+   */
+  asBaseURL?: string | null | undefined;
+
+  /**
+   * Organization ID for request scoping.
    */
   dedalusOrgID?: string | null | undefined;
 
@@ -161,6 +186,11 @@ export type DedalusOptions = ClientOptions;
 export class Dedalus {
   apiKey: string | AuthTokenProvider | null;
   xAPIKey: string | AuthTokenProvider | null;
+  bearerAuth: string | AuthTokenProvider | undefined;
+  provider: string | null;
+  providerKey: string | null;
+  providerModel: string | null;
+  asBaseURL: string | null;
   dedalusOrgID: string | null;
 
   baseURL: string;
@@ -181,6 +211,11 @@ export class Dedalus {
    *
    * @param {string | AuthTokenProvider | null | undefined} [opts.apiKey=process.env["DEDALUS_API_KEY"] ?? null]
    * @param {string | AuthTokenProvider | null | undefined} [opts.xAPIKey=process.env["DEDALUS_X_API_KEY"] ?? null]
+   * @param {string | AuthTokenProvider | undefined} [opts.bearerAuth=process.env["DEDALUS_BEARER_AUTH"] ?? undefined]
+   * @param {string | null | undefined} [opts.provider=process.env["DEDALUS_PROVIDER"] ?? null]
+   * @param {string | null | undefined} [opts.providerKey=process.env["DEDALUS_PROVIDER_KEY"] ?? null]
+   * @param {string | null | undefined} [opts.providerModel=process.env["DEDALUS_PROVIDER_MODEL"] ?? null]
+   * @param {string | null | undefined} [opts.asBaseURL=process.env["DEDALUS_AS_URL"] ?? "https://as.dedaluslabs.ai"]
    * @param {string | null | undefined} [opts.dedalusOrgID=process.env["DEDALUS_ORG_ID"] ?? null]
    * @param {string} [opts.baseURL=process.env["DEDALUS_BASE_URL"] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
@@ -194,12 +229,22 @@ export class Dedalus {
     baseURL = readEnv('DEDALUS_BASE_URL'),
     apiKey = readEnv('DEDALUS_API_KEY') ?? null,
     xAPIKey = readEnv('DEDALUS_X_API_KEY') ?? null,
+    bearerAuth = readEnv('DEDALUS_BEARER_AUTH'),
+    provider = readEnv('DEDALUS_PROVIDER') ?? null,
+    providerKey = readEnv('DEDALUS_PROVIDER_KEY') ?? null,
+    providerModel = readEnv('DEDALUS_PROVIDER_MODEL') ?? null,
+    asBaseURL = readEnv('DEDALUS_AS_URL') ?? 'https://as.dedaluslabs.ai',
     dedalusOrgID = readEnv('DEDALUS_ORG_ID') ?? null,
     ...opts
   }: ClientOptions = {}) {
     const options: ClientOptions = {
       apiKey,
       xAPIKey,
+      bearerAuth,
+      provider,
+      providerKey,
+      providerModel,
+      asBaseURL,
       dedalusOrgID,
       ...opts,
       baseURL: baseURL || 'https://dcs.dedaluslabs.ai',
@@ -240,6 +285,11 @@ export class Dedalus {
 
     this.apiKey = apiKey;
     this.xAPIKey = xAPIKey;
+    this.bearerAuth = bearerAuth;
+    this.provider = provider;
+    this.providerKey = providerKey;
+    this.providerModel = providerModel;
+    this.asBaseURL = asBaseURL;
     this.dedalusOrgID = dedalusOrgID;
   }
 
@@ -255,6 +305,11 @@ export class Dedalus {
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
       xAPIKey: this.xAPIKey,
+      bearerAuth: this.bearerAuth,
+      provider: this.provider,
+      providerKey: this.providerKey,
+      providerModel: this.providerModel,
+      asBaseURL: this.asBaseURL,
       dedalusOrgID: this.dedalusOrgID,
       ...options,
     });
@@ -741,7 +796,10 @@ export class Dedalus {
         'X-Scalar-Retry-Count': String(retryCount),
         ...(options.timeout ? { 'X-Scalar-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
-        'X-Dedalus-Org-Id': this.dedalusOrgID,
+        ...{ 'X-SDK-Version': '1.0.0' },
+        'X-Provider': this.provider,
+        'X-Provider-Key': this.providerKey,
+        'X-Provider-Model': this.providerModel,
       },
       await this.authHeaders(options),
       this._options.defaultHeaders,
@@ -821,7 +879,7 @@ export class Dedalus {
     throw new Errors.AuthenticationError(
       401,
       undefined,
-      'Could not resolve authentication method. Expected either apiKey or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
+      'Could not resolve authentication method. Expected either apiKey, bearerAuth or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
       headers,
     );
   }
@@ -832,6 +890,8 @@ export class Dedalus {
     if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
     const xAPIKey = this.resolveAuthOptionSync('xAPIKey', this.xAPIKey);
     if (xAPIKey) headers['x-api-key'] = xAPIKey;
+    const bearerAuth = this.resolveAuthOptionSync('bearerAuth', this.bearerAuth);
+    if (bearerAuth) headers['Authorization'] = `Bearer ${bearerAuth}`;
     return headers;
   }
 
@@ -844,10 +904,14 @@ export class Dedalus {
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.bearerAuth(opts), await this.apiKeyAuth(opts)]);
+    return buildHeaders([
+      await this.bearerAuth2(opts),
+      await this.apiKeyAuth(opts),
+      await this.bearerAuth3(opts),
+    ]);
   }
 
-  protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+  protected async bearerAuth2(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
     const apiKey = await this.resolveAuthOption('apiKey', this.apiKey);
     if (apiKey == null) {
       return undefined;
@@ -861,6 +925,14 @@ export class Dedalus {
       return undefined;
     }
     return buildHeaders([{ 'x-api-key': xAPIKey }]);
+  }
+
+  protected async bearerAuth3(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const bearerAuth = await this.resolveAuthOption('bearerAuth', this.bearerAuth);
+    if (bearerAuth == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${bearerAuth}` }]);
   }
 
   private async authQueryAsync(): Promise<Record<string, string>> {
@@ -913,32 +985,20 @@ export class Dedalus {
 
   static toFile = toFile;
 
-  usage: Usage = new Usage(this);
   machines: Machines = new Machines(this);
   networks: Networks = new Networks(this);
+  usage: Usage = new Usage(this);
 }
 
-Dedalus.Usage = Usage;
 Dedalus.Machines = Machines;
 Dedalus.Networks = Networks;
+Dedalus.Usage = Usage;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
 
   export import CursorPage = Pagination.CursorPage;
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
-
-  export {
-    Usage as Usage,
-    type OrgUsage as OrgUsage,
-    type MachineComputeUsage as MachineComputeUsage,
-    type MachineComputeUsageRow as MachineComputeUsageRow,
-    type MachineStorageUsage as MachineStorageUsage,
-    type MachineStorageUsageRow as MachineStorageUsageRow,
-    type UsageRetrieveParams as UsageRetrieveParams,
-    type UsageMachineComputeParams as UsageMachineComputeParams,
-    type UsageMachineStorageParams as UsageMachineStorageParams,
-  };
 
   export {
     Machines as Machines,
@@ -965,6 +1025,18 @@ export declare namespace Dedalus {
     type Network as Network,
     type NetworkGateway as NetworkGateway,
     type NetworkRetrieveParams as NetworkRetrieveParams,
+  };
+
+  export {
+    Usage as Usage,
+    type OrgUsage as OrgUsage,
+    type MachineComputeUsage as MachineComputeUsage,
+    type MachineComputeUsageRow as MachineComputeUsageRow,
+    type MachineStorageUsage as MachineStorageUsage,
+    type MachineStorageUsageRow as MachineStorageUsageRow,
+    type UsageRetrieveParams as UsageRetrieveParams,
+    type UsageMachineComputeParams as UsageMachineComputeParams,
+    type UsageMachineStorageParams as UsageMachineStorageParams,
   };
 }
 

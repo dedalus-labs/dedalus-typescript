@@ -4,6 +4,7 @@ import { APIResource } from '../../resource';
 import { APIPromise } from '../../api-promise';
 import { CursorPage, type CursorPageParams, type PagePromise } from '../../core/pagination';
 import type { RequestOptions } from '../../internal/request-options';
+import { buildHeaders } from '../../internal/headers';
 import { path as __scalarPath } from '../../internal/utils/path';
 
 export class Executions extends APIResource {
@@ -22,11 +23,18 @@ export class Executions extends APIResource {
    * ```
    */
   list(params: ExecutionListParams, options?: RequestOptions): PagePromise<ExecutionsCursorPage, Execution> {
-    const { machine_id, ...query } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(
       __scalarPath`/v1/machines/${machine_id}/executions`,
       CursorPage<Execution>,
-      { query, ...options },
+      {
+        query,
+        ...options,
+        headers: buildHeaders([
+          { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+          options?.headers,
+        ]),
+      },
     );
   }
 
@@ -41,13 +49,20 @@ export class Executions extends APIResource {
    * ```ts
    * const execution = await client.machines.executions.create({
    *   machine_id: 'machineID',
-   *   command: [],
+   *   command: [''],
    * });
    * ```
    */
   create(params: ExecutionCreateParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, ...body } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/executions`, { body, ...options });
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/executions`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -66,8 +81,14 @@ export class Executions extends APIResource {
    * ```
    */
   retrieve(params: ExecutionRetrieveParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, execution_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/executions/${execution_id}`, options);
+    const { machine_id, execution_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/executions/${execution_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -86,8 +107,14 @@ export class Executions extends APIResource {
    * ```
    */
   delete(params: ExecutionDeleteParams, options?: RequestOptions): APIPromise<Execution> {
-    const { machine_id, execution_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/executions/${execution_id}`, options);
+    const { machine_id, execution_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/executions/${execution_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -106,11 +133,14 @@ export class Executions extends APIResource {
    * ```
    */
   output(params: ExecutionOutputParams, options?: RequestOptions): APIPromise<ExecutionOutput> {
-    const { machine_id, execution_id } = params;
-    return this._client.get(
-      __scalarPath`/v1/machines/${machine_id}/executions/${execution_id}/output`,
-      options,
-    );
+    const { machine_id, execution_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/executions/${execution_id}/output`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -132,11 +162,18 @@ export class Executions extends APIResource {
     params: ExecutionEventsParams,
     options?: RequestOptions,
   ): PagePromise<ExecutionEventsCursorPage, ExecutionEvent> {
-    const { machine_id, execution_id, ...query } = params;
+    const { machine_id, execution_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(
       __scalarPath`/v1/machines/${machine_id}/executions/${execution_id}/events`,
       CursorPage<ExecutionEvent>,
-      { query, ...options },
+      {
+        query,
+        ...options,
+        headers: buildHeaders([
+          { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+          options?.headers,
+        ]),
+      },
     );
   }
 }
@@ -259,11 +296,16 @@ export interface ArtifactRef {
 
 export interface ExecutionListParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type ExecutionsCursorPage = CursorPage<Execution>;
@@ -276,6 +318,10 @@ export interface ExecutionCreateParams {
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
   /**
    * Body param
    */
@@ -301,62 +347,86 @@ export interface ExecutionCreateParams {
 
 export interface ExecutionRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   execution_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface ExecutionDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   execution_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface ExecutionOutputParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   execution_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface ExecutionEventsParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   execution_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type ExecutionEventsCursorPage = CursorPage<ExecutionEvent>;

@@ -25,8 +25,9 @@ const client = new Dedalus({
 
 Provide credentials using the options below. Environment variables are read automatically when the target runtime supports them:
 
-- `apiKey` (env: `DEDALUS_API_KEY`) — Dedalus API key in Authorization: Bearer <key>.
-- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — Dedalus API key. Alternative to Bearer token.
+- `apiKey` (env: `DEDALUS_API_KEY`) — API key authentication using Bearer token
+- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — API key authentication using X-API-Key header
+- `bearerAuth` (env: `DEDALUS_BEARER_AUTH`) — Dedalus API key in Authorization: Bearer <key>.
 
 ## Calling operations
 
@@ -37,9 +38,13 @@ const client = new Dedalus({
   apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
 });
 
-const orgUsage = await client.usage.retrieve();
+const machine = await client.machines.create({
+  memory_mib: 0,
+  storage_gib: 0,
+  vcpu: 0,
+});
 
-console.log(orgUsage);
+console.log(machine.machine_id);
 ```
 
 Method names, parameter shapes, and response types are generated from the API description — do not guess them. Look up the exact call signature in [api.md](../../../api.md) before writing a call.
@@ -93,7 +98,11 @@ Non-success responses throw generated API errors. Error objects expose status, h
 import { APIError } from 'dedalus';
 
 try {
-  const orgUsage = await client.usage.retrieve();
+  const machine = await client.machines.create({
+    memory_mib: 0,
+    storage_gib: 0,
+    vcpu: 0,
+  });
 } catch (err) {
   if (err instanceof APIError) {
     console.log(err.status, err.name, err.headers);

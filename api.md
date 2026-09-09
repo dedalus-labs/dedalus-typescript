@@ -4,10 +4,6 @@ Complete reference of every operation, grouped by resource. See [the README](./R
 
 ## Contents
 
-- [`Usage`](#usage)
-  - [Get usage summary](#get-usage-summary)
-  - [List machine compute usage breakdown](#list-machine-compute-usage-breakdown)
-  - [List machine storage usage breakdown](#list-machine-storage-usage-breakdown)
 - [`Machines`](#machines)
   - [List machines](#list-machines)
   - [Create machine](#create-machine)
@@ -48,6 +44,10 @@ Complete reference of every operation, grouped by resource. See [the README](./R
     - [Connect to terminal WebSocket stream](#connect-to-terminal-websocket-stream)
 - [`Networks`](#networks)
   - [Get network details](#get-network-details)
+- [`Usage`](#usage)
+  - [Get usage summary](#get-usage-summary)
+  - [List machine compute usage breakdown](#list-machine-compute-usage-breakdown)
+  - [List machine storage usage breakdown](#list-machine-storage-usage-breakdown)
 
 ## Setup
 
@@ -57,41 +57,6 @@ import Dedalus from 'dedalus';
 const client = new Dedalus({
   apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
 });
-```
-
-## `Usage`
-
-### Get usage summary
-
-| Direction | Type |
-| --- | --- |
-| Request | [`UsageRetrieveParams`](./src/resources/usage.ts) |
-| Response | [`OrgUsage`](./src/resources/usage.ts) |
-
-```ts
-const orgUsage = await client.usage.retrieve();
-```
-
-### List machine compute usage breakdown
-
-| Direction | Type |
-| --- | --- |
-| Request | [`UsageMachineComputeParams`](./src/resources/usage.ts) |
-| Response | [`MachineComputeUsage`](./src/resources/usage.ts) |
-
-```ts
-const machineComputeUsage = await client.usage.machineCompute();
-```
-
-### List machine storage usage breakdown
-
-| Direction | Type |
-| --- | --- |
-| Request | [`UsageMachineStorageParams`](./src/resources/usage.ts) |
-| Response | [`MachineStorageUsage`](./src/resources/usage.ts) |
-
-```ts
-const machineStorageUsage = await client.usage.machineStorage();
 ```
 
 ## `Machines`
@@ -402,7 +367,7 @@ const page = await client.machines.executions.list({
 ```ts
 const execution = await client.machines.executions.create({
   machine_id: 'machineID',
-  command: [],
+  command: [''],
 });
 ```
 
@@ -556,4 +521,39 @@ try {
 const network = await client.networks.retrieve({
   network_id: 'networkID',
 });
+```
+
+## `Usage`
+
+### Get usage summary
+
+| Direction | Type |
+| --- | --- |
+| Request | [`UsageRetrieveParams`](./src/resources/usage.ts) |
+| Response | [`OrgUsage`](./src/resources/usage.ts) |
+
+```ts
+const orgUsage = await client.usage.retrieve();
+```
+
+### List machine compute usage breakdown
+
+| Direction | Type |
+| --- | --- |
+| Request | [`UsageMachineComputeParams`](./src/resources/usage.ts) |
+| Response | [`MachineComputeUsage`](./src/resources/usage.ts) |
+
+```ts
+const machineComputeUsage = await client.usage.machineCompute();
+```
+
+### List machine storage usage breakdown
+
+| Direction | Type |
+| --- | --- |
+| Request | [`UsageMachineStorageParams`](./src/resources/usage.ts) |
+| Response | [`MachineStorageUsage`](./src/resources/usage.ts) |
+
+```ts
+const machineStorageUsage = await client.usage.machineStorage();
 ```

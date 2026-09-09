@@ -4,6 +4,7 @@ import { APIResource } from '../../resource';
 import { APIPromise } from '../../api-promise';
 import { CursorPage, type CursorPageParams, type PagePromise } from '../../core/pagination';
 import type { RequestOptions } from '../../internal/request-options';
+import { buildHeaders } from '../../internal/headers';
 import { path as __scalarPath } from '../../internal/utils/path';
 
 export class SSH extends APIResource {
@@ -22,10 +23,14 @@ export class SSH extends APIResource {
    * ```
    */
   list(params: SSHListParams, options?: RequestOptions): PagePromise<SSHSessionsCursorPage, SSHSession> {
-    const { machine_id, ...query } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(__scalarPath`/v1/machines/${machine_id}/ssh`, CursorPage<SSHSession>, {
       query,
       ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -45,8 +50,15 @@ export class SSH extends APIResource {
    * ```
    */
   create(params: SSHCreateParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, ...body } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/ssh`, { body, ...options });
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/ssh`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -65,8 +77,14 @@ export class SSH extends APIResource {
    * ```
    */
   retrieve(params: SSHRetrieveParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, session_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/ssh/${session_id}`, options);
+    const { machine_id, session_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/ssh/${session_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -85,8 +103,14 @@ export class SSH extends APIResource {
    * ```
    */
   delete(params: SSHDeleteParams, options?: RequestOptions): APIPromise<SSHSession> {
-    const { machine_id, session_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/ssh/${session_id}`, options);
+    const { machine_id, session_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/ssh/${session_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -143,11 +167,16 @@ export interface SSHHostTrust {
 
 export interface SSHListParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type SSHSessionsCursorPage = CursorPage<SSHSession>;
@@ -161,6 +190,10 @@ export interface SSHCreateParams {
    */
   machine_id: string;
   /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
+  /**
    * Body param
    */
   public_key: string;
@@ -168,32 +201,44 @@ export interface SSHCreateParams {
 
 export interface SSHRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   session_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface SSHDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   session_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace SSH {
   export {

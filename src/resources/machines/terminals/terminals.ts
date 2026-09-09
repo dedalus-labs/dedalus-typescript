@@ -4,6 +4,7 @@ import { APIResource } from '../../../resource';
 import { APIPromise } from '../../../api-promise';
 import { CursorPage, type CursorPageParams, type PagePromise } from '../../../core/pagination';
 import type { RequestOptions } from '../../../internal/request-options';
+import { buildHeaders } from '../../../internal/headers';
 import { path as __scalarPath } from '../../../internal/utils/path';
 import { TerminalsWS, type TerminalsWSClientOptions } from './ws';
 
@@ -23,10 +24,14 @@ export class Terminals extends APIResource {
    * ```
    */
   list(params: TerminalListParams, options?: RequestOptions): PagePromise<TerminalsCursorPage, Terminal> {
-    const { machine_id, ...query } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(__scalarPath`/v1/machines/${machine_id}/terminals`, CursorPage<Terminal>, {
       query,
       ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -47,8 +52,15 @@ export class Terminals extends APIResource {
    * ```
    */
   create(params: TerminalCreateParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, ...body } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/terminals`, { body, ...options });
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/terminals`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -67,8 +79,14 @@ export class Terminals extends APIResource {
    * ```
    */
   retrieve(params: TerminalRetrieveParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, terminal_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
+    const { machine_id, terminal_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/terminals/${terminal_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -87,8 +105,14 @@ export class Terminals extends APIResource {
    * ```
    */
   delete(params: TerminalDeleteParams, options?: RequestOptions): APIPromise<Terminal> {
-    const { machine_id, terminal_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/terminals/${terminal_id}`, options);
+    const { machine_id, terminal_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/terminals/${terminal_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -115,8 +139,16 @@ export class Terminals extends APIResource {
    * ```
    */
   connect(params: TerminalConnectParams, options?: TerminalsWSClientOptions): TerminalsWS {
-    const { machine_id, terminal_id } = params;
-    return new TerminalsWS(this._client, { machine_id: machine_id, terminal_id: terminal_id }, options);
+    const { machine_id, terminal_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return new TerminalsWS(
+      this._client,
+      {
+        machine_id: machine_id,
+        terminal_id: terminal_id,
+        ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}),
+      },
+      options,
+    );
   }
 }
 
@@ -321,11 +353,16 @@ export namespace ConnectServerEvent {
 
 export interface TerminalListParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type TerminalsCursorPage = CursorPage<Terminal>;
@@ -338,6 +375,10 @@ export interface TerminalCreateParams {
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
   /**
    * Body param
    */
@@ -364,49 +405,66 @@ export interface TerminalCreateParams {
 
 export interface TerminalRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   terminal_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface TerminalDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   terminal_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface TerminalConnectParams {
   /**
-   * Machine identifier.
+   * Path param: Machine identifier.
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
-   * Terminal identifier.
+   * Path param: Terminal identifier.
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   terminal_id: string;
+  /**
+   * Header param: Organization ID header applied to all DCS requests.
+   * @format uuid
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace Terminals {
   export {

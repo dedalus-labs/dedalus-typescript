@@ -50,7 +50,10 @@ export class Stream<Item> implements AsyncIterable<Item> {
       let done = false;
       try {
         for await (const sse of _iterSSEMessages(response, controller)) {
-          if (sse.event === 'bookmark') {
+          if (done) continue;
+
+          if (sse.data.startsWith('[DONE]')) {
+            done = true;
             continue;
           }
 
@@ -58,7 +61,7 @@ export class Stream<Item> implements AsyncIterable<Item> {
             throw new APIError(undefined, safeJSON(sse.data) ?? sse.data, undefined, response.headers);
           }
 
-          if (sse.event === 'status') {
+          if (sse.event === null) {
             try {
               yield JSON.parse(sse.data);
             } catch (e) {
