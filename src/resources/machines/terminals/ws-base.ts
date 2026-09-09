@@ -1,6 +1,12 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-import { TerminalsEmitter, TerminalsStreamMessage, WebSocketError, buildURL } from './internal-base';
+import {
+  TerminalsEmitter,
+  TerminalsStreamMessage,
+  WebSocketError,
+  buildURL,
+  parameterHeaders,
+} from './internal-base';
 import { InternalEventEmitter } from '../../../core/EventEmitter';
 import { sleep } from '../../../internal/utils/sleep';
 import { type WebSocketLike, ReadyState } from '../../../internal/ws-adapter';
@@ -15,54 +21,33 @@ import {
 } from '../../../internal/ws';
 import * as TerminalsAPI from './terminals';
 import { Dedalus } from '../../../client';
-import { DedalusError } from '../../../core/error';
+import { DedalusError } from '../../../error';
 
 export interface TerminalsWSParameters extends Record<string, unknown> {
   machine_id: string;
 
   terminal_id: string;
+
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface TerminalsWSReconnectOptions {
-  /**
-   * Called before each reconnect attempt. Return an object with
-   * `parameters` to override query parameters for the next connection.
-   */
+  /** Called before each reconnect attempt. */
   onReconnecting(
     event: ReconnectingEvent<TerminalsWSParameters>,
   ): ReconnectingOverrides<TerminalsWSParameters> | void;
-
-  /**
-   * Maximum number of reconnection attempts. Default: 5.
-   * Set to 0 to disable reconnection entirely.
-   */
+  /** Maximum number of reconnection attempts. Default: 5. Set to 0 to disable reconnection. */
   maxRetries?: number;
-
-  /**
-   * Initial backoff delay in milliseconds. Default: 500.
-   */
+  /** Initial backoff delay in milliseconds. Default: 500. */
   initialDelay?: number;
-
-  /**
-   * Maximum backoff delay in milliseconds. Default: 8000.
-   */
+  /** Maximum backoff delay in milliseconds. Default: 8000. */
   maxDelay?: number;
 }
 
 export interface TerminalsWSBaseOptions {
-  /**
-   * Options for automatic reconnection on recoverable close codes.
-   * Automatic reconnection is only enabled when this has a non-null value.
-   */
+  /** Options for automatic reconnection on recoverable close codes. */
   reconnect?: TerminalsWSReconnectOptions | null | undefined;
-
-  /**
-   * Maximum size of the outgoing message queue in bytes.
-   * Messages queued while the socket is connecting or reconnecting are held
-   * in memory up to this limit. Once the limit is reached, new messages are
-   * discarded and an `error` event is emitted.
-   * Default: 1 MB
-   */
+  /** Maximum size of the outgoing message queue in bytes. Default: 1 MB. */
   maxQueueSize?: number | undefined;
 }
 
@@ -73,20 +58,18 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
   protected _client: Dedalus;
   protected _parameters: TerminalsWSParameters | null | undefined;
   private _reconnectOptions: TerminalsWSReconnectOptions | null;
-  private _sendQueue: SendQueue<TerminalsAPI.TerminalClientEvent>;
-  private _isReconnecting: boolean = false;
+  private _sendQueue: SendQueue<TerminalsAPI.ConnectClientEvent>;
+  private _isReconnecting = false;
   private _intentionallyClosed = false;
-  private _closeCode: number = 1000;
-  private _closeReason: string = 'OK';
-  private _lastCloseCode: number = 1006;
-  private _lastCloseReason: string = '';
-
-  // Necessary to keep the public event interface clean while we manage reconnecting
+  private _closeCode = 1000;
+  private _closeReason = 'OK';
+  private _lastCloseCode = 1006;
+  private _lastCloseReason = '';
   private _internalEvents = new InternalEventEmitter<{
     socketSwap: (oldSocket: TSocket, newSocket: TSocket) => void;
     reconnecting: (event: ReconnectingEvent<TerminalsWSParameters>) => void;
     reconnected: () => void;
-    close: (code: number, reason: string, unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[]) => void;
+    close: (code: number, reason: string, unsent: UnsentMessage<TerminalsAPI.ConnectClientEvent>[]) => void;
   }>();
 
   constructor(
@@ -98,27 +81,20 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     this._client = client;
     this._parameters = parameters ?? undefined;
     this._reconnectOptions = options?.reconnect ?? null;
-    this._sendQueue = new SendQueue<TerminalsAPI.TerminalClientEvent>(options?.maxQueueSize);
+    this._sendQueue = new SendQueue<TerminalsAPI.ConnectClientEvent>(options?.maxQueueSize);
   }
 
-  /** Establishes the initial WebSocket connection. */
   protected _connectInitial(): void {
     this.url = buildURL(this._client, this._parameters ?? {});
     this.socket = this._connect();
   }
 
-  /** Creates a platform-specific WebSocket for the given URL and auth headers. */
   protected abstract _createSocket(url: URL, authHeaders: Record<string, string>): TSocket;
 
-  send(event: TerminalsAPI.TerminalClientEvent) {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
+  send(event: TerminalsAPI.ConnectClientEvent): void {
     if (this._isReconnecting || this.socket.readyState === ReadyState.CONNECTING) {
-      if (!this._sendQueue.enqueue(event)) {
+      if (!this._sendQueue.enqueue(event))
         this._onError(null, 'send queue is full, message discarded', undefined);
-      }
       return;
     }
     if (this.socket.readyState !== ReadyState.OPEN) {
@@ -132,15 +108,10 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     }
   }
 
-  sendRaw(data: RawWebSocketData) {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
+  sendRaw(data: RawWebSocketData): void {
     if (this._isReconnecting || this.socket.readyState === ReadyState.CONNECTING) {
-      if (!this._sendQueue.enqueueRaw(data)) {
+      if (!this._sendQueue.enqueueRaw(data))
         this._onError(null, 'send queue is full, message discarded', undefined);
-      }
       return;
     }
     if (this.socket.readyState !== ReadyState.OPEN) {
@@ -154,11 +125,7 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     }
   }
 
-  close(props?: { code: number; reason: string }) {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
+  close(props?: { code: number; reason: string }): void {
     this._intentionallyClosed = true;
     this._closeCode = props?.code ?? 1000;
     this._closeReason = props?.reason ?? 'OK';
@@ -169,100 +136,22 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     }
   }
 
-  /**
-   * Returns an async iterator over WebSocket lifecycle and message events,
-   * providing an alternative to the event-based `.on()` API.
-   * The iterator will exit if the socket closes but exiting the iterator
-   * does not close the socket.
-   *
-   * @example
-   * ```ts
-   * for await (const event of client.stream()) {
-   *   switch (event.type) {
-   *     case 'message':
-   *       console.log('received:', event.message);
-   *       break;
-   *     case 'error':
-   *       console.error(event.error);
-   *       break;
-   *     case 'close':
-   *       console.log('connection closed');
-   *       break;
-   *   }
-   * }
-   * ```
-   */
   stream(): AsyncIterableIterator<TerminalsStreamMessage> {
     return this[Symbol.asyncIterator]();
   }
 
   [Symbol.asyncIterator](): AsyncIterableIterator<TerminalsStreamMessage> {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
-    // Two-queue async iterator: `queue` buffers incoming messages,
-    // `resolvers` buffers waiting next() calls. A push wakes the
-    // oldest next(); a next() drains the oldest message.
     const queue: TerminalsStreamMessage[] = [];
     const resolvers: (() => void)[] = [];
     let done = false;
     let currentSocket = this.socket;
-
     const push = (msg: TerminalsStreamMessage) => {
       queue.push(msg);
       resolvers.shift()?.();
     };
-
-    const onEvent = (event: TerminalsAPI.TerminalServerEvent) => {
-      if (event.type === 'error') return; // handled by onEmitterError
-      push({ type: 'message', message: event });
-    };
-
-    const onRaw = (data: RawWebSocketData) => {
-      push({ type: 'raw', data });
-    };
-
-    // All errors (API + socket) funnel through _onError → 'error' event
-    const onEmitterError = (err: WebSocketError) => {
-      push({ type: 'error', error: err });
-    };
-
-    const onOpen = () => {
-      push({ type: 'open' });
-    };
-
-    const onReconnecting = (evt: ReconnectingEvent<TerminalsWSParameters>) => {
-      push({ type: 'reconnecting', reconnect: evt });
-    };
-
-    const onReconnected = () => {
-      push({ type: 'reconnected' });
-    };
-
     const flushResolvers = () => {
-      for (let resolver = resolvers.shift(); resolver; resolver = resolvers.shift()) {
-        resolver();
-      }
+      for (let resolver = resolvers.shift(); resolver; resolver = resolvers.shift()) resolver();
     };
-
-    const onClose = (
-      code: number,
-      reason: string,
-      unsent: UnsentMessage<TerminalsAPI.TerminalClientEvent>[],
-    ) => {
-      push({ type: 'close', code, reason, unsent });
-      done = true;
-      flushResolvers();
-      cleanup();
-    };
-
-    const onSocketSwap = (oldSocket: TSocket, newSocket: TSocket) => {
-      oldSocket.off('open', onOpen);
-      newSocket.on('open', onOpen);
-      currentSocket = newSocket;
-    };
-
     const cleanup = () => {
       this.off('event', onEvent);
       this.off('raw', onRaw);
@@ -273,7 +162,30 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
       this._internalEvents.off('reconnecting', onReconnecting);
       this._internalEvents.off('reconnected', onReconnected);
     };
-
+    const onEvent = (event: unknown) => {
+      if (!isErrorEvent(event)) push({ type: 'message', message: event as never });
+    };
+    const onRaw = (data: RawWebSocketData) => push({ type: 'raw', data });
+    const onEmitterError = (error: WebSocketError) => push({ type: 'error', error });
+    const onOpen = () => push({ type: 'open' });
+    const onReconnecting = (event: ReconnectingEvent<TerminalsWSParameters>) =>
+      push({ type: 'reconnecting', reconnect: event });
+    const onReconnected = () => push({ type: 'reconnected' });
+    const onClose = (
+      code: number,
+      reason: string,
+      unsent: UnsentMessage<TerminalsAPI.ConnectClientEvent>[],
+    ) => {
+      push({ type: 'close', code, reason, unsent });
+      done = true;
+      flushResolvers();
+      cleanup();
+    };
+    const onSocketSwap = (oldSocket: TSocket, newSocket: TSocket) => {
+      oldSocket.off('open', onOpen);
+      newSocket.on('open', onOpen);
+      currentSocket = newSocket;
+    };
     this.on('event', onEvent);
     this.on('raw', onRaw);
     this.on('error', onEmitterError);
@@ -282,61 +194,37 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     this._internalEvents.on('socketSwap', onSocketSwap);
     this._internalEvents.on('reconnecting', onReconnecting);
     this._internalEvents.on('reconnected', onReconnected);
-
-    if (this._isReconnecting) {
-      // A reconnect is already in flight. The socket may be CLOSED but the
-      // instance is still alive. Emit 'reconnecting' so the iterator stays
-      // open and receives the upcoming reconnected/message events.
+    if (this._isReconnecting)
       push({
         type: 'reconnecting',
         reconnect: { attempt: 0, maxAttempts: 0, delay: 0, closeCode: 0, parameters: undefined },
       });
-    } else {
-      switch (this.socket.readyState) {
-        case ReadyState.CONNECTING:
-          push({ type: 'connecting' });
-          break;
-        case ReadyState.OPEN:
-          push({ type: 'open' });
-          break;
-        case ReadyState.CLOSING:
-          push({ type: 'closing' });
-          break;
-        case ReadyState.CLOSED:
-          push({
-            type: 'close',
-            code: this._lastCloseCode,
-            reason: this._lastCloseReason,
-            unsent: this._sendQueue.drain(),
-          });
-          done = true;
-          cleanup();
-          break;
-      }
-    }
-
-    const resolve = (res: (value: IteratorResult<TerminalsStreamMessage>) => void) => {
-      if (queue.length > 0) {
-        res({ value: queue.shift()!, done: false });
-      } else if (done) {
-        res({ value: undefined, done: true });
-      } else {
-        return false;
-      }
-      return true;
-    };
-
-    const next = (): Promise<IteratorResult<TerminalsStreamMessage>> =>
-      new Promise((res) => {
-        if (resolve(res)) return;
-        resolvers.push(() => {
-          resolve(res);
-        });
+    else if (this.socket.readyState === ReadyState.CONNECTING) push({ type: 'connecting' });
+    else if (this.socket.readyState === ReadyState.OPEN) push({ type: 'open' });
+    else if (this.socket.readyState === ReadyState.CLOSING) push({ type: 'closing' });
+    else {
+      push({
+        type: 'close',
+        code: this._lastCloseCode,
+        reason: this._lastCloseReason,
+        unsent: this._sendQueue.drain(),
       });
-
+      done = true;
+      cleanup();
+    }
+    const next = (): Promise<IteratorResult<TerminalsStreamMessage>> =>
+      new Promise((resolve) => {
+        if (queue.length > 0) resolve({ value: queue.shift()!, done: false });
+        else if (done) resolve({ value: undefined, done: true });
+        else
+          resolvers.push(() => {
+            if (queue.length > 0) resolve({ value: queue.shift()!, done: false });
+            else resolve({ value: undefined, done: true });
+          });
+      });
     return {
       next,
-      return: (): Promise<IteratorReturnResult<undefined>> => {
+      return: () => {
         done = true;
         cleanup();
         flushResolvers();
@@ -350,113 +238,72 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
 
   private _connect(): TSocket {
     this.url = buildURL(this._client, this._parameters ?? {});
-
     const socket = this._createSocket(this.url, this._authHeaders());
-
     socket.on('message', (data: string | ArrayBuffer | ArrayBufferView, isBinary: boolean) => {
       if (isBinary) {
         this._emit('raw', data);
         return;
       }
-
-      // Coerce to string in case the adapter delivers a typed-array for text frames.
       const text = typeof data === 'string' ? data : String(data);
-
-      let event: TerminalsAPI.TerminalServerEvent;
+      let event: unknown;
       try {
-        event = JSON.parse(text) as TerminalsAPI.TerminalServerEvent;
+        event = JSON.parse(text);
       } catch {
         this._emit('raw', data);
         return;
       }
-
-      this._emit('event', event);
-
-      if (event.type === 'error') {
-        this._onError(event);
-      } else {
-        // @ts-ignore TS isn't smart enough to get the relationship right here
-        this._emit(event.type, event);
-      }
+      this._emit('event', event as never);
+      if (isErrorEvent(event)) this._onError(event as never);
+      else emitTypedEvent(this, event);
     });
-
     socket.on('error', (err: Error) => {
-      // Suppress transient errors during reconnection — the retry loop
-      // already handles them and will surface a close if retries exhaust.
-      if (this._isReconnecting) return;
-      this._onError(null, err.message, err);
+      if (!this._isReconnecting) this._onError(null, err.message, err);
     });
-
-    socket.on('open', () => {
-      this._flushSendQueue();
-    });
-
+    socket.on('open', () => this._flushSendQueue());
     socket.on('close', (code: number, reason: string) => {
-      // Ignore close events from superseded sockets — a stale socket's
-      // late close must not kick off a second reconnect loop.
       if (socket !== this.socket) return;
-      if (!this._intentionallyClosed && this._canReconnect(code)) {
-        this._reconnect(code);
-      } else if (!this._isReconnecting) {
-        this._emitPermanentClose(code, reason);
-      }
+      if (!this._intentionallyClosed && this._canReconnect(code)) this._reconnect(code);
+      else if (!this._isReconnecting) this._emitPermanentClose(code, reason);
     });
-
     return socket;
   }
 
-  // Reconnect is opt-in via onReconnecting so callers can pass
-  // state (e.g. session IDs) into the new connection.
   private _canReconnect(code: number): boolean {
-    if (this._intentionallyClosed) return false;
-    if (!this._reconnectOptions) return false;
-    if (this._reconnectOptions.maxRetries === 0) return false;
-    if (!this._reconnectOptions.onReconnecting) return false;
+    if (
+      this._intentionallyClosed ||
+      !this._reconnectOptions ||
+      this._reconnectOptions.maxRetries === 0 ||
+      !this._reconnectOptions.onReconnecting
+    )
+      return false;
     return isRecoverableClose(code);
   }
 
   private async _reconnect(closeCode: number): Promise<void> {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
     if (this._isReconnecting || !this._reconnectOptions) return;
     this._isReconnecting = true;
-
     const maxRetries = this._reconnectOptions.maxRetries ?? 5;
     const initialDelay = this._reconnectOptions.initialDelay ?? 500;
     const maxDelay = this._reconnectOptions.maxDelay ?? 8000;
-
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       if (!this._canReconnect(closeCode)) {
         this._isReconnecting = false;
-        if (!this._intentionallyClosed) {
-          this._onError(
-            null,
-            `WebSocket reconnect aborted: non-recoverable close code ${closeCode}`,
-            undefined,
-          );
-        }
         this._emitPermanentClose(
           this._intentionallyClosed ? this._closeCode : closeCode,
           this._intentionallyClosed ? this._closeReason : 'reconnect aborted',
         );
         return;
       }
-
-      const baseDelay = Math.min(initialDelay * Math.pow(2, attempt - 1), maxDelay);
-      // Jitter: rand [0.75, 1.0] to spread out connection attempts without over-delaying
-      const jitter = 0.75 + Math.random() * 0.25;
-      const actualDelay = Math.round(baseDelay * jitter);
-
+      const delay = Math.round(
+        Math.min(initialDelay * 2 ** (attempt - 1), maxDelay) * (0.75 + Math.random() * 0.25),
+      );
       let reconnectingEvent: ReconnectingEvent<TerminalsWSParameters> = {
         attempt,
         maxAttempts: maxRetries,
-        delay: actualDelay,
+        delay,
         closeCode,
         parameters: this._parameters ? { ...this._parameters } : undefined,
       };
-
       let overrides: ReconnectingOverrides<TerminalsWSParameters> | void;
       try {
         overrides = this._reconnectOptions.onReconnecting(reconnectingEvent);
@@ -466,72 +313,42 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
         this._emitPermanentClose(closeCode, 'onReconnecting callback threw');
         return;
       }
-
       if (overrides && 'abort' in overrides && overrides.abort) {
         this._isReconnecting = false;
         this._emitPermanentClose(closeCode, 'reconnect aborted by handler');
         return;
       }
-
       if (overrides && 'parameters' in overrides) {
         this._parameters = overrides.parameters;
         reconnectingEvent = { ...reconnectingEvent, parameters: this._parameters };
       }
-
-      try {
-        this._emit('reconnecting', reconnectingEvent);
-      } catch (err) {
-        this._onError(null, 'onReconnecting callback threw', err);
-      }
+      this._emit('reconnecting', reconnectingEvent);
       this._internalEvents._emit('reconnecting', reconnectingEvent);
-
       if (!this._canReconnect(closeCode)) {
         this._isReconnecting = false;
-        if (!this._intentionallyClosed) {
-          this._onError(
-            null,
-            `WebSocket reconnect aborted: non-recoverable close code ${closeCode}`,
-            undefined,
-          );
-        }
         this._emitPermanentClose(
           this._intentionallyClosed ? this._closeCode : closeCode,
           this._intentionallyClosed ? this._closeReason : 'reconnect aborted',
         );
         return;
       }
-
-      await sleep(actualDelay);
-
+      await sleep(delay);
       if (!this._canReconnect(closeCode)) {
         this._isReconnecting = false;
-        if (!this._intentionallyClosed) {
-          this._onError(
-            null,
-            `WebSocket reconnect aborted: non-recoverable close code ${closeCode}`,
-            undefined,
-          );
-        }
         this._emitPermanentClose(
           this._intentionallyClosed ? this._closeCode : closeCode,
           this._intentionallyClosed ? this._closeReason : 'reconnect aborted',
         );
         return;
       }
-
       let closeCodePromise: Promise<number> | undefined;
       try {
         const oldSocket = this.socket;
         this.socket = this._connect();
-        // Registered synchronously after _connect() and before any
-        // await so the code is captured even when ws emits 'close'
-        // in the same tick as 'error' (e.g. abortHandshake).
         closeCodePromise = new Promise<number>((resolve) => {
           this.socket.once('close', resolve);
         });
-
         await this._awaitOpen(this.socket);
-
         this._internalEvents._emit('socketSwap', oldSocket, this.socket);
         this._isReconnecting = false;
         this._flushSendQueue();
@@ -539,16 +356,9 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
         this._internalEvents._emit('reconnected');
         return;
       } catch {
-        if (closeCodePromise) {
-          // ws may emit 'error' before 'close', so await the code
-          // rather than reading it synchronously.
-          closeCode = await closeCodePromise;
-        }
+        if (closeCodePromise) closeCode = await closeCodePromise;
       }
     }
-
-    // All retries exhausted — surface an error so consumers can
-    // distinguish retry failure from a clean close.
     this._isReconnecting = false;
     this._onError(
       null,
@@ -558,11 +368,8 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     this._emitPermanentClose(closeCode, `reconnect failed after ${maxRetries} attempts`);
   }
 
-  /**
-   * Resolves once the socket is open, rejects if it errors or closes first
-   */
   private _awaitOpen(socket: TSocket): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const cleanup = () => {
         socket.off('open', onOpen);
         socket.off('error', onError);
@@ -587,10 +394,6 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
   }
 
   private _flushSendQueue(): void {
-    if (!this.socket) {
-      throw new DedalusError('Internal error: failed to initialize socket. Please report this issue.');
-    }
-
     try {
       this._sendQueue.flush((data) => this.socket.send(flattenRawData(data)));
     } catch (err) {
@@ -598,28 +401,24 @@ export abstract class TerminalsWSBase<TSocket extends WebSocketLike> extends Ter
     }
   }
 
-  /**
-   * Emits the public `close` event with unsent messages and the internal
-   * `close` event used by the async iterator.
-   */
   private _emitPermanentClose(code: number, reason: string): void {
     this._lastCloseCode = code;
     this._lastCloseReason = reason;
     const unsent = this._sendQueue.drain();
-    // Internal close fires first so the async iterator is guaranteed to
-    // terminate even if a public 'close' listener throws.
     this._internalEvents._emit('close', code, reason, unsent);
     this._emit('close', code, reason, unsent);
   }
 
   protected _authHeaders(): Record<string, string> {
-    if (this._client.apiKey) {
-      return { Authorization: `Bearer ${this._client.apiKey}` };
-    }
-
-    if (this._client.xAPIKey) {
-      return { 'x-api-key': this._client.xAPIKey };
-    }
-    return {};
+    return { ...this._client.webSocketAuthHeaders(), ...parameterHeaders(this._parameters ?? {}) };
   }
 }
+
+const isErrorEvent = (event: unknown): boolean =>
+  typeof event === 'object' && event !== null && 'type' in event && event.type === 'error';
+
+const emitTypedEvent = (emitter: TerminalsEmitter, event: unknown): void => {
+  if (typeof event === 'object' && event !== null && 'type' in event && typeof event.type === 'string') {
+    (emitter._emit as (eventName: string, payload: unknown) => void)(event.type, event);
+  }
+};

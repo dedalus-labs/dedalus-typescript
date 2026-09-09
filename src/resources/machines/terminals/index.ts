@@ -1,22 +1,25 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-export {
-  Terminals,
-  type Terminal,
-  type TerminalClientEvent,
-  type TerminalClosedEvent,
-  type TerminalCreateParams,
-  type TerminalErrorEvent,
-  type TerminalInputEvent,
-  type TerminalList,
-  type TerminalOutputEvent,
-  type TerminalResizeEvent,
-  type TerminalServerEvent,
-  type TerminalRetrieveParams,
-  type TerminalListParams,
-  type TerminalDeleteParams,
-  type TerminalConnectParams,
-  type TerminalsCursorPage,
+export { Terminals } from './terminals';
+export type {
+  TerminalCreateParams,
+  Terminal,
+  TerminalList,
+  TerminalClientEvent,
+  TerminalServerEvent,
+  TerminalInputEvent,
+  TerminalResizeEvent,
+  TerminalOutputEvent,
+  TerminalErrorEvent,
+  TerminalClosedEvent,
+  ConnectClientEvent,
+  ConnectServerEvent,
+  TerminalListParams,
+  TerminalsCursorPage,
+  TerminalRetrieveParams,
+  TerminalDeleteParams,
+  TerminalConnectParams,
 } from './terminals';
-export { type TerminalsWSClientOptions } from './ws';
-export { type TerminalsWSReconnectOptions, type TerminalsWSParameters } from './ws-base';
+export { type TerminalsWSBrowserOptions } from './ws-browser';
+export { TerminalsWS, type TerminalsWSClientOptions } from './ws';
+export type { TerminalsWSReconnectOptions, TerminalsWSParameters } from './ws-base';

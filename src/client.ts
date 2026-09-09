@@ -1,87 +1,117 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-import type { RequestInit, RequestInfo, BodyInit } from './internal/builtin-types';
-import type { HTTPMethod, PromiseOrValue, MergedRequestInit, FinalizedRequestInit } from './internal/types';
-import { uuid4 } from './internal/utils/uuid';
-import { validatePositiveInteger, isAbsoluteURL, safeJSON } from './internal/utils/values';
-import { sleep } from './internal/utils/sleep';
-export type { Logger, LogLevel } from './internal/utils/log';
-import { castToError, isAbortError } from './internal/errors';
+import { APIPromise } from './api-promise';
 import type { APIResponseProps } from './internal/parse';
+import { PagePromise, type AbstractPage, type CursorPageParams, CursorPageResponse } from './core/pagination';
+import * as Pagination from './core/pagination';
+import * as Errors from './error';
+import { uuid4 } from './internal/utils/uuid';
+import { validatePositiveInteger, isAbsoluteURL, safeJSON, isEmptyObj } from './internal/utils/values';
+import { sleep } from './internal/utils/sleep';
+import { castToError, isAbortError } from './internal/errors';
 import { getPlatformHeaders } from './internal/detect-platform';
 import * as Shims from './internal/shims';
 import * as Opts from './internal/request-options';
-import { stringifyQuery } from './internal/utils/query';
-import { VERSION } from './version';
-import * as Errors from './core/error';
-import * as Pagination from './core/pagination';
-import { AbstractPage, type CursorPageParams, CursorPageResponse } from './core/pagination';
-import * as Uploads from './core/uploads';
-import * as API from './resources/index';
-import { APIPromise } from './core/api-promise';
-import {
-  MachineComputeUsage,
-  MachineComputeUsageRow,
-  MachineStorageUsage,
-  MachineStorageUsageRow,
-  OrgUsage,
-  Usage,
-  UsageMachineComputeParams,
-  UsageMachineStorageParams,
-  UsageRetrieveParams,
-} from './resources/usage';
-import {
-  CreateParams,
-  LifecycleStatus,
-  Machine,
-  MachineCreateParams,
-  MachineDeleteParams,
-  MachineList,
-  MachineListItem,
-  MachineListItemsCursorPage,
-  MachineListParams,
-  MachineRetrieveParams,
-  MachineSleepParams,
-  MachineUpdateParams,
-  MachineWakeParams,
-  MachineWatchParams,
-  Machines,
-  UpdateParams,
-} from './resources/machines/machines';
-import { type Fetch } from './internal/builtin-types';
-import { isRunningInBrowser } from './internal/detect-platform';
-import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
-import { FinalRequestOptions, RequestOptions } from './internal/request-options';
 import { readEnv } from './internal/utils/env';
 import {
-  type LogLevel,
-  type Logger,
   formatRequestDetails,
   loggerFor,
   parseLogLevel,
+  type LogLevel,
+  type Logger,
 } from './internal/utils/log';
-import { isEmptyObj } from './internal/utils/values';
+export type { Logger, LogLevel } from './internal/utils/log';
+import type { RequestInit, RequestInfo, BodyInit, Fetch } from './internal/builtin-types';
+import { buildHeaders, type HeadersLike, type NullableHeaders } from './internal/headers';
+import type { FinalRequestOptions, RequestOptions } from './internal/request-options';
+import type { HTTPMethod, FinalizedRequestInit, MergedRequestInit, PromiseOrValue } from './internal/types';
+import { stringifyQuery } from './internal/utils/query';
+import { toFile } from './core/uploads';
+import { VERSION } from './version';
+import {
+  Machines,
+  type Machine,
+  type MachineList,
+  type MachineListItem,
+  type CreateParams,
+  type UpdateParams,
+  type LifecycleStatus,
+  type MachineListItemsCursorPage,
+  type MachineRetrieveResponse,
+  type MachineListParams,
+  type MachineCreateParams,
+  type MachineRetrieveParams,
+  type MachineUpdateParams,
+  type MachineDeleteParams,
+  type MachineWatchParams,
+  type MachineSleepParams,
+  type MachineWakeParams,
+} from './resources/machines/machines';
+import {
+  Networks,
+  type Network,
+  type NetworkGateway,
+  type NetworkRetrieveParams,
+} from './resources/networks';
+import {
+  Usage,
+  type OrgUsage,
+  type MachineComputeUsage,
+  type MachineComputeUsageRow,
+  type MachineStorageUsage,
+  type MachineStorageUsageRow,
+  type UsageRetrieveParams,
+  type UsageMachineComputeParams,
+  type UsageMachineStorageParams,
+} from './resources/usage';
+
+export type AuthTokenProvider = () => string | Promise<string>;
 
 export interface ClientOptions {
   /**
-   * Dedalus API key sent as Authorization Bearer.
+   * Dedalus API key for Bearer token authentication.
    */
-  apiKey?: string | null | undefined;
+  apiKey?: string | AuthTokenProvider | null | undefined;
 
   /**
-   * Dedalus API key sent as x-api-key header.
+   * Dedalus API key for X-API-Key header authentication.
    */
-  xAPIKey?: string | null | undefined;
+  xAPIKey?: string | AuthTokenProvider | null | undefined;
 
   /**
-   * Organization ID header for all DCS requests.
+   * Dedalus API key in Authorization: Bearer <key>.
+   */
+  bearerAuth?: string | AuthTokenProvider | undefined;
+
+  /**
+   * Provider name for BYOK mode.
+   */
+  provider?: string | null | undefined;
+
+  /**
+   * Provider API key for BYOK mode.
+   */
+  providerKey?: string | null | undefined;
+
+  /**
+   * Model identifier for BYOK provider.
+   */
+  providerModel?: string | null | undefined;
+
+  /**
+   * MCP Authorization Server URL.
+   */
+  asBaseURL?: string | null | undefined;
+
+  /**
+   * Organization ID for request scoping.
    */
   dedalusOrgID?: string | null | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
    *
-   * Defaults to process.env['DEDALUS_BASE_URL'].
+   * Defaults to process.env["DEDALUS_BASE_URL"].
    */
   baseURL?: string | null | undefined;
 
@@ -95,6 +125,7 @@ export interface ClientOptions {
    * @unit milliseconds
    */
   timeout?: number | undefined;
+
   /**
    * Additional `RequestInit` options to be passed to `fetch` calls.
    * Properties will be overridden by per-request `fetchOptions`.
@@ -135,7 +166,7 @@ export interface ClientOptions {
   /**
    * Set the log level.
    *
-   * Defaults to process.env['DEDALUS_LOG'] or 'warn' if it isn't set.
+   * Defaults to process.env["DEDALUS_LOG"] or 'warn' if it isn't set.
    */
   logLevel?: LogLevel | undefined;
 
@@ -147,12 +178,19 @@ export interface ClientOptions {
   logger?: Logger | undefined;
 }
 
+export type DedalusOptions = ClientOptions;
+
 /**
  * API Client for interfacing with the Dedalus API.
  */
 export class Dedalus {
-  apiKey: string | null;
-  xAPIKey: string | null;
+  apiKey: string | AuthTokenProvider | null;
+  xAPIKey: string | AuthTokenProvider | null;
+  bearerAuth: string | AuthTokenProvider | undefined;
+  provider: string | null;
+  providerKey: string | null;
+  providerModel: string | null;
+  asBaseURL: string | null;
   dedalusOrgID: string | null;
 
   baseURL: string;
@@ -161,19 +199,25 @@ export class Dedalus {
   logger: Logger;
   logLevel: LogLevel | undefined;
   fetchOptions: MergedRequestInit | undefined;
-
   private fetch: Fetch;
   #encoder: Opts.RequestEncoder;
   protected idempotencyHeader?: string;
+  private _baseURLOverridden: boolean;
+  private _defaultBaseURL: string;
   private _options: ClientOptions;
 
   /**
    * API Client for interfacing with the Dedalus API.
    *
-   * @param {string | null | undefined} [opts.apiKey=process.env['DEDALUS_API_KEY'] ?? null]
-   * @param {string | null | undefined} [opts.xAPIKey=process.env['DEDALUS_X_API_KEY'] ?? null]
-   * @param {string | null | undefined} [opts.dedalusOrgID=process.env['DEDALUS_ORG_ID'] ?? null]
-   * @param {string} [opts.baseURL=process.env['DEDALUS_BASE_URL'] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
+   * @param {string | AuthTokenProvider | null | undefined} [opts.apiKey=process.env["DEDALUS_API_KEY"] ?? null]
+   * @param {string | AuthTokenProvider | null | undefined} [opts.xAPIKey=process.env["DEDALUS_X_API_KEY"] ?? null]
+   * @param {string | AuthTokenProvider | undefined} [opts.bearerAuth=process.env["DEDALUS_BEARER_AUTH"] ?? undefined]
+   * @param {string | null | undefined} [opts.provider=process.env["DEDALUS_PROVIDER"] ?? null]
+   * @param {string | null | undefined} [opts.providerKey=process.env["DEDALUS_PROVIDER_KEY"] ?? null]
+   * @param {string | null | undefined} [opts.providerModel=process.env["DEDALUS_PROVIDER_MODEL"] ?? null]
+   * @param {string | null | undefined} [opts.asBaseURL=process.env["DEDALUS_AS_URL"] ?? "https://as.dedaluslabs.ai"]
+   * @param {string | null | undefined} [opts.dedalusOrgID=process.env["DEDALUS_ORG_ID"] ?? null]
+   * @param {string} [opts.baseURL=process.env["DEDALUS_BASE_URL"] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -185,24 +229,29 @@ export class Dedalus {
     baseURL = readEnv('DEDALUS_BASE_URL'),
     apiKey = readEnv('DEDALUS_API_KEY') ?? null,
     xAPIKey = readEnv('DEDALUS_X_API_KEY') ?? null,
+    bearerAuth = readEnv('DEDALUS_BEARER_AUTH'),
+    provider = readEnv('DEDALUS_PROVIDER') ?? null,
+    providerKey = readEnv('DEDALUS_PROVIDER_KEY') ?? null,
+    providerModel = readEnv('DEDALUS_PROVIDER_MODEL') ?? null,
+    asBaseURL = readEnv('DEDALUS_AS_URL') ?? 'https://as.dedaluslabs.ai',
     dedalusOrgID = readEnv('DEDALUS_ORG_ID') ?? null,
     ...opts
   }: ClientOptions = {}) {
     const options: ClientOptions = {
       apiKey,
       xAPIKey,
+      bearerAuth,
+      provider,
+      providerKey,
+      providerModel,
+      asBaseURL,
       dedalusOrgID,
       ...opts,
-      baseURL: baseURL || `https://dcs.dedaluslabs.ai`,
+      baseURL: baseURL || 'https://dcs.dedaluslabs.ai',
     };
-
-    if (isRunningInBrowser()) {
-      throw new Errors.DedalusError(
-        "It looks like you're running in a browser-like environment, which is disabled to protect your secret API credentials from attackers. If you have a strong business need for client-side use of this API, please open a GitHub issue with your use-case and security mitigations.",
-      );
-    }
-
-    this.baseURL = options.baseURL!;
+    const baseURLOverridden = baseURL !== null && baseURL !== undefined && baseURL !== '';
+    const defaultBaseURL = 'https://dcs.dedaluslabs.ai';
+    this.baseURL = options.baseURL || defaultBaseURL;
     this.timeout = options.timeout ?? Dedalus.DEFAULT_TIMEOUT /* 1 minute */;
     this.logger = options.logger ?? console;
     const defaultLogLevel = 'warn';
@@ -210,7 +259,7 @@ export class Dedalus {
     this.logLevel = defaultLogLevel;
     this.logLevel =
       parseLogLevel(options.logLevel, 'ClientOptions.logLevel', this) ??
-      parseLogLevel(readEnv('DEDALUS_LOG'), "process.env['DEDALUS_LOG']", this) ??
+      parseLogLevel(readEnv('DEDALUS_LOG'), 'process.env["DEDALUS_LOG"]', this) ??
       defaultLogLevel;
     this.fetchOptions = options.fetchOptions;
     this.maxRetries = options.maxRetries ?? 2;
@@ -229,21 +278,25 @@ export class Dedalus {
       options.defaultHeaders = { ...parsed, ...options.defaultHeaders };
     }
 
-    this._options = options;
+    this._options = { ...options, baseURL: baseURLOverridden ? this.baseURL : undefined };
+    this._baseURLOverridden = baseURLOverridden;
+    this._defaultBaseURL = defaultBaseURL;
     this.idempotencyHeader = 'Idempotency-Key';
 
     this.apiKey = apiKey;
     this.xAPIKey = xAPIKey;
+    this.bearerAuth = bearerAuth;
+    this.provider = provider;
+    this.providerKey = providerKey;
+    this.providerModel = providerModel;
+    this.asBaseURL = asBaseURL;
     this.dedalusOrgID = dedalusOrgID;
   }
 
-  /**
-   * Create a new client instance re-using the same options given to the current client with optional overriding.
-   */
   withOptions(options: Partial<ClientOptions>): this {
-    const client = new (this.constructor as any as new (props: ClientOptions) => typeof this)({
+    const client = new (this.constructor as new (props: ClientOptions) => this)({
       ...this._options,
-      baseURL: this.baseURL,
+      ...(this.#baseURLOverridden() ? { baseURL: this.baseURL } : {}),
       maxRetries: this.maxRetries,
       timeout: this.timeout,
       logger: this.logger,
@@ -252,64 +305,26 @@ export class Dedalus {
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
       xAPIKey: this.xAPIKey,
+      bearerAuth: this.bearerAuth,
+      provider: this.provider,
+      providerKey: this.providerKey,
+      providerModel: this.providerModel,
+      asBaseURL: this.asBaseURL,
       dedalusOrgID: this.dedalusOrgID,
       ...options,
     });
     return client;
   }
 
-  /**
-   * Check whether the base URL is set to its default.
-   */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://dcs.dedaluslabs.ai';
+    // A named environment selects a default URL; only explicit overrides should bypass per-request defaults.
+    return this._baseURLOverridden || this.baseURL !== this._defaultBaseURL;
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
     return this._options.defaultQuery;
   }
 
-  protected validateHeaders({ values, nulls }: NullableHeaders) {
-    if (this.xAPIKey && values.get('x-api-key')) {
-      return;
-    }
-    if (nulls.has('x-api-key')) {
-      return;
-    }
-
-    if (this.apiKey && values.get('authorization')) {
-      return;
-    }
-    if (nulls.has('authorization')) {
-      return;
-    }
-
-    throw new Error(
-      'Could not resolve authentication method. Expected either xAPIKey or apiKey to be set. Or for one of the "x-api-key" or "Authorization" headers to be explicitly omitted',
-    );
-  }
-
-  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.apiKeyAuth(opts), await this.bearerAuth(opts)]);
-  }
-
-  protected async apiKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.xAPIKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ 'x-api-key': this.xAPIKey }]);
-  }
-
-  protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.apiKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
-  }
-
-  /**
-   * Basic re-implementation of `qs.stringify` for primitive types.
-   */
   protected stringifyQuery(query: object | Record<string, unknown>): string {
     return stringifyQuery(query);
   }
@@ -319,12 +334,12 @@ export class Dedalus {
   }
 
   protected defaultIdempotencyKey(): string {
-    return `stainless-node-retry-${uuid4()}`;
+    return `scalar-node-retry-${uuid4()}`;
   }
 
   protected makeStatusError(
     status: number,
-    error: Object,
+    error: object | undefined,
     message: string | undefined,
     headers: Headers,
   ): Errors.APIError {
@@ -337,10 +352,13 @@ export class Dedalus {
     defaultBaseURL?: string | undefined,
   ): string {
     const baseURL = (!this.#baseURLOverridden() && defaultBaseURL) || this.baseURL;
-    const url =
-      isAbsoluteURL(path) ?
-        new URL(path)
-      : new URL(baseURL + (baseURL.endsWith('/') && path.startsWith('/') ? path.slice(1) : path));
+    // Guarantee exactly one "/" between baseURL and path so that bases without a trailing slash
+    // and paths without a leading slash do not fuse into a malformed URL (e.g. ".../v1" + "widgets").
+    const url = isAbsoluteURL(path)
+      ? new URL(path)
+      : new URL(
+          (baseURL.endsWith('/') ? baseURL : baseURL + '/') + (path.startsWith('/') ? path.slice(1) : path),
+        );
 
     const defaultQuery = this.defaultQuery();
     const pathQuery = Object.fromEntries(url.searchParams);
@@ -398,7 +416,7 @@ export class Dedalus {
   ): APIPromise<Rsp> {
     return this.request(
       Promise.resolve(opts).then((opts) => {
-        return { method, path, ...opts };
+        return { method, path, ...opts } as FinalRequestOptions;
       }),
     );
   }
@@ -567,28 +585,29 @@ export class Dedalus {
     return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
   }
 
-  getAPIList<Item, PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>>(
+  // Public escape hatch for list endpoints the spec does not describe: the page type parameter
+  // defaults so `getAPIList<Item>(path, MyPage)` needs only the item type, and the page argument
+  // is a bare constructor so a hand-rolled page class need not restate the runtime page
+  // constructor's parameter types.
+  getAPIList<Item, Page extends AbstractPage<Item> = AbstractPage<Item>>(
     path: string,
-    Page: new (...args: any[]) => PageClass,
-    opts?: PromiseOrValue<RequestOptions>,
-  ): Pagination.PagePromise<PageClass, Item> {
-    return this.requestAPIList(
-      Page,
-      opts && 'then' in opts ?
-        opts.then((opts) => ({ method: 'get', path, ...opts }))
-      : { method: 'get', path, ...opts },
-    );
+    Page: new (...args: any[]) => Page,
+    options?: PromiseOrValue<RequestOptions>,
+    method: FinalRequestOptions['method'] = 'get',
+  ): PagePromise<Page, Item> {
+    // List endpoints are usually GET, but a body-located cursor scheme rides a POST body, so the
+    // caller passes the operation's actual verb. The method is preserved across auto-advanced
+    // pages because `nextPageRequestOptions` spreads the stored request options (incl. `method`).
+    const requestOptions = Promise.resolve(options).then((opts) => ({ ...opts, method, path }));
+    return this.requestAPIList<Item, Page>(Page, requestOptions);
   }
 
-  requestAPIList<
-    Item = unknown,
-    PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>,
-  >(
-    Page: new (...args: ConstructorParameters<typeof Pagination.AbstractPage>) => PageClass,
+  requestAPIList<Item = unknown, Page extends AbstractPage<Item> = AbstractPage<Item>>(
+    Page: new (...args: ConstructorParameters<typeof AbstractPage>) => Page,
     options: PromiseOrValue<FinalRequestOptions>,
-  ): Pagination.PagePromise<PageClass, Item> {
-    const request = this.makeRequest(options, null, undefined);
-    return new Pagination.PagePromise<PageClass, Item>(this as any as Dedalus, request, Page);
+  ): PagePromise<Page, Item> {
+    // `Item` is passed explicitly because the page constructor carries no slot to infer it from.
+    return new PagePromise<Page, Item>(this, this.makeRequest(options, null, undefined), Page);
   }
 
   async fetchWithTimeout(
@@ -678,9 +697,18 @@ export class Dedalus {
       }
     }
 
-    // If the API asks us to wait a certain amount of time, just do what it
-    // says, but otherwise calculate a default
-    if (timeoutMillis === undefined) {
+    // If the API asks us to wait a certain amount of time, just do what it says,
+    // but cap server-provided delays at 60s so an oversized or malformed Retry-After
+    // (e.g. `retry-after-ms: 999999999`, a past HTTP-date, or a value that Date.parse
+    // failed on) cannot block retries for an unbounded amount of time. Otherwise fall
+    // back to the default exponential-backoff calculation.
+    const maxRetryAfterMillis = 60 * 1000;
+    if (
+      timeoutMillis === undefined ||
+      !Number.isFinite(timeoutMillis) ||
+      timeoutMillis <= 0 ||
+      timeoutMillis > maxRetryAfterMillis
+    ) {
       const maxRetries = options.maxRetries ?? this.maxRetries;
       timeoutMillis = this.calculateDefaultRetryTimeoutMillis(retriesRemaining, maxRetries);
     }
@@ -715,7 +743,16 @@ export class Dedalus {
     if ('timeout' in options) validatePositiveInteger('timeout', options.timeout);
     options.timeout = options.timeout ?? this.timeout;
     const { bodyHeaders, body } = this.buildBody({ options });
-    const reqHeaders = await this.buildHeaders({ options: inputOptions, method, bodyHeaders, retryCount });
+    // Headers read the caller's own options, not the copy defaulted above: `X-Scalar-Timeout`
+    // reports an explicit per-request timeout, and the idempotency key written back here has to
+    // land where the retry can see it.
+    const reqHeaders = await this.buildHeaders({
+      options: inputOptions,
+      method,
+      bodyHeaders,
+      retryCount,
+      url,
+    });
 
     const req: FinalizedRequestInit = {
       method,
@@ -723,11 +760,12 @@ export class Dedalus {
       ...(options.signal && { signal: options.signal }),
       ...((globalThis as any).ReadableStream &&
         body instanceof (globalThis as any).ReadableStream && { duplex: 'half' }),
-      ...(body && { body }),
+      // `buildBody` already collapses no-body into `undefined`; here we only need to drop that
+      // sentinel. A truthiness spread would also strip an intentional empty-string body.
+      ...(body !== undefined && { body }),
       ...((this.fetchOptions as any) ?? {}),
       ...((options.fetchOptions as any) ?? {}),
     };
-
     return { req, url, timeout: options.timeout };
   }
 
@@ -736,11 +774,13 @@ export class Dedalus {
     method,
     bodyHeaders,
     retryCount,
+    url,
   }: {
     options: FinalRequestOptions;
     method: HTTPMethod;
     bodyHeaders: HeadersLike;
     retryCount: number;
+    url: string;
   }): Promise<Headers> {
     let idempotencyHeaders: HeadersLike = {};
     if (this.idempotencyHeader && method !== 'get') {
@@ -753,18 +793,22 @@ export class Dedalus {
       {
         Accept: 'application/json',
         'User-Agent': this.getUserAgent(),
-        'X-Stainless-Retry-Count': String(retryCount),
-        ...(options.timeout ? { 'X-Stainless-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
+        'X-Scalar-Retry-Count': String(retryCount),
+        ...(options.timeout ? { 'X-Scalar-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
-        'X-Dedalus-Org-Id': this.dedalusOrgID,
+        ...{ 'X-SDK-Version': '1.0.0' },
+        'X-Provider': this.provider,
+        'X-Provider-Key': this.providerKey,
+        'X-Provider-Model': this.providerModel,
       },
       await this.authHeaders(options),
       this._options.defaultHeaders,
       bodyHeaders,
       options.headers,
     ]);
+    appendAuthCookies(headers.values, await this.authCookiesAsync());
 
-    this.validateHeaders(headers);
+    this.validateAuth(url, headers.values, options);
 
     return headers.values;
   }
@@ -779,7 +823,11 @@ export class Dedalus {
     bodyHeaders: HeadersLike;
     body: BodyInit | undefined;
   } {
-    if (!body) {
+    // Skip only `null`/`undefined` so an intentional empty-string (or 0/false) payload still
+    // reaches the encoder. A plain `!body` check would silently drop those falsy-but-valid bodies,
+    // and `null` must be excluded here too because the iterator check below uses `in`, which
+    // throws on null.
+    if (body == null) {
       return { bodyHeaders: undefined, body: undefined };
     }
     const headers = buildHeaders([rawHeaders]);
@@ -788,9 +836,12 @@ export class Dedalus {
       ArrayBuffer.isView(body) ||
       body instanceof ArrayBuffer ||
       body instanceof DataView ||
-      (typeof body === 'string' &&
-        // Preserve legacy string encoding behavior for now
-        headers.values.has('content-type')) ||
+      // Always pass strings through verbatim. The previous guard required a caller-set
+      // `content-type` and otherwise fell through to `FallbackEncoder`, which JSON.stringifies
+      // the value and labels it `application/json` — silently quoting plain-text payloads and
+      // mislabeling them as JSON. fetch defaults a string body to `text/plain;charset=UTF-8`
+      // when no `content-type` is set, which is a safer default than misclaiming JSON.
+      typeof body === 'string' ||
       // `Blob` is superset of `File`
       ((globalThis as any).Blob && body instanceof (globalThis as any).Blob) ||
       // `FormData` -> `multipart/form-data`
@@ -820,6 +871,101 @@ export class Dedalus {
     }
   }
 
+  protected validateAuth(url: string, headers: Headers, options: FinalRequestOptions): void {
+    if (headers.has('Authorization')) return;
+    if (headerExplicitlyOmitted(options.headers, 'Authorization')) return;
+    if (headers.has('x-api-key')) return;
+    if (headerExplicitlyOmitted(options.headers, 'x-api-key')) return;
+    throw new Errors.AuthenticationError(
+      401,
+      undefined,
+      'Could not resolve authentication method. Expected either apiKey, bearerAuth or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
+      headers,
+    );
+  }
+
+  authHeadersSync(): Record<string, string> {
+    const headers: Record<string, string> = {};
+    const apiKey = this.resolveAuthOptionSync('apiKey', this.apiKey);
+    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+    const xAPIKey = this.resolveAuthOptionSync('xAPIKey', this.xAPIKey);
+    if (xAPIKey) headers['x-api-key'] = xAPIKey;
+    const bearerAuth = this.resolveAuthOptionSync('bearerAuth', this.bearerAuth);
+    if (bearerAuth) headers['Authorization'] = `Bearer ${bearerAuth}`;
+    return headers;
+  }
+
+  webSocketAuthHeaders(): Record<string, string> {
+    const apiKey = this.resolveAuthOptionSync('apiKey', this.apiKey);
+    if (apiKey) return { Authorization: `Bearer ${apiKey}` };
+    const xAPIKey = this.resolveAuthOptionSync('xAPIKey', this.xAPIKey);
+    if (xAPIKey) return { 'x-api-key': xAPIKey };
+    return {};
+  }
+
+  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    return buildHeaders([
+      await this.bearerAuth2(opts),
+      await this.apiKeyAuth(opts),
+      await this.bearerAuth3(opts),
+    ]);
+  }
+
+  protected async bearerAuth2(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const apiKey = await this.resolveAuthOption('apiKey', this.apiKey);
+    if (apiKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${apiKey}` }]);
+  }
+
+  protected async apiKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const xAPIKey = await this.resolveAuthOption('xAPIKey', this.xAPIKey);
+    if (xAPIKey == null) {
+      return undefined;
+    }
+    return buildHeaders([{ 'x-api-key': xAPIKey }]);
+  }
+
+  protected async bearerAuth3(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const bearerAuth = await this.resolveAuthOption('bearerAuth', this.bearerAuth);
+    if (bearerAuth == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${bearerAuth}` }]);
+  }
+
+  private async authQueryAsync(): Promise<Record<string, string>> {
+    const query: Record<string, string> = {};
+    return query;
+  }
+
+  private async authCookiesAsync(): Promise<Record<string, string>> {
+    const cookies: Record<string, string> = {};
+    return cookies;
+  }
+
+  private async resolveAuthOption(
+    optionName: string,
+    value: string | AuthTokenProvider | null | undefined,
+  ): Promise<string | undefined> {
+    if (value == null) return undefined;
+    const token = typeof value === 'function' ? await value() : value;
+    if (!token) throw new Errors.DedalusError(`Expected '${optionName}' to resolve to a non-empty string.`);
+    return token;
+  }
+
+  private resolveAuthOptionSync(
+    optionName: string,
+    value: string | AuthTokenProvider | null | undefined,
+  ): string | undefined {
+    if (value == null) return undefined;
+    const token = typeof value === 'function' ? value() : value;
+    if (typeof token !== 'string' || !token)
+      throw new Errors.DedalusError(`Expected '${optionName}' to resolve to a non-empty string.`);
+    return token;
+  }
+
   static Dedalus = this;
   static DEFAULT_TIMEOUT = 60000; // 1 minute
 
@@ -837,14 +983,16 @@ export class Dedalus {
   static PermissionDeniedError = Errors.PermissionDeniedError;
   static UnprocessableEntityError = Errors.UnprocessableEntityError;
 
-  static toFile = Uploads.toFile;
+  static toFile = toFile;
 
-  usage: API.Usage = new API.Usage(this);
-  machines: API.Machines = new API.Machines(this);
+  machines: Machines = new Machines(this);
+  networks: Networks = new Networks(this);
+  usage: Usage = new Usage(this);
 }
 
-Dedalus.Usage = Usage;
 Dedalus.Machines = Machines;
+Dedalus.Networks = Networks;
+Dedalus.Usage = Usage;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
@@ -853,33 +1001,62 @@ export declare namespace Dedalus {
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
   export {
+    Machines as Machines,
+    type Machine as Machine,
+    type MachineList as MachineList,
+    type MachineListItem as MachineListItem,
+    type CreateParams as CreateParams,
+    type UpdateParams as UpdateParams,
+    type LifecycleStatus as LifecycleStatus,
+    type MachineListItemsCursorPage as MachineListItemsCursorPage,
+    type MachineRetrieveResponse as MachineRetrieveResponse,
+    type MachineListParams as MachineListParams,
+    type MachineCreateParams as MachineCreateParams,
+    type MachineRetrieveParams as MachineRetrieveParams,
+    type MachineUpdateParams as MachineUpdateParams,
+    type MachineDeleteParams as MachineDeleteParams,
+    type MachineWatchParams as MachineWatchParams,
+    type MachineSleepParams as MachineSleepParams,
+    type MachineWakeParams as MachineWakeParams,
+  };
+
+  export {
+    Networks as Networks,
+    type Network as Network,
+    type NetworkGateway as NetworkGateway,
+    type NetworkRetrieveParams as NetworkRetrieveParams,
+  };
+
+  export {
     Usage as Usage,
+    type OrgUsage as OrgUsage,
     type MachineComputeUsage as MachineComputeUsage,
     type MachineComputeUsageRow as MachineComputeUsageRow,
     type MachineStorageUsage as MachineStorageUsage,
     type MachineStorageUsageRow as MachineStorageUsageRow,
-    type OrgUsage as OrgUsage,
     type UsageRetrieveParams as UsageRetrieveParams,
     type UsageMachineComputeParams as UsageMachineComputeParams,
     type UsageMachineStorageParams as UsageMachineStorageParams,
   };
-
-  export {
-    Machines as Machines,
-    type CreateParams as CreateParams,
-    type LifecycleStatus as LifecycleStatus,
-    type Machine as Machine,
-    type MachineList as MachineList,
-    type MachineListItem as MachineListItem,
-    type UpdateParams as UpdateParams,
-    type MachineListItemsCursorPage as MachineListItemsCursorPage,
-    type MachineCreateParams as MachineCreateParams,
-    type MachineRetrieveParams as MachineRetrieveParams,
-    type MachineUpdateParams as MachineUpdateParams,
-    type MachineListParams as MachineListParams,
-    type MachineDeleteParams as MachineDeleteParams,
-    type MachineSleepParams as MachineSleepParams,
-    type MachineWakeParams as MachineWakeParams,
-    type MachineWatchParams as MachineWatchParams,
-  };
 }
+
+const headerExplicitlyOmitted = (source: HeadersLike | undefined, name: string): boolean => {
+  if (!source || Array.isArray(source) || source instanceof Headers) return false;
+  const target = name.toLowerCase();
+  return Object.entries(source).some(([key, value]) => key.toLowerCase() === target && value === null);
+};
+
+const appendAuthCookies = (headers: Headers, cookies: Record<string, string>): void => {
+  for (const [name, value] of Object.entries(cookies)) {
+    if (cookieHeaderHas(headers.get('Cookie'), name)) continue;
+    const cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+    const existing = headers.get('Cookie');
+    headers.set('Cookie', existing ? existing + '; ' + cookie : cookie);
+  }
+};
+
+const cookieHeaderHas = (value: string | null, name: string): boolean => {
+  if (!value) return false;
+  const target = encodeURIComponent(name) + '=';
+  return value.split(';').some((cookie) => cookie.trim().startsWith(target));
+};

@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
+
 import { DedalusError } from './error';
 import { type ReadableStream } from '../internal/shim-types';
 import { makeReadableStream } from '../internal/shims';
@@ -48,17 +50,13 @@ export class Stream<Item> implements AsyncIterable<Item> {
       let done = false;
       try {
         for await (const sse of _iterSSEMessages(response, controller)) {
-          if (sse.event === 'bookmark') {
-            continue;
-          }
-
           if (sse.event === 'error') {
             throw new APIError(undefined, safeJSON(sse.data) ?? sse.data, undefined, response.headers);
           }
 
-          if (sse.event === 'status') {
+          if (true) {
             try {
-              yield JSON.parse(sse.data) as Item;
+              yield JSON.parse(sse.data);
             } catch (e) {
               logger.error(`Could not parse message into JSON:`, sse.data);
               logger.error(`From chunk:`, sse.raw);
@@ -115,7 +113,7 @@ export class Stream<Item> implements AsyncIterable<Item> {
       try {
         for await (const line of iterLines()) {
           if (done) continue;
-          if (line) yield JSON.parse(line) as Item;
+          if (line) yield JSON.parse(line);
         }
         done = true;
       } catch (e) {
@@ -242,9 +240,11 @@ async function* iterSSEChunks(iterator: AsyncIterableIterator<Bytes>): AsyncGene
     }
 
     const binaryChunk =
-      chunk instanceof ArrayBuffer ? new Uint8Array(chunk)
-      : typeof chunk === 'string' ? encodeUTF8(chunk)
-      : chunk;
+      chunk instanceof ArrayBuffer
+        ? new Uint8Array(chunk)
+        : typeof chunk === 'string'
+          ? encodeUTF8(chunk)
+          : chunk;
 
     let newData = new Uint8Array(data.length + binaryChunk.length);
     newData.set(data);

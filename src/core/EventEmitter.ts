@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
+
 type EventListener<Events, EventType extends keyof Events> = Events[EventType];
 
 type EventListeners<Events, EventType extends keyof Events> = Array<{
@@ -6,21 +8,12 @@ type EventListeners<Events, EventType extends keyof Events> = Array<{
 }>;
 
 export type EventParameters<Events, EventType extends keyof Events> = {
-  [Event in EventType]: EventListener<Events, EventType> extends (...args: infer P) => any ? P : never;
+  [Event in EventType]: EventListener<Events, EventType> extends (...args: infer P) => unknown ? P : never;
 }[EventType];
 
-export class EventEmitter<EventTypes extends Record<string, (...args: any) => any>> {
-  #listeners: {
-    [Event in keyof EventTypes]?: EventListeners<EventTypes, Event>;
-  } = {};
+export class EventEmitter<EventTypes extends Record<string, (...args: any[]) => unknown>> {
+  #listeners: { [Event in keyof EventTypes]?: EventListeners<EventTypes, Event> } = {};
 
-  /**
-   * Adds the listener function to the end of the listeners array for the event.
-   * No checks are made to see if the listener has already been added. Multiple calls passing
-   * the same combination of event and listener will result in the listener being added, and
-   * called, multiple times.
-   * @returns this, so that calls can be chained
-   */
   on<Event extends keyof EventTypes>(event: Event, listener: EventListener<EventTypes, Event>): this {
     const listeners: EventListeners<EventTypes, Event> =
       this.#listeners[event] || (this.#listeners[event] = []);
@@ -28,26 +21,14 @@ export class EventEmitter<EventTypes extends Record<string, (...args: any) => an
     return this;
   }
 
-  /**
-   * Removes the specified listener from the listener array for the event.
-   * off() will remove, at most, one instance of a listener from the listener array. If any single
-   * listener has been added multiple times to the listener array for the specified event, then
-   * off() must be called multiple times to remove each instance.
-   * @returns this, so that calls can be chained
-   */
   off<Event extends keyof EventTypes>(event: Event, listener: EventListener<EventTypes, Event>): this {
     const listeners = this.#listeners[event];
     if (!listeners) return this;
-    const index = listeners.findIndex((l) => l.listener === listener);
+    const index = listeners.findIndex((item) => item.listener === listener);
     if (index >= 0) listeners.splice(index, 1);
     return this;
   }
 
-  /**
-   * Adds a one-time listener function for the event. The next time the event is triggered,
-   * this listener is removed and then invoked.
-   * @returns this, so that calls can be chained
-   */
   once<Event extends keyof EventTypes>(event: Event, listener: EventListener<EventTypes, Event>): this {
     const listeners: EventListeners<EventTypes, Event> =
       this.#listeners[event] || (this.#listeners[event] = []);
@@ -56,59 +37,62 @@ export class EventEmitter<EventTypes extends Record<string, (...args: any) => an
   }
 
   /**
-   * This is similar to `.once()`, but returns a Promise that resolves the next time
-   * the event is triggered, instead of calling a listener callback.
-   * @returns a Promise that resolves the next time given event is triggered,
-   * or rejects if an error is emitted.  (If you request the 'error' event,
-   * returns a promise that resolves with the error).
+   * Resolves the next time `event` fires, as a promise-shaped alternative to {@link once}.
    *
-   * Example:
+   *   const message = await connection.emitted('message');
+   *   const [code, reason, unsent] = await connection.emitted('close');
    *
-   *   const message = await stream.emitted('message') // rejects if the stream errors
+   * Single-payload events resolve with the payload itself and parameterless events resolve with
+   * `void`, so the common `await connection.emitted('message')` needs no destructuring. Events that
+   * carry more than one argument — `close(code, reason, unsent)` — resolve with the whole argument
+   * tuple, because there is no payload to single out and dropping the rest would silently lose data.
    */
   emitted<Event extends keyof EventTypes>(
     event: Event,
   ): Promise<
-    EventParameters<EventTypes, Event> extends [infer Param] ? Param
-    : EventParameters<EventTypes, Event> extends [] ? void
-    : EventParameters<EventTypes, Event>
+    // The three branches mirror the runtime rule below exactly: two-or-more required parameters keep
+    // the tuple, no parameters resolve to `void`, and anything else (one required or one optional
+    // parameter) unwraps to that parameter. They have to stay in step — a type that promises the
+    // tuple while the body resolves with `args[0]` lets `const [code, reason] = await
+    // emitted('close')` compile and then throw `TypeError: number is not iterable` at runtime.
+    EventParameters<EventTypes, Event> extends [unknown, unknown, ...unknown[]]
+      ? EventParameters<EventTypes, Event>
+      : EventParameters<EventTypes, Event> extends []
+        ? void
+        : EventParameters<EventTypes, Event>[0]
   > {
-    return new Promise((resolve, reject) => {
-      // TODO: handle errors
-      this.once(event, resolve as any);
+    return new Promise((resolve) => {
+      this.once(event, ((...args: EventParameters<EventTypes, Event>) =>
+        resolve((args.length > 1 ? args : args[0]) as never)) as EventListener<EventTypes, Event>);
     });
   }
 
   protected _emit<Event extends keyof EventTypes>(
-    this: EventEmitter<EventTypes>,
     event: Event,
     ...args: EventParameters<EventTypes, Event>
-  ) {
-    const listeners: EventListeners<EventTypes, Event> | undefined = this.#listeners[event];
-    if (listeners) {
-      this.#listeners[event] = listeners.filter((l) => !l.once) as any;
-      listeners.forEach(({ listener }: any) => listener(...(args as any)));
-    }
+  ): void {
+    const listeners = this.#listeners[event];
+    if (!listeners) return;
+    this.#listeners[event] = listeners.filter((listener) => !listener.once) as EventListeners<
+      EventTypes,
+      Event
+    >;
+    for (const { listener } of listeners)
+      (listener as (...args: EventParameters<EventTypes, Event>) => unknown)(...args);
   }
 
   protected _hasListener(event: keyof EventTypes): boolean {
-    const listeners = this.#listeners[event];
-    return listeners && listeners.length > 0;
+    return (this.#listeners[event]?.length ?? 0) > 0;
   }
 }
 
-/**
- * An EventEmitter variant that exposes `_emit()` publicly.
- *
- * The base {@link EventEmitter} keeps `_emit` protected so that consumers
- * can only listen, not dispatch. When you need a separate emitter instance
- * that your own code can emit on, without exposing emit on the
- * consumer-facing emitter, use this class.
- */
 export class InternalEventEmitter<
-  EventTypes extends Record<string, (...args: any) => any>,
+  EventTypes extends Record<string, (...args: any[]) => unknown>,
 > extends EventEmitter<EventTypes> {
-  override _emit<Event extends keyof EventTypes>(event: Event, ...args: EventParameters<EventTypes, Event>) {
+  override _emit<Event extends keyof EventTypes>(
+    event: Event,
+    ...args: EventParameters<EventTypes, Event>
+  ): void {
     super._emit(event, ...args);
   }
 }

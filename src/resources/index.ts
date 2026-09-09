@@ -1,31 +1,34 @@
-// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+// File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-export {
-  Machines,
-  type CreateParams,
-  type LifecycleStatus,
-  type Machine,
-  type MachineList,
-  type MachineListItem,
-  type UpdateParams,
-  type MachineCreateParams,
-  type MachineRetrieveParams,
-  type MachineUpdateParams,
-  type MachineListParams,
-  type MachineDeleteParams,
-  type MachineSleepParams,
-  type MachineWakeParams,
-  type MachineWatchParams,
-  type MachineListItemsCursorPage,
+export { Machines } from './machines/machines';
+export type {
+  Machine,
+  MachineList,
+  MachineListItem,
+  CreateParams,
+  UpdateParams,
+  LifecycleStatus,
+  MachineListParams,
+  MachineListItemsCursorPage,
+  MachineCreateParams,
+  MachineRetrieveParams,
+  MachineRetrieveResponse,
+  MachineUpdateParams,
+  MachineDeleteParams,
+  MachineWatchParams,
+  MachineSleepParams,
+  MachineWakeParams,
 } from './machines/machines';
-export {
-  Usage,
-  type MachineComputeUsage,
-  type MachineComputeUsageRow,
-  type MachineStorageUsage,
-  type MachineStorageUsageRow,
-  type OrgUsage,
-  type UsageRetrieveParams,
-  type UsageMachineComputeParams,
-  type UsageMachineStorageParams,
+export { Networks } from './networks';
+export type { Network, NetworkGateway, NetworkRetrieveParams } from './networks';
+export { Usage } from './usage';
+export type {
+  OrgUsage,
+  MachineComputeUsage,
+  MachineComputeUsageRow,
+  MachineStorageUsage,
+  MachineStorageUsageRow,
+  UsageRetrieveParams,
+  UsageMachineComputeParams,
+  UsageMachineStorageParams,
 } from './usage';
