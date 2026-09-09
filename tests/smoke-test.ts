@@ -42,6 +42,883 @@ const cases: {
   run: () => Promise<unknown>;
 }[] = [
   {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.list();
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.list({
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.create({
+        memory_mib: 0,
+        storage_gib: 0,
+        vcpu: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.create({
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        autosleep: '',
+        memory_mib: 0,
+        storage_gib: 0,
+        vcpu: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.retrieve({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.retrieve({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PATCH',
+    path: '/v1/machines/{machine_id}',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.update({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PATCH',
+    path: '/v1/machines/{machine_id}',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.update({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        autosleep: '',
+        memory_mib: 0,
+        storage_gib: 0,
+        vcpu: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.delete({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.delete({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'watch',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/status/stream',
+    label: 'required params',
+    run: async () => {
+      const stream = await client.machines.watch({
+        machine_id: 'machineID',
+      });
+
+      for await (const machine of stream) {
+        console.log(machine);
+      }
+    },
+  },
+
+  {
+    operation: 'watch',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/status/stream',
+    label: 'all params',
+    run: async () => {
+      const stream = await client.machines.watch({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+        'Last-Event-ID': 'lastEventID',
+      });
+
+      for await (const machine of stream) {
+        console.log(machine);
+      }
+    },
+  },
+
+  {
+    operation: 'sleep',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/sleep',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.sleep({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'sleep',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/sleep',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.sleep({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'wake',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/wake',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.wake({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'wake',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/wake',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.wake({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/network',
+    label: 'required params',
+    run: async () => {
+      const machineNetwork = await client.machines.network.retrieve({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/network',
+    label: 'all params',
+    run: async () => {
+      const machineNetwork = await client.machines.network.retrieve({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/artifacts',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.artifacts.list({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/artifacts',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.artifacts.list({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+    label: 'required params',
+    run: async () => {
+      const artifact = await client.machines.artifacts.retrieve({
+        machine_id: 'machineID',
+        artifact_id: 'artifactID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+    label: 'all params',
+    run: async () => {
+      const artifact = await client.machines.artifacts.retrieve({
+        machine_id: 'machineID',
+        artifact_id: 'artifactID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+    label: 'required params',
+    run: async () => {
+      const artifact = await client.machines.artifacts.delete({
+        machine_id: 'machineID',
+        artifact_id: 'artifactID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
+    label: 'all params',
+    run: async () => {
+      const artifact = await client.machines.artifacts.delete({
+        machine_id: 'machineID',
+        artifact_id: 'artifactID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ports',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.ports.list({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ports',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.ports.list({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/ports',
+    label: 'required params',
+    run: async () => {
+      const port = await client.machines.ports.create({
+        machine_id: 'machineID',
+        port: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/ports',
+    label: 'all params',
+    run: async () => {
+      const port = await client.machines.ports.create({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        port: 0,
+        protocol: 'http',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ports/{port_id}',
+    label: 'required params',
+    run: async () => {
+      const port = await client.machines.ports.retrieve({
+        machine_id: 'machineID',
+        port_id: 'portID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ports/{port_id}',
+    label: 'all params',
+    run: async () => {
+      const port = await client.machines.ports.retrieve({
+        machine_id: 'machineID',
+        port_id: 'portID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/ports/{port_id}',
+    label: 'required params',
+    run: async () => {
+      const port = await client.machines.ports.delete({
+        machine_id: 'machineID',
+        port_id: 'portID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/ports/{port_id}',
+    label: 'all params',
+    run: async () => {
+      const port = await client.machines.ports.delete({
+        machine_id: 'machineID',
+        port_id: 'portID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ssh',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.ssh.list({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ssh',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.ssh.list({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/ssh',
+    label: 'required params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.create({
+        machine_id: 'machineID',
+        public_key: '',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/ssh',
+    label: 'all params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.create({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        public_key: '',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ssh/{session_id}',
+    label: 'required params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.retrieve({
+        machine_id: 'machineID',
+        session_id: 'sessionID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/ssh/{session_id}',
+    label: 'all params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.retrieve({
+        machine_id: 'machineID',
+        session_id: 'sessionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/ssh/{session_id}',
+    label: 'required params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.delete({
+        machine_id: 'machineID',
+        session_id: 'sessionID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/ssh/{session_id}',
+    label: 'all params',
+    run: async () => {
+      const sshSession = await client.machines.ssh.delete({
+        machine_id: 'machineID',
+        session_id: 'sessionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.executions.list({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.executions.list({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/executions',
+    label: 'required params',
+    run: async () => {
+      const execution = await client.machines.executions.create({
+        machine_id: 'machineID',
+        command: [''],
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/executions',
+    label: 'all params',
+    run: async () => {
+      const execution = await client.machines.executions.create({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        command: [''],
+        cwd: '',
+        env: {},
+        stdin: '',
+        timeout_ms: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}',
+    label: 'required params',
+    run: async () => {
+      const execution = await client.machines.executions.retrieve({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}',
+    label: 'all params',
+    run: async () => {
+      const execution = await client.machines.executions.retrieve({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}',
+    label: 'required params',
+    run: async () => {
+      const execution = await client.machines.executions.delete({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}',
+    label: 'all params',
+    run: async () => {
+      const execution = await client.machines.executions.delete({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'output',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/output',
+    label: 'required params',
+    run: async () => {
+      const execution = await client.machines.executions.output({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+      });
+    },
+  },
+
+  {
+    operation: 'output',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/output',
+    label: 'all params',
+    run: async () => {
+      const execution = await client.machines.executions.output({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'events',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/events',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.executions.events({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+      });
+    },
+  },
+
+  {
+    operation: 'events',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/events',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.executions.events({
+        machine_id: 'machineID',
+        execution_id: 'executionID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals',
+    label: 'required params',
+    run: async () => {
+      const page = await client.machines.terminals.list({
+        machine_id: 'machineID',
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals',
+    label: 'all params',
+    run: async () => {
+      const page = await client.machines.terminals.list({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/terminals',
+    label: 'required params',
+    run: async () => {
+      const terminal = await client.machines.terminals.create({
+        machine_id: 'machineID',
+        height: 0,
+        width: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/terminals',
+    label: 'all params',
+    run: async () => {
+      const terminal = await client.machines.terminals.create({
+        machine_id: 'machineID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        cwd: '',
+        env: {},
+        height: 0,
+        shell: '',
+        width: 0,
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+    label: 'required params',
+    run: async () => {
+      const terminal = await client.machines.terminals.retrieve({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+    label: 'all params',
+    run: async () => {
+      const terminal = await client.machines.terminals.retrieve({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+    label: 'required params',
+    run: async () => {
+      const terminal = await client.machines.terminals.delete({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
+    label: 'all params',
+    run: async () => {
+      const terminal = await client.machines.terminals.delete({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
+    operation: 'connect',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}/stream',
+    label: 'required params',
+    run: async () => {
+      const socket = client.machines.terminals.connect({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+      });
+      try {
+        // Stop at the first proof a side works: the server accepted the upgrade (`open`) or sent a
+        // payload (`message`/`raw`). Leaving the socket open would keep the process alive.
+        for await (const message of socket) {
+          if (message.type === 'open' || message.type === 'message' || message.type === 'raw') break;
+        }
+      } finally {
+        socket.close();
+      }
+    },
+  },
+
+  {
+    operation: 'connect',
+    method: 'GET',
+    path: '/v1/machines/{machine_id}/terminals/{terminal_id}/stream',
+    label: 'all params',
+    run: async () => {
+      const socket = client.machines.terminals.connect({
+        machine_id: 'machineID',
+        terminal_id: 'terminalID',
+        'X-Dedalus-Org-Id': '7c9e6679-7425-40de-944b-e07fc1f90ae7',
+      });
+      try {
+        // Stop at the first proof a side works: the server accepted the upgrade (`open`) or sent a
+        // payload (`message`/`raw`). Leaving the socket open would keep the process alive.
+        for await (const message of socket) {
+          if (message.type === 'open' || message.type === 'message' || message.type === 'raw') break;
+        }
+      } finally {
+        socket.close();
+      }
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/networks/{network_id}',
+    label: 'required params',
+    run: async () => {
+      const network = await client.networks.retrieve({
+        network_id: 'networkID',
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/networks/{network_id}',
+    label: 'all params',
+    run: async () => {
+      const network = await client.networks.retrieve({
+        network_id: 'networkID',
+        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      });
+    },
+  },
+
+  {
     operation: 'retrieve',
     method: 'GET',
     path: '/v1/usage',
@@ -111,492 +988,18 @@ const cases: {
       });
     },
   },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines',
-    run: async () => {
-      const page = await client.machines.list();
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines',
-    label: 'required params',
-    run: async () => {
-      const machine = await client.machines.create({
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.create({
-        autosleep: '',
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}',
-    run: async () => {
-      const machine = await client.machines.retrieve({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'update',
-    method: 'PATCH',
-    path: '/v1/machines/{machine_id}',
-    label: 'required params',
-    run: async () => {
-      const machine = await client.machines.update({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'update',
-    method: 'PATCH',
-    path: '/v1/machines/{machine_id}',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.update({
-        machine_id: 'machineID',
-        autosleep: '',
-        memory_mib: 0,
-        storage_gib: 0,
-        vcpu: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}',
-    run: async () => {
-      const machine = await client.machines.delete({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'watch',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/status/stream',
-    label: 'required params',
-    run: async () => {
-      const stream = await client.machines.watch({
-        machine_id: 'machineID',
-      });
-
-      for await (const machine of stream) {
-        console.log(machine);
-      }
-    },
-  },
-
-  {
-    operation: 'watch',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/status/stream',
-    label: 'all params',
-    run: async () => {
-      const stream = await client.machines.watch({
-        machine_id: 'machineID',
-        'Last-Event-ID': 'lastEventID',
-      });
-
-      for await (const machine of stream) {
-        console.log(machine);
-      }
-    },
-  },
-
-  {
-    operation: 'sleep',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/sleep',
-    run: async () => {
-      const machine = await client.machines.sleep({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'wake',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/wake',
-    run: async () => {
-      const machine = await client.machines.wake({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/network',
-    run: async () => {
-      const machineNetwork = await client.machines.network.retrieve({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts',
-    run: async () => {
-      const page = await client.machines.artifacts.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    run: async () => {
-      const artifact = await client.machines.artifacts.retrieve({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    run: async () => {
-      const artifact = await client.machines.artifacts.delete({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports',
-    run: async () => {
-      const page = await client.machines.ports.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/ports',
-    label: 'required params',
-    run: async () => {
-      const port = await client.machines.ports.create({
-        machine_id: 'machineID',
-        port: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/ports',
-    label: 'all params',
-    run: async () => {
-      const port = await client.machines.ports.create({
-        machine_id: 'machineID',
-        port: 0,
-        protocol: 'http',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    run: async () => {
-      const port = await client.machines.ports.retrieve({
-        machine_id: 'machineID',
-        port_id: 'portID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    run: async () => {
-      const port = await client.machines.ports.delete({
-        machine_id: 'machineID',
-        port_id: 'portID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ssh',
-    run: async () => {
-      const page = await client.machines.ssh.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/ssh',
-    run: async () => {
-      const sshSession = await client.machines.ssh.create({
-        machine_id: 'machineID',
-        public_key: '',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    run: async () => {
-      const sshSession = await client.machines.ssh.retrieve({
-        machine_id: 'machineID',
-        session_id: 'sessionID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    run: async () => {
-      const sshSession = await client.machines.ssh.delete({
-        machine_id: 'machineID',
-        session_id: 'sessionID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions',
-    run: async () => {
-      const page = await client.machines.executions.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/executions',
-    label: 'required params',
-    run: async () => {
-      const execution = await client.machines.executions.create({
-        machine_id: 'machineID',
-        command: [],
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/executions',
-    label: 'all params',
-    run: async () => {
-      const execution = await client.machines.executions.create({
-        machine_id: 'machineID',
-        command: [],
-        cwd: '',
-        env: {},
-        stdin: '',
-        timeout_ms: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    run: async () => {
-      const execution = await client.machines.executions.retrieve({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    run: async () => {
-      const execution = await client.machines.executions.delete({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
-    operation: 'output',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}/output',
-    run: async () => {
-      const execution = await client.machines.executions.output({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
-    operation: 'events',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}/events',
-    run: async () => {
-      const page = await client.machines.executions.events({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals',
-    run: async () => {
-      const page = await client.machines.terminals.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'required params',
-    run: async () => {
-      const terminal = await client.machines.terminals.create({
-        machine_id: 'machineID',
-        height: 0,
-        width: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'all params',
-    run: async () => {
-      const terminal = await client.machines.terminals.create({
-        machine_id: 'machineID',
-        cwd: '',
-        env: {},
-        height: 0,
-        shell: '',
-        width: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    run: async () => {
-      const terminal = await client.machines.terminals.retrieve({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    run: async () => {
-      const terminal = await client.machines.terminals.delete({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-      });
-    },
-  },
-
-  {
-    operation: 'connect',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}/stream',
-    run: async () => {
-      const socket = client.machines.terminals.connect({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-      });
-      try {
-        // Stop at the first proof a side works: the server accepted the upgrade (`open`) or sent a
-        // payload (`message`/`raw`). Leaving the socket open would keep the process alive.
-        for await (const message of socket) {
-          if (message.type === 'open' || message.type === 'message' || message.type === 'raw') break;
-        }
-      } finally {
-        socket.close();
-      }
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/networks/{network_id}',
-    run: async () => {
-      const network = await client.networks.retrieve({
-        network_id: 'networkID',
-      });
-    },
-  },
 ];
+
+/**
+ * How many cases run at once, capped at the number of cases there are.
+ *
+ * SCALAR_SMOKE_CONCURRENCY overrides the default; anything unparseable falls back to it.
+ */
+const smokeConcurrency = (caseCount: number): number => {
+  const override = Number.parseInt(process.env['SCALAR_SMOKE_CONCURRENCY'] ?? '', 10);
+  const limit = Number.isInteger(override) && override > 0 ? override : 32;
+  return Math.min(limit, caseCount);
+};
 
 const main = async (): Promise<void> => {
   // SCALAR_SMOKE_FILTER (comma-separated) keeps only cases whose operation name or path matches
@@ -615,10 +1018,18 @@ const main = async (): Promise<void> => {
         )
       : cases;
 
-  // Run every selected case concurrently. Promise.allSettled means one failing operation never
-  // blocks the others, so a single run reports the status of every endpoint.
-  const settled = await Promise.allSettled(
-    selected.map(async (testCase): Promise<SmokeResult> => {
+  // Run the selected cases under a bounded worker pool rather than all at once. A large SDK has
+  // hundreds of operations, and firing every request together exceeds what the client's transport
+  // keeps connections for while the runner is already busy with other targets. Each worker pulls
+  // the next index off a shared cursor and writes into a pre-sized array, so results stay in case
+  // order however the workers interleave. The per-case body catches everything and never rejects,
+  // so one failing operation still cannot block the others.
+  const results: SmokeResult[] = new Array<SmokeResult>(selected.length);
+  let cursor = 0;
+  const runNext = async (): Promise<void> => {
+    for (let index = cursor++; index < selected.length; index = cursor++) {
+      const testCase = selected[index];
+      if (!testCase) continue;
       const startedAt = Date.now();
       // `label` distinguishes the required-params run from the all-params run of the same
       // operation; it is omitted entirely when the operation contributed only one case.
@@ -630,28 +1041,20 @@ const main = async (): Promise<void> => {
       };
       try {
         await testCase.run();
-        return { ...identity, status: 'passed', durationMs: Date.now() - startedAt };
+        results[index] = { ...identity, status: 'passed', durationMs: Date.now() - startedAt };
       } catch (error) {
         // Prefer the stack so a failure points at the failing SDK call; fall back to the message.
         const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
-        return { ...identity, status: 'failed', durationMs: Date.now() - startedAt, error: message };
-      }
-    }),
-  );
-
-  // allSettled never rejects, but defensively map any rejected slot to a failed result.
-  const results: SmokeResult[] = settled.map((result) =>
-    result.status === 'fulfilled'
-      ? result.value
-      : {
-          operation: 'unknown',
-          method: '',
-          path: '',
+        results[index] = {
+          ...identity,
           status: 'failed',
-          durationMs: 0,
-          error: String(result.reason),
-        },
-  );
+          durationMs: Date.now() - startedAt,
+          error: message,
+        };
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: smokeConcurrency(selected.length) }, runNext));
   const failed = results.filter((result) => result.status === 'failed');
 
   // With SCALAR_SMOKE_REPORT set, write a machine-readable report; otherwise print a table.

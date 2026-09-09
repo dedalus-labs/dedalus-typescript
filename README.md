@@ -42,9 +42,13 @@ const client = new Dedalus({
   apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
 });
 
-const orgUsage = await client.usage.retrieve();
+const machine = await client.machines.create({
+  memory_mib: 0,
+  storage_gib: 0,
+  vcpu: 0,
+});
 
-console.log(orgUsage);
+console.log(machine.machine_id);
 ```
 
 The examples in the following sections assume a `client` configured as shown above.
@@ -96,13 +100,15 @@ Pass credentials to the generated client constructor. Environment variables are 
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_API_KEY. |
-| `xAPIKey` | `string \| provider` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
+| `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
+| `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
+| `bearerAuth` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_BEARER_AUTH. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
+- `Bearer` bearer token
 
 <br />
 
@@ -114,7 +120,11 @@ Non-success responses throw generated API errors. Error objects expose status, h
 import { APIError } from 'dedalus';
 
 try {
-  const orgUsage = await client.usage.retrieve();
+  const machine = await client.machines.create({
+    memory_mib: 0,
+    storage_gib: 0,
+    vcpu: 0,
+  });
 } catch (err) {
   if (err instanceof APIError) {
     console.log(err.status, err.name, err.headers);
@@ -143,8 +153,9 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key in Authorization: Bearer <key>. |
-| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
+| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
+| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
+| `bearerAuth` | `string \| AuthTokenProvider` | `process.env["DEDALUS_BEARER_AUTH"]` | Dedalus API key in Authorization: Bearer <key>. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |

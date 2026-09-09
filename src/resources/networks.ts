@@ -3,6 +3,7 @@
 import { APIResource } from '../resource';
 import { APIPromise } from '../api-promise';
 import type { RequestOptions } from '../internal/request-options';
+import { buildHeaders } from '../internal/headers';
 import { path as __scalarPath } from '../internal/utils/path';
 
 export class Networks extends APIResource {
@@ -21,8 +22,14 @@ export class Networks extends APIResource {
    * ```
    */
   retrieve(params: NetworkRetrieveParams, options?: RequestOptions): APIPromise<Network> {
-    const { network_id } = params;
-    return this._client.get(__scalarPath`/v1/networks/${network_id}`, options);
+    const { network_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/networks/${network_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -46,11 +53,16 @@ export interface NetworkGateway {
 
 export interface NetworkRetrieveParams {
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   network_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace Networks {
   export {

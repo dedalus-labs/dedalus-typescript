@@ -1,16 +1,5 @@
 // File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-export { Usage } from './usage';
-export type {
-  OrgUsage,
-  MachineComputeUsage,
-  MachineComputeUsageRow,
-  MachineStorageUsage,
-  MachineStorageUsageRow,
-  UsageRetrieveParams,
-  UsageMachineComputeParams,
-  UsageMachineStorageParams,
-} from './usage';
 export { Machines } from './machines/machines';
 export type {
   Machine,
@@ -32,3 +21,14 @@ export type {
 } from './machines/machines';
 export { Networks } from './networks';
 export type { Network, NetworkGateway, NetworkRetrieveParams } from './networks';
+export { Usage } from './usage';
+export type {
+  OrgUsage,
+  MachineComputeUsage,
+  MachineComputeUsageRow,
+  MachineStorageUsage,
+  MachineStorageUsageRow,
+  UsageRetrieveParams,
+  UsageMachineComputeParams,
+  UsageMachineStorageParams,
+} from './usage';

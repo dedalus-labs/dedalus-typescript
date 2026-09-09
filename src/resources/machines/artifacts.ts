@@ -4,6 +4,7 @@ import { APIResource } from '../../resource';
 import { APIPromise } from '../../api-promise';
 import { CursorPage, type CursorPageParams, type PagePromise } from '../../core/pagination';
 import type { RequestOptions } from '../../internal/request-options';
+import { buildHeaders } from '../../internal/headers';
 import { path as __scalarPath } from '../../internal/utils/path';
 
 export class Artifacts extends APIResource {
@@ -22,10 +23,14 @@ export class Artifacts extends APIResource {
    * ```
    */
   list(params: ArtifactListParams, options?: RequestOptions): PagePromise<ArtifactsCursorPage, Artifact> {
-    const { machine_id, ...query } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params;
     return this._client.getAPIList(__scalarPath`/v1/machines/${machine_id}/artifacts`, CursorPage<Artifact>, {
       query,
       ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -45,8 +50,14 @@ export class Artifacts extends APIResource {
    * ```
    */
   retrieve(params: ArtifactRetrieveParams, options?: RequestOptions): APIPromise<Artifact> {
-    const { machine_id, artifact_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
+    const { machine_id, artifact_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/artifacts/${artifact_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -65,8 +76,14 @@ export class Artifacts extends APIResource {
    * ```
    */
   delete(params: ArtifactDeleteParams, options?: RequestOptions): APIPromise<Artifact> {
-    const { machine_id, artifact_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/artifacts/${artifact_id}`, options);
+    const { machine_id, artifact_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}/artifacts/${artifact_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -99,43 +116,60 @@ export interface ArtifactList {
 
 export interface ArtifactListParams extends CursorPageParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export type ArtifactsCursorPage = CursorPage<Artifact>;
 
 export interface ArtifactRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   artifact_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface ArtifactDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
   /**
+   * Path param
    * @minLength 1
    * @maxLength 253
    * @pattern ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$
    */
   artifact_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace Artifacts {
   export {

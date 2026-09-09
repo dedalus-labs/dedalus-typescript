@@ -95,7 +95,7 @@ export class Machines extends APIResource {
   /**
    * List machines
    *
-   * @param {MachineListParams} [query] - The parameters to send with the request.
+   * @param {MachineListParams} [params] - The parameters to send with the request.
    * @param {RequestOptions} [options] - Options to apply to the request, such as headers and an abort signal.
    * @returns {PagePromise<MachineListItemsCursorPage, MachineListItem>} OK
    *
@@ -105,16 +105,24 @@ export class Machines extends APIResource {
    * ```
    */
   list(
-    query: MachineListParams | null | undefined = {},
+    params: MachineListParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<MachineListItemsCursorPage, MachineListItem> {
-    return this._client.getAPIList('/v1/machines', CursorPage<MachineListItem>, { query, ...options });
+    const { 'X-Dedalus-Org-Id': xDedalusOrgID, ...query } = params ?? {};
+    return this._client.getAPIList('/v1/machines', CursorPage<MachineListItem>, {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
    * Create machine
    *
-   * @param {MachineCreateParams} body - The request body to send.
+   * @param {MachineCreateParams} params - The parameters to send with the request.
    * @param {RequestOptions} [options] - Options to apply to the request, such as headers and an abort signal.
    * @returns {APIPromise<Machine>} Create converged inline
    *
@@ -127,8 +135,16 @@ export class Machines extends APIResource {
    * });
    * ```
    */
-  create(body: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
-    return this._client.post('/v1/machines', { body, ...options });
+  create(params: MachineCreateParams, options?: RequestOptions): APIPromise<Machine> {
+    const { 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.post('/v1/machines', {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -146,8 +162,14 @@ export class Machines extends APIResource {
    * ```
    */
   retrieve(params: MachineRetrieveParams, options?: RequestOptions): APIPromise<MachineRetrieveResponse> {
-    const { machine_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}`, options);
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -165,8 +187,15 @@ export class Machines extends APIResource {
    * ```
    */
   update(params: MachineUpdateParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id, ...body } = params;
-    return this._client.patch(__scalarPath`/v1/machines/${machine_id}`, { body, ...options });
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, ...body } = params;
+    return this._client.patch(__scalarPath`/v1/machines/${machine_id}`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -184,8 +213,14 @@ export class Machines extends APIResource {
    * ```
    */
   delete(params: MachineDeleteParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id } = params;
-    return this._client.delete(__scalarPath`/v1/machines/${machine_id}`, options);
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.delete(__scalarPath`/v1/machines/${machine_id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -207,12 +242,13 @@ export class Machines extends APIResource {
    * ```
    */
   watch(params: MachineWatchParams, options?: RequestOptions): APIPromise<Stream<Machine>> {
-    const { machine_id, 'Last-Event-ID': lastEventID } = params;
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID, 'Last-Event-ID': lastEventID } = params;
     return this._client.get(__scalarPath`/v1/machines/${machine_id}/status/stream`, {
       ...options,
       headers: buildHeaders([
         {
           Accept: 'text/event-stream',
+          ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}),
           ...(lastEventID !== undefined ? { 'Last-Event-ID': lastEventID } : {}),
         },
         options?.headers,
@@ -236,8 +272,14 @@ export class Machines extends APIResource {
    * ```
    */
   sleep(params: MachineSleepParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/sleep`, options);
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/sleep`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -255,8 +297,14 @@ export class Machines extends APIResource {
    * ```
    */
   wake(params: MachineWakeParams, options?: RequestOptions): APIPromise<Machine> {
-    const { machine_id } = params;
-    return this._client.post(__scalarPath`/v1/machines/${machine_id}/wake`, options);
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.post(__scalarPath`/v1/machines/${machine_id}/wake`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -410,39 +458,50 @@ export interface LifecycleStatus {
   last_error?: string;
 }
 
-export interface MachineListParams extends CursorPageParams {}
+export interface MachineListParams extends CursorPageParams {
+  'X-Dedalus-Org-Id'?: string;
+}
 
 export type MachineListItemsCursorPage = CursorPage<MachineListItem>;
 
 export interface MachineCreateParams {
   /**
-   * Memory in MiB.
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
+  /**
+   * Body param: Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h, 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
+   */
+  autosleep?: string;
+  /**
+   * Body param: Memory in MiB.
    * @format int64
    */
   memory_mib: number;
   /**
-   * Storage in GiB.
+   * Body param: Storage in GiB.
    * @format int64
    */
   storage_gib: number;
   /**
-   * CPU in vCPUs.
+   * Body param: CPU in vCPUs.
    * @format double
    */
   vcpu: number;
-  /**
-   * Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h, 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
-   */
-  autosleep?: string;
 }
 
 export interface MachineRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface MachineRetrieveResponse {
@@ -481,6 +540,10 @@ export interface MachineUpdateParams {
    */
   machine_id: string;
   /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
+  /**
    * Body param: Idle window before autosleep. Accepts fixed duration units like 30s, 30m, 2h, 7d3h4s, or 1w3d, raw seconds ("1800"), or never to disable.
    */
   autosleep?: string;
@@ -503,11 +566,16 @@ export interface MachineUpdateParams {
 
 export interface MachineDeleteParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface MachineWatchParams {
@@ -519,6 +587,11 @@ export interface MachineWatchParams {
    */
   machine_id: string;
   /**
+   * Header param: Organization ID header applied to all DCS requests.
+   * @format uuid
+   */
+  'X-Dedalus-Org-Id'?: string;
+  /**
    * Header param: Optional resourceVersion bookmark used to resume a previous stream.
    */
   'Last-Event-ID'?: string;
@@ -526,20 +599,30 @@ export interface MachineWatchParams {
 
 export interface MachineSleepParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 
 export interface MachineWakeParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 Machines.Network = Network;
 Machines.Artifacts = Artifacts;

@@ -3,6 +3,7 @@
 import { APIResource } from '../../resource';
 import { APIPromise } from '../../api-promise';
 import type { RequestOptions } from '../../internal/request-options';
+import { buildHeaders } from '../../internal/headers';
 import { path as __scalarPath } from '../../internal/utils/path';
 
 export class Network extends APIResource {
@@ -21,8 +22,14 @@ export class Network extends APIResource {
    * ```
    */
   retrieve(params: NetworkRetrieveParams, options?: RequestOptions): APIPromise<MachineNetwork> {
-    const { machine_id } = params;
-    return this._client.get(__scalarPath`/v1/machines/${machine_id}/network`, options);
+    const { machine_id, 'X-Dedalus-Org-Id': xDedalusOrgID } = params;
+    return this._client.get(__scalarPath`/v1/machines/${machine_id}/network`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xDedalusOrgID !== undefined ? { 'X-Dedalus-Org-Id': xDedalusOrgID } : {}) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -37,11 +44,16 @@ export interface MachineNetwork {
 
 export interface NetworkRetrieveParams {
   /**
+   * Path param
    * @minLength 4
    * @maxLength 253
    * @pattern ^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
    */
   machine_id: string;
+  /**
+   * Header param
+   */
+  'X-Dedalus-Org-Id'?: string;
 }
 export declare namespace Network {
   export { type MachineNetwork as MachineNetwork, type NetworkRetrieveParams as NetworkRetrieveParams };
