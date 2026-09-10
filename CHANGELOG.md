@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.5.0 (2026-09-01)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** regenerate SDKs from the current public DCS contract
+
+### Features
+
+* **api:** regenerate SDKs from the current public DCS contract ([cad738c](https://github.com/dedalus-labs/dedalus-typescript/commit/cad738ccba2b51713096ac9a3f76f055d043fd8d))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([f69771b](https://github.com/dedalus-labs/dedalus-typescript/commit/f69771b3e5f44fd05464e6227848ab13f249e238))
+
+
+### Bug Fixes
+
+* **ci:** bump @arethetypeswrong/cli to ^0.18.0 and run CI workflows on Node 24 ([7ddf1b0](https://github.com/dedalus-labs/dedalus-typescript/commit/7ddf1b02e728e489b00afd72fe5001ffb8128955))
+* **client:** send content-type header for requests with an omitted optional body ([aaa71fa](https://github.com/dedalus-labs/dedalus-typescript/commit/aaa71fa0a6d605ae2df82dcd214f48791f759e7a))
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([6e1859c](https://github.com/dedalus-labs/dedalus-typescript/commit/6e1859c8b2debbae5427c282744e706e8c02dd7b))
+
+
+### Chores
+
+* configure new SDK language ([6b68956](https://github.com/dedalus-labs/dedalus-typescript/commit/6b68956600107ed25ea17d5262d961d0164a9dd9))
+* configure new SDK language ([1d18b8d](https://github.com/dedalus-labs/dedalus-typescript/commit/1d18b8da20cc77e9bd527a3c3ea87a8a63d4470a))
+* configure new SDK language ([e3842ad](https://github.com/dedalus-labs/dedalus-typescript/commit/e3842adbbad581256df3849241e71ba57d8ec386))
+* configure new SDK language ([f89cb5d](https://github.com/dedalus-labs/dedalus-typescript/commit/f89cb5d8535b9ba6e650bdda0cd2a6d836d071b2))
+* configure new SDK language ([84cbe52](https://github.com/dedalus-labs/dedalus-typescript/commit/84cbe5246bf596d6ae65b8900bd71ea778d91f05))
+* **internal:** allow the mock server port to be set with STAINLESS_MOCK_PORT ([5db9357](https://github.com/dedalus-labs/dedalus-typescript/commit/5db93577ff1204f04120ecb5c78bc705d5a5e9c5))
+* **internal:** codegen related update ([3319c20](https://github.com/dedalus-labs/dedalus-typescript/commit/3319c2000dd8313171897186784c123a24ddbb98))
+* **tests:** remove redundant File import ([7226125](https://github.com/dedalus-labs/dedalus-typescript/commit/72261254409c99fbb91ac8ae19b0220f2aaffbff))
+* update SDK settings ([66989d7](https://github.com/dedalus-labs/dedalus-typescript/commit/66989d7653c0e287fc849986884fd4cd3f60ddf3))
+* update SDK settings ([b84a9d9](https://github.com/dedalus-labs/dedalus-typescript/commit/b84a9d911a60f81d25ee69f4dabb5c46f3ce45a3))
+* update SDK settings ([d8273e8](https://github.com/dedalus-labs/dedalus-typescript/commit/d8273e83c4494fbab6407584929adfa4c28b0cce))
+* update SDK settings ([57f24ae](https://github.com/dedalus-labs/dedalus-typescript/commit/57f24ae07c7acb0fb28b667dc267eb1c73aa205d))
+* update SDK settings ([6ce506a](https://github.com/dedalus-labs/dedalus-typescript/commit/6ce506a7697e83c99ab5f6baf82d648c8500bdec))
+
+
+### Documentation
+
+* **mcp:** document code execution modes and the local code runner ([d4bd14f](https://github.com/dedalus-labs/dedalus-typescript/commit/d4bd14f92b991e7e49c726c4dbaa9a1858c684e3))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)

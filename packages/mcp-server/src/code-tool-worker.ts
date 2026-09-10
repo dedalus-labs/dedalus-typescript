@@ -108,9 +108,6 @@ function getTSDiagnostics(code: string): string[] {
 
 const fuse = new Fuse(
   [
-    'client.usage.machineCompute',
-    'client.usage.machineStorage',
-    'client.usage.retrieve',
     'client.machines.create',
     'client.machines.delete',
     'client.machines.list',
@@ -118,14 +115,6 @@ const fuse = new Fuse(
     'client.machines.sleep',
     'client.machines.update',
     'client.machines.wake',
-    'client.machines.watch',
-    'client.machines.artifacts.delete',
-    'client.machines.artifacts.list',
-    'client.machines.artifacts.retrieve',
-    'client.machines.previews.create',
-    'client.machines.previews.delete',
-    'client.machines.previews.list',
-    'client.machines.previews.retrieve',
     'client.machines.ssh.create',
     'client.machines.ssh.delete',
     'client.machines.ssh.list',
@@ -136,11 +125,6 @@ const fuse = new Fuse(
     'client.machines.executions.list',
     'client.machines.executions.output',
     'client.machines.executions.retrieve',
-    'client.machines.terminals.connect',
-    'client.machines.terminals.create',
-    'client.machines.terminals.delete',
-    'client.machines.terminals.list',
-    'client.machines.terminals.retrieve',
   ],
   { threshold: 1, shouldSort: true },
 );

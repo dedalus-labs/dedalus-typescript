@@ -8,6 +8,7 @@ export {
   type MachineList,
   type MachineListItem,
   type UpdateParams,
+  type MachineRetrieveResponse,
   type MachineCreateParams,
   type MachineRetrieveParams,
   type MachineUpdateParams,
@@ -15,17 +16,5 @@ export {
   type MachineDeleteParams,
   type MachineSleepParams,
   type MachineWakeParams,
-  type MachineWatchParams,
   type MachineListItemsCursorPage,
 } from './machines/machines';
-export {
-  Usage,
-  type MachineComputeUsage,
-  type MachineComputeUsageRow,
-  type MachineStorageUsage,
-  type MachineStorageUsageRow,
-  type OrgUsage,
-  type UsageRetrieveParams,
-  type UsageMachineComputeParams,
-  type UsageMachineStorageParams,
-} from './usage';

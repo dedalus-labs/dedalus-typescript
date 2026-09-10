@@ -20,17 +20,6 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  MachineComputeUsage,
-  MachineComputeUsageRow,
-  MachineStorageUsage,
-  MachineStorageUsageRow,
-  OrgUsage,
-  Usage,
-  UsageMachineComputeParams,
-  UsageMachineStorageParams,
-  UsageRetrieveParams,
-} from './resources/usage';
-import {
   CreateParams,
   LifecycleStatus,
   Machine,
@@ -41,10 +30,10 @@ import {
   MachineListItemsCursorPage,
   MachineListParams,
   MachineRetrieveParams,
+  MachineRetrieveResponse,
   MachineSleepParams,
   MachineUpdateParams,
   MachineWakeParams,
-  MachineWatchParams,
   Machines,
   UpdateParams,
 } from './resources/machines/machines';
@@ -775,11 +764,19 @@ export class Dedalus {
     return () => controller.abort();
   }
 
-  private buildBody({ options: { body, headers: rawHeaders } }: { options: FinalRequestOptions }): {
+  private buildBody({ options }: { options: FinalRequestOptions }): {
     bodyHeaders: HeadersLike;
     body: BodyInit | undefined;
   } {
+    const { body, headers: rawHeaders } = options;
     if (!body) {
+      // A resource method always passes a `body` key when its operation defines a
+      // request body, even if the caller omitted an optional body param. Keep the
+      // content-type for those, and only elide it for operations with no body at
+      // all (e.g. GET/DELETE).
+      if (body == null && 'body' in options) {
+        return this.#encoder({ body, headers: buildHeaders([rawHeaders]) });
+      }
       return { bodyHeaders: undefined, body: undefined };
     }
     const headers = buildHeaders([rawHeaders]);
@@ -839,11 +836,9 @@ export class Dedalus {
 
   static toFile = Uploads.toFile;
 
-  usage: API.Usage = new API.Usage(this);
   machines: API.Machines = new API.Machines(this);
 }
 
-Dedalus.Usage = Usage;
 Dedalus.Machines = Machines;
 
 export declare namespace Dedalus {
@@ -853,18 +848,6 @@ export declare namespace Dedalus {
   export { type CursorPageParams as CursorPageParams, type CursorPageResponse as CursorPageResponse };
 
   export {
-    Usage as Usage,
-    type MachineComputeUsage as MachineComputeUsage,
-    type MachineComputeUsageRow as MachineComputeUsageRow,
-    type MachineStorageUsage as MachineStorageUsage,
-    type MachineStorageUsageRow as MachineStorageUsageRow,
-    type OrgUsage as OrgUsage,
-    type UsageRetrieveParams as UsageRetrieveParams,
-    type UsageMachineComputeParams as UsageMachineComputeParams,
-    type UsageMachineStorageParams as UsageMachineStorageParams,
-  };
-
-  export {
     Machines as Machines,
     type CreateParams as CreateParams,
     type LifecycleStatus as LifecycleStatus,
@@ -872,6 +855,7 @@ export declare namespace Dedalus {
     type MachineList as MachineList,
     type MachineListItem as MachineListItem,
     type UpdateParams as UpdateParams,
+    type MachineRetrieveResponse as MachineRetrieveResponse,
     type MachineListItemsCursorPage as MachineListItemsCursorPage,
     type MachineCreateParams as MachineCreateParams,
     type MachineRetrieveParams as MachineRetrieveParams,
@@ -880,6 +864,5 @@ export declare namespace Dedalus {
     type MachineDeleteParams as MachineDeleteParams,
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
-    type MachineWatchParams as MachineWatchParams,
   };
 }
