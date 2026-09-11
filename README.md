@@ -221,3 +221,22 @@ const page = await client.machines.list();
 - Node.js 20+, a modern browser, or any runtime with `fetch` support
 
 Powered by Scalar.
+
+## Verify a local package
+
+Run `pnpm install --frozen-lockfile --ignore-scripts`, `pnpm build`, and
+`pnpm test:package` to install a tarball in an isolated directory and check both
+ESM and CommonJS imports. The probe explicitly selects the staging API URL and
+does not send an API request. It catches runtime dependencies that a source-tree
+build can hide.
+
+CI runs the same package check. Edit `ci/sdk-ci.ts` and run `pnpm ci:generate`
+to change its generated workflow.
+
+<!-- @custom start -->
+### Automatic retry identity
+
+Client-generated idempotency keys use the API's 32-character UUIDv7 format.
+Automatic retries reuse the original key. Independent submissions receive new
+keys, and callers can still supply an explicit key when retrying a saved request.
+<!-- @custom end -->
