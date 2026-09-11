@@ -21,6 +21,10 @@ try {
   `;
   run(process.execPath, ['--input-type=module', '-e', `import SDK from 'dedalus'; ${probe}`], consumer);
   run(process.execPath, ['-e', `const SDK = require('dedalus').default; ${probe}`], consumer);
+  execFileSync(process.execPath, ['--test', 'tests/feedback-retry-keys.test.mjs'], {
+    cwd: root, stdio: 'inherit',
+    env: { ...process.env, FEEDBACK_PACKAGE_ROOT: join(consumer, 'node_modules/dedalus') },
+  });
   process.stdout.write('Installed SDK imports passed: ESM and CommonJS.\n');
 } finally {
   rmSync(directory, { recursive: true, force: true });
