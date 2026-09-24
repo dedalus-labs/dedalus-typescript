@@ -15,31 +15,10 @@ export type {
   MachineRetrieveResponse,
   MachineUpdateParams,
   MachineDeleteParams,
-  MachineWatchParams,
   MachineSleepParams,
   MachineWakeParams,
+  MachineRebootParams,
 } from './machines';
-export { Network } from './network';
-export type { MachineNetwork, NetworkRetrieveParams } from './network';
-export { Artifacts } from './artifacts';
-export type {
-  Artifact,
-  ArtifactList,
-  ArtifactListParams,
-  ArtifactsCursorPage,
-  ArtifactRetrieveParams,
-  ArtifactDeleteParams,
-} from './artifacts';
-export { Ports } from './ports';
-export type {
-  PortCreateParams,
-  Port,
-  PortList,
-  PortListParams,
-  PortsCursorPage,
-  PortRetrieveParams,
-  PortDeleteParams,
-} from './ports';
 export { SSH } from './ssh';
 export type {
   SSHSessionCreateParams,
@@ -53,7 +32,7 @@ export type {
   SSHRetrieveParams,
   SSHDeleteParams,
 } from './ssh';
-export { Executions } from './executions';
+export { Executions } from './executions/executions';
 export type {
   ExecutionCreateParams,
   Execution,
@@ -69,24 +48,6 @@ export type {
   ExecutionOutputParams,
   ExecutionEventsParams,
   ExecutionEventsCursorPage,
-} from './executions';
-export { Terminals } from './terminals/terminals';
-export type {
-  TerminalCreateParams,
-  Terminal,
-  TerminalList,
-  TerminalClientEvent,
-  TerminalServerEvent,
-  TerminalInputEvent,
-  TerminalResizeEvent,
-  TerminalOutputEvent,
-  TerminalErrorEvent,
-  TerminalClosedEvent,
-  ConnectClientEvent,
-  ConnectServerEvent,
-  TerminalListParams,
-  TerminalsCursorPage,
-  TerminalRetrieveParams,
-  TerminalDeleteParams,
-  TerminalConnectParams,
-} from './terminals/terminals';
+} from './executions/executions';
+export { Autoresizing } from './autoresizing';
+export type { Settings, AutoresizingRetrieveParams, AutoresizingUpdateParams } from './autoresizing';
