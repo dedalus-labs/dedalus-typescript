@@ -1,6 +1,6 @@
 {
   "name": "dedalus",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
   "author": "Dedalus",
   "repository": {
@@ -49,12 +49,8 @@
     "test:package": "node scripts/test-package.mjs",
     "ci:generate": "hollywood generate \"ci/**/*.ts\" --source-root ci --output ."
   },
-  "dependencies": {
-    "ws": "^8.18.0"
-  },
   "devDependencies": {
     "@types/node": "^20.17.0",
-    "@types/ws": "^8.5.13",
     "typescript": "^6.0.0",
     "@dedalus-labs/hollywood": "0.0.5"
   },

@@ -33,7 +33,7 @@ export const sdkCI = workflow({
           name: 'Check generated workflows',
           run: command({
             file: 'git',
-            args: ['diff', '--exit-code', '--', '.github/workflows/sdk-ci.yml'],
+            args: ['diff', '--exit-code', '--', '.github/workflows'],
           }),
         },
         { name: 'Build SDK', run: command({ file: 'pnpm', args: ['run', 'build'] }) },

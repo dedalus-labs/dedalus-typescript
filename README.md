@@ -11,8 +11,6 @@ The full API of this library can be found in [api.md](./api.md).
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Reference](./api.md)
-- [Streaming](#streaming)
-- [WebSockets](#websockets)
 - [Authentication](#authentication)
 - [Errors](#errors)
 - [Client Options](#client-options)
@@ -58,43 +56,6 @@ See the [API reference](./api.md) for every available operation.
 
 <br />
 
-## Streaming
-
-Streaming endpoints return an async iterator that yields results as the server emits them.
-
-```ts
-const stream = await client.machines.watch({
-  machine_id: 'machineID',
-});
-
-for await (const machine of stream) {
-  console.log(machine);
-}
-```
-
-<br />
-
-## WebSockets
-
-WebSocket endpoints open a persistent connection you can send messages to and receive messages from.
-
-```ts
-const connection = client.machines.terminals.connect({
-  machine_id: 'machineID',
-  terminal_id: 'terminalID',
-});
-
-try {
-  for await (const message of connection) {
-    console.log(message);
-  }
-} finally {
-  connection.close();
-}
-```
-
-<br />
-
 ## Authentication
 
 Pass credentials to the generated client constructor. Environment variables are read automatically when supported by the target runtime.
@@ -103,13 +64,11 @@ Pass credentials to the generated client constructor. Environment variables are 
 | --- | --- | --- | --- |
 | `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
 | `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
-| `bearerAuth` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_BEARER_AUTH. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
-- `Bearer` bearer token
 
 <br />
 
@@ -157,7 +116,6 @@ const client = new Dedalus({
 | --- | --- | --- | --- |
 | `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
 | `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
-| `bearerAuth` | `string \| AuthTokenProvider` | `process.env["DEDALUS_BEARER_AUTH"]` | Dedalus API key in Authorization: Bearer <key>. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |
@@ -226,7 +184,7 @@ Powered by Scalar.
 
 Run `pnpm install --frozen-lockfile --ignore-scripts`, `pnpm build`, and
 `pnpm test:package` to install a tarball in an isolated directory and check both
-ESM and CommonJS imports. The probe explicitly selects the staging API URL and
+ESM and CommonJS imports. The probe uses a public fixture URL and
 does not send an API request. It catches runtime dependencies that a source-tree
 build can hide.
 

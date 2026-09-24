@@ -25,7 +25,7 @@ jobs:
         run: pnpm run ci:generate
         shell: bash
       - name: Check generated workflows
-        run: git diff --exit-code -- .github/workflows/sdk-ci.yml
+        run: git diff --exit-code -- .github/workflows
         shell: bash
       - name: Build SDK
         run: pnpm run build
