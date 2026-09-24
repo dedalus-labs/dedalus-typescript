@@ -6,7 +6,7 @@ export const sdkCI = workflow({
   permissions: { contents: 'read' },
   jobs: {
     verify: {
-      'runs-on': 'blacksmith-4vcpu-ubuntu-2404',
+      'runs-on': 'ubuntu-24.04',
       'timeout-minutes': 15,
       steps: [
         { uses: 'actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5' },
