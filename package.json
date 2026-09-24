@@ -1,6 +1,6 @@
 {
   "name": "dedalus",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
   "author": "Dedalus",
   "repository": {

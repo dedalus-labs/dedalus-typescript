@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.6.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.5.0...v0.6.0) (2026-09-24)
+
+
+### Bug Fixes
+
+* **ci:** use available hosted runners for package verification ([2e92fb1](https://github.com/dedalus-labs/dedalus-typescript/commit/2e92fb170149657839585ff33411ce566b118714))
+* **feedback:** generate valid automatic retry keys ([678e8a5](https://github.com/dedalus-labs/dedalus-typescript/commit/678e8a5146dbc5b2b4c93b5823c1f901ad834efc))
+* **sdk:** align current API and restore stable package publishing ([3148c1a](https://github.com/dedalus-labs/dedalus-typescript/commit/3148c1ae1307004fd2f48ea9d9ef55a8e4c02833))
+* **sdk:** install required websocket dependency ([03dd4c3](https://github.com/dedalus-labs/dedalus-typescript/commit/03dd4c336cffb05664e1427ac2c51874a42e4d08))
+* **sdk:** prepare current API and stable package publishing ([#25](https://github.com/dedalus-labs/dedalus-typescript/issues/25)) ([dade2ed](https://github.com/dedalus-labs/dedalus-typescript/commit/dade2edfa7bed1b1519fd248e36cb2dc34ffe4b0))
+
+
+### Chores
+
+* reconcile published release history ([e7a4878](https://github.com/dedalus-labs/dedalus-typescript/commit/e7a4878f4a8b3f4d4e9711d6ab715e444c8464d8))
+* release 0.6.0 ([b0802c7](https://github.com/dedalus-labs/dedalus-typescript/commit/b0802c7f3fa332ac5f11d06c6ae9a1e4f4be41a9))
+* release 0.6.0 ([cb5c094](https://github.com/dedalus-labs/dedalus-typescript/commit/cb5c0942ddfab8ff1c0d8432f89786320118d073))
+
 ## 0.5.0 (2026-09-01)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0)
