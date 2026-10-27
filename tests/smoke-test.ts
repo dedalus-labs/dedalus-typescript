@@ -16,7 +16,7 @@ import { writeFileSync } from 'node:fs';
 import Dedalus from 'dedalus';
 
 // One shared client runs every case.
-const client = new Dedalus();
+const client = new Dedalus({ maxRetries: 2, timeout: 10_000 });
 
 // The result of running one case, collected for the JSON report or the printed table.
 type SmokeResult = {
@@ -45,47 +45,17 @@ const cases: {
     operation: 'list',
     method: 'GET',
     path: '/v1/machines',
-    label: 'required params',
     run: async () => {
       const page = await client.machines.list();
     },
   },
 
   {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.list({
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
     operation: 'create',
     method: 'POST',
     path: '/v1/machines',
-    label: 'required params',
     run: async () => {
       const machine = await client.machines.create({
-        autosleep: '300s',
-        memory_mib: 4096,
-        storage_gib: 10,
-        vcpu: 1,
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.create({
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
         autosleep: '300s',
         memory_mib: 4096,
         storage_gib: 10,
@@ -98,23 +68,9 @@ const cases: {
     operation: 'retrieve',
     method: 'GET',
     path: '/v1/machines/{machine_id}',
-    label: 'required params',
     run: async () => {
       const machine = await client.machines.retrieve({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.retrieve({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -126,7 +82,7 @@ const cases: {
     label: 'required params',
     run: async () => {
       const machine = await client.machines.update({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -138,8 +94,7 @@ const cases: {
     label: 'all params',
     run: async () => {
       const machine = await client.machines.update({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         autosleep: '',
         memory_mib: 0,
         storage_gib: 0,
@@ -152,69 +107,9 @@ const cases: {
     operation: 'delete',
     method: 'DELETE',
     path: '/v1/machines/{machine_id}',
-    label: 'required params',
     run: async () => {
       const machine = await client.machines.delete({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.delete({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'watch',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/status/stream',
-    label: 'required params',
-    run: async () => {
-      const stream = await client.machines.watch({
-        machine_id: 'machineID',
-      });
-
-      for await (const machine of stream) {
-        console.log(machine);
-      }
-    },
-  },
-
-  {
-    operation: 'watch',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/status/stream',
-    label: 'all params',
-    run: async () => {
-      const stream = await client.machines.watch({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': '7c9e6679-7425-40de-944b-e07fc1f90ae7',
-        'Last-Event-ID': 'lastEventID',
-      });
-
-      for await (const machine of stream) {
-        console.log(machine);
-      }
-    },
-  },
-
-  {
-    operation: 'sleep',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/sleep',
-    label: 'required params',
-    run: async () => {
-      const machine = await client.machines.sleep({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -223,11 +118,9 @@ const cases: {
     operation: 'sleep',
     method: 'POST',
     path: '/v1/machines/{machine_id}/sleep',
-    label: 'all params',
     run: async () => {
       const machine = await client.machines.sleep({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -236,234 +129,34 @@ const cases: {
     operation: 'wake',
     method: 'POST',
     path: '/v1/machines/{machine_id}/wake',
-    label: 'required params',
     run: async () => {
       const machine = await client.machines.wake({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
 
   {
-    operation: 'wake',
+    operation: 'reboot',
     method: 'POST',
-    path: '/v1/machines/{machine_id}/wake',
-    label: 'all params',
-    run: async () => {
-      const machine = await client.machines.wake({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/network',
+    path: '/v1/machines/{machine_id}/reboot',
     label: 'required params',
     run: async () => {
-      const machineNetwork = await client.machines.network.retrieve({
-        machine_id: 'machineID',
+      const machine = await client.machines.reboot({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
 
   {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/network',
-    label: 'all params',
-    run: async () => {
-      const machineNetwork = await client.machines.network.retrieve({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts',
-    label: 'required params',
-    run: async () => {
-      const page = await client.machines.artifacts.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.artifacts.list({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    label: 'required params',
-    run: async () => {
-      const artifact = await client.machines.artifacts.retrieve({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    label: 'all params',
-    run: async () => {
-      const artifact = await client.machines.artifacts.retrieve({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    label: 'required params',
-    run: async () => {
-      const artifact = await client.machines.artifacts.delete({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/artifacts/{artifact_id}',
-    label: 'all params',
-    run: async () => {
-      const artifact = await client.machines.artifacts.delete({
-        machine_id: 'machineID',
-        artifact_id: 'artifactID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports',
-    label: 'required params',
-    run: async () => {
-      const page = await client.machines.ports.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.ports.list({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
+    operation: 'reboot',
     method: 'POST',
-    path: '/v1/machines/{machine_id}/ports',
-    label: 'required params',
-    run: async () => {
-      const port = await client.machines.ports.create({
-        machine_id: 'machineID',
-        port: 0,
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/ports',
+    path: '/v1/machines/{machine_id}/reboot',
     label: 'all params',
     run: async () => {
-      const port = await client.machines.ports.create({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-        port: 0,
-        protocol: 'http',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    label: 'required params',
-    run: async () => {
-      const port = await client.machines.ports.retrieve({
-        machine_id: 'machineID',
-        port_id: 'portID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    label: 'all params',
-    run: async () => {
-      const port = await client.machines.ports.retrieve({
-        machine_id: 'machineID',
-        port_id: 'portID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    label: 'required params',
-    run: async () => {
-      const port = await client.machines.ports.delete({
-        machine_id: 'machineID',
-        port_id: 'portID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/ports/{port_id}',
-    label: 'all params',
-    run: async () => {
-      const port = await client.machines.ports.delete({
-        machine_id: 'machineID',
-        port_id: 'portID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+      const machine = await client.machines.reboot({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        force: true,
       });
     },
   },
@@ -472,23 +165,9 @@ const cases: {
     operation: 'list',
     method: 'GET',
     path: '/v1/machines/{machine_id}/ssh',
-    label: 'required params',
     run: async () => {
       const page = await client.machines.ssh.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ssh',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.ssh.list({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -497,24 +176,9 @@ const cases: {
     operation: 'create',
     method: 'POST',
     path: '/v1/machines/{machine_id}/ssh',
-    label: 'required params',
     run: async () => {
       const sshSession = await client.machines.ssh.create({
-        machine_id: 'machineID',
-        public_key: '',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/ssh',
-    label: 'all params',
-    run: async () => {
-      const sshSession = await client.machines.ssh.create({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         public_key: '',
       });
     },
@@ -524,37 +188,9 @@ const cases: {
     operation: 'retrieve',
     method: 'GET',
     path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    label: 'required params',
     run: async () => {
       const sshSession = await client.machines.ssh.retrieve({
-        machine_id: 'machineID',
-        session_id: 'sessionID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    label: 'all params',
-    run: async () => {
-      const sshSession = await client.machines.ssh.retrieve({
-        machine_id: 'machineID',
-        session_id: 'sessionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    label: 'required params',
-    run: async () => {
-      const sshSession = await client.machines.ssh.delete({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         session_id: 'sessionID',
       });
     },
@@ -564,12 +200,10 @@ const cases: {
     operation: 'delete',
     method: 'DELETE',
     path: '/v1/machines/{machine_id}/ssh/{session_id}',
-    label: 'all params',
     run: async () => {
       const sshSession = await client.machines.ssh.delete({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         session_id: 'sessionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
       });
     },
   },
@@ -578,23 +212,9 @@ const cases: {
     operation: 'list',
     method: 'GET',
     path: '/v1/machines/{machine_id}/executions',
-    label: 'required params',
     run: async () => {
       const page = await client.machines.executions.list({
-        machine_id: 'machineID',
-      });
-    },
-  },
-
-  {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.executions.list({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
   },
@@ -606,7 +226,7 @@ const cases: {
     label: 'required params',
     run: async () => {
       const execution = await client.machines.executions.create({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         command: [''],
       });
     },
@@ -619,8 +239,7 @@ const cases: {
     label: 'all params',
     run: async () => {
       const execution = await client.machines.executions.create({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         command: [''],
         cwd: '',
         env: {},
@@ -634,37 +253,9 @@ const cases: {
     operation: 'retrieve',
     method: 'GET',
     path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    label: 'required params',
     run: async () => {
       const execution = await client.machines.executions.retrieve({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    label: 'all params',
-    run: async () => {
-      const execution = await client.machines.executions.retrieve({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    label: 'required params',
-    run: async () => {
-      const execution = await client.machines.executions.delete({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         execution_id: 'executionID',
       });
     },
@@ -674,24 +265,9 @@ const cases: {
     operation: 'delete',
     method: 'DELETE',
     path: '/v1/machines/{machine_id}/executions/{execution_id}',
-    label: 'all params',
     run: async () => {
       const execution = await client.machines.executions.delete({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'output',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}/output',
-    label: 'required params',
-    run: async () => {
-      const execution = await client.machines.executions.output({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         execution_id: 'executionID',
       });
     },
@@ -701,24 +277,9 @@ const cases: {
     operation: 'output',
     method: 'GET',
     path: '/v1/machines/{machine_id}/executions/{execution_id}/output',
-    label: 'all params',
     run: async () => {
       const execution = await client.machines.executions.output({
-        machine_id: 'machineID',
-        execution_id: 'executionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'events',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}/events',
-    label: 'required params',
-    run: async () => {
-      const page = await client.machines.executions.events({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         execution_id: 'executionID',
       });
     },
@@ -728,69 +289,46 @@ const cases: {
     operation: 'events',
     method: 'GET',
     path: '/v1/machines/{machine_id}/executions/{execution_id}/events',
-    label: 'all params',
     run: async () => {
       const page = await client.machines.executions.events({
-        machine_id: 'machineID',
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         execution_id: 'executionID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
       });
     },
   },
 
   {
-    operation: 'list',
+    operation: 'retrieve',
     method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'required params',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/logs',
     run: async () => {
-      const page = await client.machines.terminals.list({
-        machine_id: 'machineID',
+      const status = await client.machines.executions.logs.retrieve({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        execution_id: 'executionID',
       });
     },
   },
 
   {
-    operation: 'list',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'all params',
-    run: async () => {
-      const page = await client.machines.terminals.list({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'create',
+    operation: 'reauthorize',
     method: 'POST',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'required params',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/logs/reauthorize',
     run: async () => {
-      const terminal = await client.machines.terminals.create({
-        machine_id: 'machineID',
-        height: 0,
-        width: 0,
+      const status = await client.machines.executions.logs.reauthorize({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        execution_id: 'executionID',
       });
     },
   },
 
   {
-    operation: 'create',
+    operation: 'createToken',
     method: 'POST',
-    path: '/v1/machines/{machine_id}/terminals',
-    label: 'all params',
+    path: '/v1/machines/{machine_id}/executions/{execution_id}/logs/token',
     run: async () => {
-      const terminal = await client.machines.terminals.create({
-        machine_id: 'machineID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-        cwd: '',
-        env: {},
-        height: 0,
-        shell: '',
-        width: 0,
+      const readToken = await client.machines.executions.logs.createToken({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        execution_id: 'executionID',
       });
     },
   },
@@ -798,12 +336,22 @@ const cases: {
   {
     operation: 'retrieve',
     method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    label: 'required params',
+    path: '/v1/machines/{machine_id}/autoresizing',
     run: async () => {
-      const terminal = await client.machines.terminals.retrieve({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
+      const settings = await client.machines.autoresizing.retrieve({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+      });
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PUT',
+    path: '/v1/machines/{machine_id}/autoresizing',
+    run: async () => {
+      const settings = await client.machines.autoresizing.update({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        enabled: false,
       });
     },
   },
@@ -811,181 +359,19 @@ const cases: {
   {
     operation: 'retrieve',
     method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    label: 'all params',
+    path: '/v1/organization/autoresizing',
     run: async () => {
-      const terminal = await client.machines.terminals.retrieve({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
+      const policy = await client.organization.autoresizing.retrieve();
     },
   },
 
   {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    label: 'required params',
+    operation: 'update',
+    method: 'PUT',
+    path: '/v1/organization/autoresizing',
     run: async () => {
-      const terminal = await client.machines.terminals.delete({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-      });
-    },
-  },
-
-  {
-    operation: 'delete',
-    method: 'DELETE',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}',
-    label: 'all params',
-    run: async () => {
-      const terminal = await client.machines.terminals.delete({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'connect',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}/stream',
-    label: 'required params',
-    run: async () => {
-      const socket = client.machines.terminals.connect({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-      });
-      try {
-        // Stop at the first proof a side works: the server accepted the upgrade (`open`) or sent a
-        // payload (`message`/`raw`). Leaving the socket open would keep the process alive.
-        for await (const message of socket) {
-          if (message.type === 'open' || message.type === 'message' || message.type === 'raw') break;
-        }
-      } finally {
-        socket.close();
-      }
-    },
-  },
-
-  {
-    operation: 'connect',
-    method: 'GET',
-    path: '/v1/machines/{machine_id}/terminals/{terminal_id}/stream',
-    label: 'all params',
-    run: async () => {
-      const socket = client.machines.terminals.connect({
-        machine_id: 'machineID',
-        terminal_id: 'terminalID',
-        'X-Dedalus-Org-Id': '7c9e6679-7425-40de-944b-e07fc1f90ae7',
-      });
-      try {
-        // Stop at the first proof a side works: the server accepted the upgrade (`open`) or sent a
-        // payload (`message`/`raw`). Leaving the socket open would keep the process alive.
-        for await (const message of socket) {
-          if (message.type === 'open' || message.type === 'message' || message.type === 'raw') break;
-        }
-      } finally {
-        socket.close();
-      }
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/networks/{network_id}',
-    label: 'required params',
-    run: async () => {
-      const network = await client.networks.retrieve({
-        network_id: 'networkID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/networks/{network_id}',
-    label: 'all params',
-    run: async () => {
-      const network = await client.networks.retrieve({
-        network_id: 'networkID',
-        'X-Dedalus-Org-Id': 'xDedalusOrgID',
-      });
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/usage',
-    label: 'required params',
-    run: async () => {
-      const orgUsage = await client.usage.retrieve();
-    },
-  },
-
-  {
-    operation: 'retrieve',
-    method: 'GET',
-    path: '/v1/usage',
-    label: 'all params',
-    run: async () => {
-      const orgUsage = await client.usage.retrieve({
-        period_start: 'periodStart',
-      });
-    },
-  },
-
-  {
-    operation: 'machineCompute',
-    method: 'GET',
-    path: '/v1/usage/machines/compute',
-    label: 'required params',
-    run: async () => {
-      const machineComputeUsage = await client.usage.machineCompute();
-    },
-  },
-
-  {
-    operation: 'machineCompute',
-    method: 'GET',
-    path: '/v1/usage/machines/compute',
-    label: 'all params',
-    run: async () => {
-      const machineComputeUsage = await client.usage.machineCompute({
-        period_start: 'periodStart',
-        period_end: 'periodEnd',
-        machine_id: 'machineID',
-        granularity: 'granularity',
-      });
-    },
-  },
-
-  {
-    operation: 'machineStorage',
-    method: 'GET',
-    path: '/v1/usage/machines/storage',
-    label: 'required params',
-    run: async () => {
-      const machineStorageUsage = await client.usage.machineStorage();
-    },
-  },
-
-  {
-    operation: 'machineStorage',
-    method: 'GET',
-    path: '/v1/usage/machines/storage',
-    label: 'all params',
-    run: async () => {
-      const machineStorageUsage = await client.usage.machineStorage({
-        period_start: 'periodStart',
-        period_end: 'periodEnd',
-        machine_id: 'machineID',
+      const policy = await client.organization.autoresizing.update({
+        enabled: false,
       });
     },
   },

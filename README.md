@@ -11,8 +11,6 @@ The full API of this library can be found in [api.md](./api.md).
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Reference](./api.md)
-- [Streaming](#streaming)
-- [WebSockets](#websockets)
 - [Authentication](#authentication)
 - [Errors](#errors)
 - [Client Options](#client-options)
@@ -58,58 +56,21 @@ See the [API reference](./api.md) for every available operation.
 
 <br />
 
-## Streaming
-
-Streaming endpoints return an async iterator that yields results as the server emits them.
-
-```ts
-const stream = await client.machines.watch({
-  machine_id: 'machineID',
-});
-
-for await (const machine of stream) {
-  console.log(machine);
-}
-```
-
-<br />
-
-## WebSockets
-
-WebSocket endpoints open a persistent connection you can send messages to and receive messages from.
-
-```ts
-const connection = client.machines.terminals.connect({
-  machine_id: 'machineID',
-  terminal_id: 'terminalID',
-});
-
-try {
-  for await (const message of connection) {
-    console.log(message);
-  }
-} finally {
-  connection.close();
-}
-```
-
-<br />
-
 ## Authentication
 
 Pass credentials to the generated client constructor. Environment variables are read automatically when supported by the target runtime.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
-| `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
-| `bearerAuth` | `string \| provider` | - | Dedalus API key in Authorization: Bearer <key>. Defaults to DEDALUS_BEARER_AUTH. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. Defaults to DEDALUS_API_KEY. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | - | Credential for the BrowserAuth scheme. Defaults to DEDALUS_BROWSER_TOKEN. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
-- `Bearer` bearer token
+- `BrowserAuth` OAuth2/OpenID Connect
 
 <br />
 
@@ -135,7 +96,7 @@ try {
 }
 ```
 
-Documented error statuses: `400`, `401`, `403`, `409`, `429`, `500`, `502`, `503`, `default`.
+Documented error statuses: `401`, `403`, `409`, `429`, `503`, `default`.
 
 <br />
 
@@ -155,9 +116,9 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
-| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
-| `bearerAuth` | `string \| AuthTokenProvider` | `process.env["DEDALUS_BEARER_AUTH"]` | Dedalus API key in Authorization: Bearer <key>. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_BROWSER_TOKEN"]` | Credential for the BrowserAuth scheme. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |
