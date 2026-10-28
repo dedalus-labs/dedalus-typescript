@@ -43,7 +43,7 @@ Complete reference of every operation, grouped by resource. See [the README](./R
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+  browserToken: process.env['DEDALUS_BROWSER_TOKEN'], // defaults to the DEDALUS_BROWSER_TOKEN env var
 });
 ```
 
