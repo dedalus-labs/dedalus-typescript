@@ -37,7 +37,7 @@ npm install dedalus
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+  browserToken: process.env['DEDALUS_BROWSER_TOKEN'], // defaults to the DEDALUS_BROWSER_TOKEN env var
 });
 
 const machine = await client.machines.create({
@@ -62,13 +62,15 @@ Pass credentials to the generated client constructor. Environment variables are 
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
-| `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. Defaults to DEDALUS_API_KEY. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | - | Credential for the BrowserAuth scheme. Defaults to DEDALUS_BROWSER_TOKEN. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
+- `BrowserAuth` OAuth2/OpenID Connect
 
 <br />
 
@@ -94,7 +96,7 @@ try {
 }
 ```
 
-Documented error statuses: `400`, `401`, `403`, `409`, `429`, `500`, `502`, `503`, `default`.
+Documented error statuses: `401`, `403`, `409`, `429`, `503`, `default`.
 
 <br />
 
@@ -114,8 +116,9 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
-| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
+| `apiKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_BROWSER_TOKEN"]` | Credential for the BrowserAuth scheme. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |

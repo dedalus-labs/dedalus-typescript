@@ -19,15 +19,15 @@ npm install dedalus
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+  browserToken: process.env['DEDALUS_BROWSER_TOKEN'], // defaults to the DEDALUS_BROWSER_TOKEN env var
 });
 ```
 
 Provide credentials using the options below. Environment variables are read automatically when the target runtime supports them:
 
-- `apiKey` (env: `DEDALUS_API_KEY`) — API key authentication using Bearer token
-- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — API key authentication using X-API-Key header
-- `bearerAuth` (env: `DEDALUS_BEARER_AUTH`) — Dedalus API key in Authorization: Bearer <key>.
+- `apiKey` (env: `DEDALUS_API_KEY`) — Dedalus API key or short-lived delegated access token in Authorization: Bearer <credential>.
+- `xAPIKey` (env: `DEDALUS_X_API_KEY`) — Dedalus API key. Alternative to Bearer token.
+- `browserToken` (env: `DEDALUS_BROWSER_TOKEN`) — Credential for the BrowserAuth scheme.
 
 ## Calling operations
 
@@ -35,7 +35,7 @@ Provide credentials using the options below. Environment variables are read auto
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+  browserToken: process.env['DEDALUS_BROWSER_TOKEN'], // defaults to the DEDALUS_BROWSER_TOKEN env var
 });
 
 const machine = await client.machines.create({
@@ -56,39 +56,6 @@ List endpoints return paginated results you can iterate directly; the SDK fetche
 
 ```ts
 const page = await client.machines.list();
-```
-
-## Streaming
-
-Streaming endpoints return an iterator that yields results as the server emits them.
-
-```ts
-const stream = await client.machines.watch({
-  machine_id: 'machineID',
-});
-
-for await (const machine of stream) {
-  console.log(machine);
-}
-```
-
-## WebSockets
-
-WebSocket endpoints open a persistent connection you can send messages to and receive messages from.
-
-```ts
-const connection = client.machines.terminals.connect({
-  machine_id: 'machineID',
-  terminal_id: 'terminalID',
-});
-
-try {
-  for await (const message of connection) {
-    console.log(message);
-  }
-} finally {
-  connection.close();
-}
 ```
 
 ## Error handling
