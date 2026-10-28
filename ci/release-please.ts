@@ -5,6 +5,7 @@ export const definition = workflow({
   on: {
     push: {
       branches: ['main'],
+      'paths-ignore': ['.github/workflows/**'],
     },
     workflow_dispatch: null,
   },
@@ -31,7 +32,7 @@ export const definition = workflow({
           },
         },
         {
-          uses: 'actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5',
+          uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
           if: "${{ steps.release.outputs.release_created == 'true' }}",
           with: {
             'fetch-depth': 0,
@@ -40,8 +41,12 @@ export const definition = workflow({
         {
           name: 'Sync release back to scalar-next',
           if: "${{ steps.release.outputs.release_created == 'true' }}",
+          env: {
+            RELEASE_SHA: '${{ steps.release.outputs.sha }}',
+            RELEASE_TAG: '${{ steps.release.outputs.tag_name }}',
+          },
           run: unsafeShell(
-            'git config user.name "github-actions[bot]"\ngit config user.email "41898282+github-actions[bot]@users.noreply.github.com"\ngit fetch origin scalar-next\ngit checkout -B scalar-next origin/scalar-next\ngit merge --no-edit -m "Sync release ${{ steps.release.outputs.tag_name }} back to scalar-next" "${{ steps.release.outputs.sha }}"\ngit push origin scalar-next\n',
+            'git config user.name "github-actions[bot]"\ngit config user.email "41898282+github-actions[bot]@users.noreply.github.com"\nsync_release() {\n  git fetch origin scalar-next || return 1\n  if git merge-base --is-ancestor "$RELEASE_SHA" origin/scalar-next; then\n    echo "$RELEASE_TAG is already on scalar-next."\n    return 0\n  fi\n  git checkout -B scalar-next origin/scalar-next || return 1\n  if ! git merge --no-edit -m "Sync release $RELEASE_TAG back to scalar-next" "$RELEASE_SHA"; then\n    git merge --abort\n    return 1\n  fi\n  git push origin scalar-next\n}\nfor attempt in 1 2 3; do\n  if sync_release; then exit 0; fi\n  echo "Attempt $attempt of 3 to sync $RELEASE_TAG back to scalar-next failed."\n  if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi\ndone\necho "::error::Could not sync $RELEASE_TAG back to scalar-next after 3 attempts."\nexit 1\n',
           ),
         },
       ],

@@ -63,14 +63,19 @@ export interface ClientOptions {
   xAPIKey?: string | AuthTokenProvider | null | undefined;
 
   /**
+   * Browser session access token managed by dedalus login.
+   */
+  browserToken?: string | AuthTokenProvider | null | undefined;
+
+  /**
+   * Optional organization assertion. Must match the organization identified by the API credential.
+   */
+  dedalusOrgID?: string | null | undefined;
+
+  /**
    * MCP Authorization Server URL.
    */
   asBaseURL?: string | null | undefined;
-
-  /**
-   * Organization ID for request scoping.
-   */
-  dedalusOrgID?: string | null | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -150,8 +155,9 @@ export type DedalusOptions = ClientOptions;
 export class Dedalus {
   apiKey: string | AuthTokenProvider | null;
   xAPIKey: string | AuthTokenProvider | null;
-  asBaseURL: string | null;
+  browserToken: string | AuthTokenProvider | null;
   dedalusOrgID: string | null;
+  asBaseURL: string | null;
 
   baseURL: string;
   maxRetries: number;
@@ -171,8 +177,9 @@ export class Dedalus {
    *
    * @param {string | AuthTokenProvider | null | undefined} [opts.apiKey=process.env["DEDALUS_API_KEY"] ?? null]
    * @param {string | AuthTokenProvider | null | undefined} [opts.xAPIKey=process.env["DEDALUS_X_API_KEY"] ?? null]
-   * @param {string | null | undefined} [opts.asBaseURL=process.env["DEDALUS_AS_URL"] ?? "https://as.dedaluslabs.ai"]
+   * @param {string | AuthTokenProvider | null | undefined} [opts.browserToken=process.env["DEDALUS_BROWSER_TOKEN"] ?? null]
    * @param {string | null | undefined} [opts.dedalusOrgID=process.env["DEDALUS_ORG_ID"] ?? null]
+   * @param {string | null | undefined} [opts.asBaseURL=process.env["DEDALUS_AS_URL"] ?? "https://as.dedaluslabs.ai"]
    * @param {string} [opts.baseURL=process.env["DEDALUS_BASE_URL"] ?? https://dcs.dedaluslabs.ai] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
@@ -185,15 +192,17 @@ export class Dedalus {
     baseURL = readEnv('DEDALUS_BASE_URL'),
     apiKey = readEnv('DEDALUS_API_KEY') ?? null,
     xAPIKey = readEnv('DEDALUS_X_API_KEY') ?? null,
-    asBaseURL = readEnv('DEDALUS_AS_URL') ?? 'https://as.dedaluslabs.ai',
+    browserToken = readEnv('DEDALUS_BROWSER_TOKEN') ?? null,
     dedalusOrgID = readEnv('DEDALUS_ORG_ID') ?? null,
+    asBaseURL = readEnv('DEDALUS_AS_URL') ?? 'https://as.dedaluslabs.ai',
     ...opts
   }: ClientOptions = {}) {
     const options: ClientOptions = {
       apiKey,
       xAPIKey,
-      asBaseURL,
+      browserToken,
       dedalusOrgID,
+      asBaseURL,
       ...opts,
       baseURL: baseURL || 'https://dcs.dedaluslabs.ai',
     };
@@ -233,8 +242,9 @@ export class Dedalus {
 
     this.apiKey = apiKey;
     this.xAPIKey = xAPIKey;
-    this.asBaseURL = asBaseURL;
+    this.browserToken = browserToken;
     this.dedalusOrgID = dedalusOrgID;
+    this.asBaseURL = asBaseURL;
   }
 
   withOptions(options: Partial<ClientOptions>): this {
@@ -249,8 +259,9 @@ export class Dedalus {
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
       xAPIKey: this.xAPIKey,
-      asBaseURL: this.asBaseURL,
+      browserToken: this.browserToken,
       dedalusOrgID: this.dedalusOrgID,
+      asBaseURL: this.asBaseURL,
       ...options,
     });
     return client;
@@ -583,7 +594,7 @@ export class Dedalus {
     }
 
     try {
-      // use undefined this binding; fetch errors if bound to something else in browser/cloudflare
+      // use undefined this binding; fetch errors if bound to something else in browsers and edge runtimes / workers
       return await this.fetch.call(undefined, url, fetchOptions);
     } finally {
       clearTimeout(timeout);
@@ -741,6 +752,7 @@ export class Dedalus {
         ...(options.timeout ? { 'X-Scalar-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
         ...{ 'X-SDK-Version': '1.0.0' },
+        'X-Dedalus-Org-Id': this.dedalusOrgID,
       },
       await this.authHeaders(options),
       this._options.defaultHeaders,
@@ -771,18 +783,20 @@ export class Dedalus {
     if (body == null) {
       return { bodyHeaders: undefined, body: undefined };
     }
-    const headers = buildHeaders([rawHeaders]);
+    // A `content-type` from either header bag says how the body is already encoded; the request's
+    // own wins over the client-wide default, as it does on the wire.
+    const headers = buildHeaders([this._options.defaultHeaders, rawHeaders]);
     if (
       // Pass raw type verbatim
       ArrayBuffer.isView(body) ||
       body instanceof ArrayBuffer ||
       body instanceof DataView ||
-      // Always pass strings through verbatim. The previous guard required a caller-set
-      // `content-type` and otherwise fell through to `FallbackEncoder`, which JSON.stringifies
-      // the value and labels it `application/json` — silently quoting plain-text payloads and
-      // mislabeling them as JSON. fetch defaults a string body to `text/plain;charset=UTF-8`
-      // when no `content-type` is set, which is a safer default than misclaiming JSON.
-      typeof body === 'string' ||
+      // A string is only already-encoded when something has said what it is encoded as.
+      // Generated call sites state the declared request media type, so a `text/plain` or
+      // ndjson payload reaches the wire byte-for-byte. A string with no `content-type` came
+      // from a body the document declared as JSON — `{ "type": "string" }` — and encoding it
+      // below is what puts the quotes the server parses for around it.
+      (typeof body === 'string' && headers.values.has('content-type')) ||
       // `Blob` is superset of `File`
       ((globalThis as any).Blob && body instanceof (globalThis as any).Blob) ||
       // `FormData` -> `multipart/form-data`
@@ -820,7 +834,7 @@ export class Dedalus {
     throw new Errors.AuthenticationError(
       401,
       undefined,
-      'Could not resolve authentication method. Expected either apiKey or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
+      'Could not resolve authentication method. Expected either apiKey, browserToken or xAPIKey to be set. Or for one of the "Authorization" or "x-api-key" headers to be explicitly omitted',
       headers,
     );
   }
@@ -831,6 +845,8 @@ export class Dedalus {
     if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
     const xAPIKey = this.resolveAuthOptionSync('xAPIKey', this.xAPIKey);
     if (xAPIKey) headers['x-api-key'] = xAPIKey;
+    const browserToken = this.resolveAuthOptionSync('browserToken', this.browserToken);
+    if (browserToken) headers['Authorization'] = `Bearer ${browserToken}`;
     return headers;
   }
 
@@ -843,7 +859,11 @@ export class Dedalus {
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.bearerAuth(opts), await this.apiKeyAuth(opts)]);
+    return buildHeaders([
+      await this.bearerAuth(opts),
+      await this.apiKeyAuth(opts),
+      await this.browserAuth(opts),
+    ]);
   }
 
   protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
@@ -860,6 +880,14 @@ export class Dedalus {
       return undefined;
     }
     return buildHeaders([{ 'x-api-key': xAPIKey }]);
+  }
+
+  protected async browserAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    const browserToken = await this.resolveAuthOption('browserToken', this.browserToken);
+    if (browserToken == null) {
+      return undefined;
+    }
+    return buildHeaders([{ Authorization: `Bearer ${browserToken}` }]);
   }
 
   private async authQueryAsync(): Promise<Record<string, string>> {

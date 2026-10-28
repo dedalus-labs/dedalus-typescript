@@ -26,8 +26,9 @@
     },
     "./*.js": {
       "types": "./dist/esm/*.d.ts",
+      "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
-      "default": "./dist/cjs/*.js"
+      "default": "./dist/esm/*.js"
     },
     "./*": {
       "types": "./dist/esm/*.d.ts",
@@ -49,6 +50,7 @@
     "test:package": "node scripts/test-package.mjs",
     "ci:generate": "hollywood generate \"ci/**/*.ts\" --source-root ci --output ."
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.17.0",
     "typescript": "^6.0.0",
