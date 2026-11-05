@@ -10,6 +10,7 @@ The full API of this library can be found in [api.md](./api.md).
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Image import](#image-import-nodejs)
 - [API Reference](./api.md)
 - [Authentication](#authentication)
 - [Errors](#errors)
@@ -30,6 +31,36 @@ npm install dedalus
 ```
 
 <br />
+
+## Image import (Node.js)
+
+```ts
+import Dedalus from 'dedalus';
+import { importImage, pollImage } from 'dedalus/helpers/images';
+
+const client = new Dedalus({ apiKey: process.env.DEDALUS_API_KEY });
+const ready = await importImage(client, './my-app.tar', {
+  name: 'my-app',
+  platform: 'linux/amd64',
+  onProgress: image => console.error(image.image_id, image.state),
+});
+
+// Alternatively, return after upload and registration, then wait later.
+const accepted = await importImage(client, './my-app.tar', { wait: false });
+const image = await pollImage(client, accepted.image_id);
+```
+
+These Node.js helpers stream a `docker save` archive, register it, and wait for
+readiness by default. Use `wait: false` to return after registration.
+`timeoutMs` defaults to 3,600,000 for the entire import; `pollIntervalMs` defaults
+to 2,000. Pass an `AbortSignal` through `signal` to stop the client without cancelling
+server preparation. Timeout and terminal failure errors identify the image through
+`ImagePreparationError.image`; resume polling with its `image_id`.
+
+Use the same `idempotencyKey` when retrying an import with unchanged input. Archives
+must be regular, nonempty files of at most 5 GiB. Storage uploads use a separate
+fetch transport without API credentials. The helpers require the image API to be
+deployed and enabled for your organization; they do not change server access controls.
 
 ## Usage
 
