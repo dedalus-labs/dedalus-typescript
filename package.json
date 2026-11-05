@@ -7,6 +7,10 @@
     "type": "git",
     "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
   },
+  "bugs": {
+    "url": "https://github.com/dedalus-labs/dedalus-typescript/issues"
+  },
+  "homepage": "https://github.com/dedalus-labs/dedalus-typescript",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
