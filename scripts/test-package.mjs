@@ -20,11 +20,30 @@ try {
     if (client.baseURL !== 'https://dcs.dedaluslabs.ai') throw new Error('wrong API destination');
   `;
   run(process.execPath, ['--input-type=module', '-e', `import SDK from 'dedalus'; ${probe}`], consumer);
+  run(
+    process.execPath,
+    [
+      '--input-type=module',
+      '-e',
+      `import { importImage } from 'dedalus/helpers/images'; if (typeof importImage !== 'function') throw new Error('missing image helper');`,
+    ],
+    consumer,
+  );
+  run(
+    process.execPath,
+    [
+      '-e',
+      `if (typeof require('dedalus/helpers/images').pollImage !== 'function') throw new Error('missing image helper');`,
+    ],
+    consumer,
+  );
   run(process.execPath, ['-e', `const SDK = require('dedalus').default; ${probe}`], consumer);
   writeFileSync(
     join(consumer, 'consumer.mts'),
     `
     import Dedalus from 'dedalus';
+    import { importImage, pollImage } from 'dedalus/helpers/images';
+    void importImage; void pollImage;
     const client = new Dedalus({ apiKey: 'fixture' });
     const machine = await client.machines.create({ vcpu: 1, memory_mib: 4096 });
     await client.machines.executions.create({ machine_id: machine.machine_id, command: ['echo', 'hello'] });
@@ -49,7 +68,7 @@ try {
   );
   execFileSync(
     process.execPath,
-    ['--test', 'tests/feedback-retry-keys.test.mjs', 'tests/api-contract.test.mjs'],
+    ['--test', 'tests/feedback-retry-keys.test.mjs', 'tests/api-contract.test.mjs', 'tests/images.test.mjs'],
     {
       cwd: root,
       stdio: 'inherit',

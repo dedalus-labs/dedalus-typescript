@@ -36,12 +36,13 @@ not have picked — **edit the release PR title** to the version you want:
 release: 1.0.0
 ```
 
-The `Release PR version` check turns red as soon as you save, because the version in the
+The `Release PR version` check goes pending as soon as you save, because the version in the
 title no longer matches the version committed in the PR. The Scalar platform then re-renders
 the release PR at your version (changelog, manifest, and every version-bearing file), the
 title comes back as `release: 1.0.0`, and the check turns green. **Wait for it to be green
 before merging** — merging in between would tag a release whose own files still carry the
-old version.
+old version. The check only turns red if the title is not a full semver version, or if the
+re-render has not arrived within 10 minutes.
 
 The git-native equivalent, if you would rather not touch the PR: push an empty commit with a
 `Release-As` footer to `scalar-next`. This is exactly what the title edit does for you.
@@ -73,6 +74,10 @@ different fixes:
   platform and the `github-actions` bot to push (or be left unprotected); the default
   branch only ever advances by merging release PRs, and `scalar-next` receives each
   released state back from the release workflow.
+- **`scalar-next` must not enable "Require linear history."** The Scalar platform merges each
+  regeneration into it, and merges a resolved conflict back the same way; the release sync
+  adds another merge whenever a release PR is squash- or rebase-merged. That setting rejects
+  all of them.
 - No Actions settings changes are required: the generated workflows declare their own
   permissions and never create pull requests.
 - If this package publishes through OIDC trusted publishing (for example PyPI or npm),
@@ -84,3 +89,13 @@ different fixes:
   manual re-publishes at an existing tag; register it as an additional trusted publisher
   only if you use it. If the publish job is configured with a deployment environment,
   include that environment in the registration too.
+
+### Recommended, not required
+
+Releases work without this; it closes a window where one can go out at the wrong version.
+
+- **If this repository uses auto-merge, make the `Release PR version` check a required status
+  check.** Auto-merge merges as soon as the checks that are *required* go green, with no
+  human present — so a check that is not required but still pending at that moment stops
+  nothing, which is exactly the window between retitling a release PR and the platform
+  re-rendering it.

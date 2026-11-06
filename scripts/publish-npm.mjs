@@ -2,6 +2,15 @@ import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
+/** Package visibility this SDK publishes with, from `publish.npm.access`. */
+const ACCESS = 'public';
+
+/**
+ * Dist-tag a stable release lands on, from `publish.npm.tag`. `null` leaves npm on its own default,
+ * `latest`. A prerelease derives its own tag below and never reads this.
+ */
+const STABLE_DIST_TAG = null;
+
 /** Reads the package identity once so every registry operation uses the same metadata. */
 export const readPackageMetadata = () => {
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -37,8 +46,26 @@ export const publishNpm = (runner = runNpm, metadata = readPackageMetadata()) =>
     return;
   }
 
-  const tag = npmDistTagForVersion(version);
-  const args = ['publish', '--access', 'public', ...(tag ? ['--tag', tag] : [])];
+  // A prerelease's own tag wins over the configured one: `publish.npm.tag` names where *stable*
+  // releases land, so honouring it for a prerelease would point that tag at a prerelease build.
+  //
+  // A derived tag naming a stable line is suffixed rather than used as-is, because the two collide:
+  // `npmDistTagForVersion` falls back to `next` for any prerelease identifier it cannot use as a
+  // tag, so on a package configured with `tag: 'next'` a `1.3.0-RC.1` would otherwise publish over
+  // the stable line it names.
+  //
+  // Both lines are protected, not just the configured one. `latest` is what a bare `npm install`
+  // resolves whether or not `publish.npm.tag` moves stable releases elsewhere, so a `1.0.0-latest.1`
+  // on a package configured with `tag: 'next'` must not take it either.
+  const derived = npmDistTagForVersion(version);
+  const stableTags = [STABLE_DIST_TAG ?? 'latest', 'latest'];
+  const tag =
+    derived === undefined
+      ? STABLE_DIST_TAG
+      : stableTags.includes(derived)
+        ? `${derived}-prerelease`
+        : derived;
+  const args = ['publish', '--access', ACCESS, ...(tag ? ['--tag', tag] : [])];
   console.log(
     tag ? `Publishing ${packageSpec} to npm with dist-tag ${tag}` : `Publishing ${packageSpec} to npm`,
   );

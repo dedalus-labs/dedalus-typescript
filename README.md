@@ -10,6 +10,7 @@ The full API of this library can be found in [api.md](./api.md).
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Image import](#image-import-nodejs)
 - [API Reference](./api.md)
 - [Authentication](#authentication)
 - [Errors](#errors)
@@ -31,13 +32,49 @@ npm install dedalus
 
 <br />
 
+## Image import (Node.js)
+
+```ts
+import Dedalus from 'dedalus';
+import { importImage, pollImage } from 'dedalus/helpers/images';
+
+const client = new Dedalus({ apiKey: process.env.DEDALUS_API_KEY });
+const ready = await importImage(client, './my-app.tar', {
+  name: 'my-app',
+  platform: 'linux/amd64',
+  onProgress: image => console.error(image.image_id, image.state),
+});
+
+// Alternatively, return after upload and registration, then wait later.
+const accepted = await importImage(client, './my-app.tar', { wait: false });
+const image = await pollImage(client, accepted.image_id);
+```
+
+These Node.js helpers stream a `docker save` archive, register it, and wait for
+readiness by default. Use `wait: false` to return after registration.
+`timeoutMs` defaults to 3,600,000 for the entire import; `pollIntervalMs` defaults
+to 2,000. Pass an `AbortSignal` through `signal` to stop the client without cancelling
+server preparation. Timeout and terminal failure errors identify the image through
+`ImagePreparationError.image`; resume polling with its `image_id`.
+
+Use the same `idempotencyKey` when retrying an import with unchanged input. Archives
+must be regular, nonempty files of at most 5 GiB. Storage uploads use a separate
+fetch transport without API credentials. The helpers require the image API to be
+deployed and enabled for your organization; they do not change server access controls.
+
+Custom image imports currently require an Ubuntu 24.04 `linux/amd64` Docker-save
+archive. On Apple silicon, build or pull with `--platform linux/amd64` before
+saving the archive. The image provides the filesystem; container entrypoint,
+CMD, environment, working directory, and user settings are not applied. Start
+processes using Machine exec or SSH after the Machine reaches running.
+
 ## Usage
 
 ```ts
 import Dedalus from 'dedalus';
 
 const client = new Dedalus({
-  apiKey: process.env['DEDALUS_API_KEY'], // defaults to the DEDALUS_API_KEY env var
+  browserToken: process.env['DEDALUS_BROWSER_TOKEN'], // defaults to the DEDALUS_BROWSER_TOKEN env var
 });
 
 const machine = await client.machines.create({
@@ -62,13 +99,15 @@ Pass credentials to the generated client constructor. Environment variables are 
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| provider` | - | API key authentication using Bearer token Defaults to DEDALUS_API_KEY. |
-| `xAPIKey` | `string \| provider` | - | API key authentication using X-API-Key header Defaults to DEDALUS_X_API_KEY. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key or short-lived delegated access token in `Authorization: Bearer <credential>`. Defaults to DEDALUS_API_KEY. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | - | Credential for the BrowserAuth scheme. Defaults to DEDALUS_BROWSER_TOKEN. |
 
 Declared schemes:
 
 - `ApiKeyAuth` API key in header `x-api-key`
 - `BearerAuth` bearer token
+- `BrowserAuth` OAuth2/OpenID Connect
 
 <br />
 
@@ -94,7 +133,7 @@ try {
 }
 ```
 
-Documented error statuses: `400`, `401`, `403`, `409`, `429`, `500`, `502`, `503`, `default`.
+Documented error statuses: `400`, `401`, `402`, `403`, `404`, `409`, `422`, `429`, `500`, `503`, `504`, `default`.
 
 <br />
 
@@ -114,8 +153,9 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_API_KEY"]` | API key authentication using Bearer token |
-| `xAPIKey` | `string \| AuthTokenProvider` | `process.env["DEDALUS_X_API_KEY"]` | API key authentication using X-API-Key header |
+| `apiKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key or short-lived delegated access token in `Authorization: Bearer <credential>`. |
+| `xAPIKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
+| `browserToken` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_BROWSER_TOKEN"]` | Credential for the BrowserAuth scheme. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
 | `timeout` | `number` | `60000` | Maximum time in milliseconds to wait for a response before aborting a request. |
 | `maxRetries` | `number` | `2` | Number of retries for temporary failures. |

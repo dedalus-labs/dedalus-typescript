@@ -1,12 +1,16 @@
 {
   "name": "dedalus",
-  "version": "0.6.0",
-  "description": "Controlplane API for Dedalus Cloud Services (DCS).",
+  "version": "0.7.0",
+  "description": "Create, run, and manage Dedalus Machines.",
   "author": "Dedalus",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dedalus-labs/dedalus-typescript.git"
   },
+  "bugs": {
+    "url": "https://github.com/dedalus-labs/dedalus-typescript/issues"
+  },
+  "homepage": "https://github.com/dedalus-labs/dedalus-typescript",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/cjs/index.js",
@@ -26,8 +30,9 @@
     },
     "./*.js": {
       "types": "./dist/esm/*.d.ts",
+      "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
-      "default": "./dist/cjs/*.js"
+      "default": "./dist/esm/*.js"
     },
     "./*": {
       "types": "./dist/esm/*.d.ts",
@@ -49,6 +54,7 @@
     "test:package": "node scripts/test-package.mjs",
     "ci:generate": "hollywood generate \"ci/**/*.ts\" --source-root ci --output ."
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.17.0",
     "typescript": "^6.0.0",
