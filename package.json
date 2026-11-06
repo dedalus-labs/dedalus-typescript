@@ -1,7 +1,7 @@
 {
   "name": "dedalus",
   "version": "0.1.0",
-  "description": "Controlplane API for Dedalus Cloud Services (DCS).",
+  "description": "Create, run, and manage Dedalus Machines.",
   "author": "Dedalus",
   "repository": {
     "type": "git",

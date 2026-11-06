@@ -25,7 +25,7 @@ const client = new Dedalus({
 
 Provide credentials using the options below. Environment variables are read automatically when the target runtime supports them:
 
-- `apiKey` (env: `DEDALUS_API_KEY`) — Dedalus API key or short-lived delegated access token in Authorization: Bearer <credential>.
+- `apiKey` (env: `DEDALUS_API_KEY`) — Dedalus API key or short-lived delegated access token in `Authorization: Bearer <credential>`.
 - `xAPIKey` (env: `DEDALUS_X_API_KEY`) — Dedalus API key. Alternative to Bearer token.
 - `browserToken` (env: `DEDALUS_BROWSER_TOKEN`) — Credential for the BrowserAuth scheme.
 

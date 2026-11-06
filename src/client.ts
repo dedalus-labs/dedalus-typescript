@@ -40,6 +40,7 @@ import {
   type LifecycleStatus,
   type MachineListItemsCursorPage,
   type MachineRetrieveResponse,
+  type MachineResizeResponse,
   type MachineListParams,
   type MachineCreateParams,
   type MachineRetrieveParams,
@@ -48,8 +49,21 @@ import {
   type MachineSleepParams,
   type MachineWakeParams,
   type MachineRebootParams,
+  type MachineResizeParams,
 } from './resources/machines/machines';
 import { Organization } from './resources/organization/organization';
+import {
+  Images,
+  type Image,
+  type ImageList,
+  type Source,
+  type Error as ImagesError,
+  type ImageListParams,
+  type ImageCreateParams,
+  type ImageRetrieveParams,
+  type ImageUpdateParams,
+  type ImageDeleteParams,
+} from './resources/images/images';
 
 export type AuthTokenProvider = () => string | Promise<string>;
 
@@ -1162,10 +1176,12 @@ export class Dedalus {
 
   machines: Machines = new Machines(this);
   organization: Organization = new Organization(this);
+  images: Images = new Images(this);
 }
 
 Dedalus.Machines = Machines;
 Dedalus.Organization = Organization;
+Dedalus.Images = Images;
 
 export declare namespace Dedalus {
   export type RequestOptions = Opts.RequestOptions;
@@ -1183,6 +1199,7 @@ export declare namespace Dedalus {
     type LifecycleStatus as LifecycleStatus,
     type MachineListItemsCursorPage as MachineListItemsCursorPage,
     type MachineRetrieveResponse as MachineRetrieveResponse,
+    type MachineResizeResponse as MachineResizeResponse,
     type MachineListParams as MachineListParams,
     type MachineCreateParams as MachineCreateParams,
     type MachineRetrieveParams as MachineRetrieveParams,
@@ -1191,9 +1208,23 @@ export declare namespace Dedalus {
     type MachineSleepParams as MachineSleepParams,
     type MachineWakeParams as MachineWakeParams,
     type MachineRebootParams as MachineRebootParams,
+    type MachineResizeParams as MachineResizeParams,
   };
 
   export { Organization as Organization };
+
+  export {
+    Images as Images,
+    type Image as Image,
+    type ImageList as ImageList,
+    type Source as Source,
+    type ImagesError as Error,
+    type ImageListParams as ImageListParams,
+    type ImageCreateParams as ImageCreateParams,
+    type ImageRetrieveParams as ImageRetrieveParams,
+    type ImageUpdateParams as ImageUpdateParams,
+    type ImageDeleteParams as ImageDeleteParams,
+  };
 }
 
 const headerExplicitlyOmitted = (source: HeadersLike | undefined, name: string): boolean => {

@@ -62,7 +62,7 @@ Pass credentials to the generated client constructor. Environment variables are 
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. Defaults to DEDALUS_API_KEY. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key or short-lived delegated access token in `Authorization: Bearer <credential>`. Defaults to DEDALUS_API_KEY. |
 | `xAPIKey` | `string \| AuthTokenProvider \| null` | - | Dedalus API key. Alternative to Bearer token. Defaults to DEDALUS_X_API_KEY. |
 | `browserToken` | `string \| AuthTokenProvider \| null` | - | Credential for the BrowserAuth scheme. Defaults to DEDALUS_BROWSER_TOKEN. |
 
@@ -96,7 +96,7 @@ try {
 }
 ```
 
-Documented error statuses: `401`, `403`, `409`, `429`, `503`, `default`.
+Documented error statuses: `400`, `401`, `402`, `403`, `404`, `409`, `422`, `429`, `500`, `503`, `504`, `default`.
 
 <br />
 
@@ -116,7 +116,7 @@ const client = new Dedalus({
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `apiKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key or short-lived delegated access token in Authorization: Bearer \<credential>. |
+| `apiKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_API_KEY"]` | Dedalus API key or short-lived delegated access token in `Authorization: Bearer <credential>`. |
 | `xAPIKey` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_X_API_KEY"]` | Dedalus API key. Alternative to Bearer token. |
 | `browserToken` | `string \| AuthTokenProvider \| null` | `process.env["DEDALUS_BROWSER_TOKEN"]` | Credential for the BrowserAuth scheme. |
 | `baseURL` | `string \| null` | `process.env["DEDALUS_BASE_URL"]` | Override the default API base URL. Pass `null` when selecting a configured environment. |
