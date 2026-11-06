@@ -54,9 +54,26 @@ const cases: {
     operation: 'create',
     method: 'POST',
     path: '/v1/machines',
+    label: 'required params',
     run: async () => {
       const machine = await client.machines.create({
         autosleep: '300s',
+        memory_mib: 4096,
+        storage_gib: 10,
+        vcpu: 1,
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/machines',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.create({
+        autosleep: '300s',
+        image_id: 'x',
         memory_mib: 4096,
         storage_gib: 10,
         vcpu: 1,
@@ -96,9 +113,7 @@ const cases: {
       const machine = await client.machines.update({
         machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         autosleep: '',
-        memory_mib: 0,
         storage_gib: 0,
-        vcpu: 0,
       });
     },
   },
@@ -107,9 +122,23 @@ const cases: {
     operation: 'delete',
     method: 'DELETE',
     path: '/v1/machines/{machine_id}',
+    label: 'required params',
     run: async () => {
       const machine = await client.machines.delete({
         machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/machines/{machine_id}',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.delete({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        force: true,
       });
     },
   },
@@ -157,6 +186,32 @@ const cases: {
       const machine = await client.machines.reboot({
         machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
         force: true,
+      });
+    },
+  },
+
+  {
+    operation: 'resize',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/resize',
+    label: 'required params',
+    run: async () => {
+      const machine = await client.machines.resize({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+      });
+    },
+  },
+
+  {
+    operation: 'resize',
+    method: 'POST',
+    path: '/v1/machines/{machine_id}/resize',
+    label: 'all params',
+    run: async () => {
+      const machine = await client.machines.resize({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        memory_mib: 0,
+        vcpu: 0,
       });
     },
   },
@@ -310,18 +365,6 @@ const cases: {
   },
 
   {
-    operation: 'reauthorize',
-    method: 'POST',
-    path: '/v1/machines/{machine_id}/executions/{execution_id}/logs/reauthorize',
-    run: async () => {
-      const status = await client.machines.executions.logs.reauthorize({
-        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
-        execution_id: 'executionID',
-      });
-    },
-  },
-
-  {
     operation: 'createToken',
     method: 'POST',
     path: '/v1/machines/{machine_id}/executions/{execution_id}/logs/token',
@@ -338,7 +381,7 @@ const cases: {
     method: 'GET',
     path: '/v1/machines/{machine_id}/autoresizing',
     run: async () => {
-      const settings = await client.machines.autoresizing.retrieve({
+      const policy = await client.machines.autoresizing.retrieve({
         machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
       });
     },
@@ -346,12 +389,28 @@ const cases: {
 
   {
     operation: 'update',
-    method: 'PUT',
+    method: 'PATCH',
     path: '/v1/machines/{machine_id}/autoresizing',
+    label: 'required params',
     run: async () => {
-      const settings = await client.machines.autoresizing.update({
+      const policy = await client.machines.autoresizing.update({
         machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
-        enabled: false,
+      });
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PATCH',
+    path: '/v1/machines/{machine_id}/autoresizing',
+    label: 'all params',
+    run: async () => {
+      const policy = await client.machines.autoresizing.update({
+        machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+        cpu: 'on',
+        cpu_max_vcpu: 0.25,
+        memory: 'on',
+        memory_max_mib: 256,
       });
     },
   },
@@ -367,11 +426,129 @@ const cases: {
 
   {
     operation: 'update',
-    method: 'PUT',
+    method: 'PATCH',
     path: '/v1/organization/autoresizing',
+    label: 'required params',
+    run: async () => {
+      const policy = await client.organization.autoresizing.update({});
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PATCH',
+    path: '/v1/organization/autoresizing',
+    label: 'all params',
     run: async () => {
       const policy = await client.organization.autoresizing.update({
-        enabled: false,
+        cpu: 'on',
+        cpu_max_vcpu: 0.25,
+        memory: 'on',
+        memory_max_mib: 256,
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/images',
+    label: 'required params',
+    run: async () => {
+      const imageList = await client.images.list({
+        limit: 100,
+      });
+    },
+  },
+
+  {
+    operation: 'list',
+    method: 'GET',
+    path: '/v1/images',
+    label: 'all params',
+    run: async () => {
+      const imageList = await client.images.list({
+        limit: 100,
+        cursor: 'cursor',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/images',
+    label: 'required params',
+    run: async () => {
+      const image = await client.images.create({
+        platform: 'linux/amd64',
+        source: {
+          kind: '',
+        },
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/images',
+    label: 'all params',
+    run: async () => {
+      const image = await client.images.create({
+        credential_ref: '',
+        name: '',
+        platform: 'linux/amd64',
+        source: {
+          kind: '',
+        },
+      });
+    },
+  },
+
+  {
+    operation: 'retrieve',
+    method: 'GET',
+    path: '/v1/images/{image_id}',
+    run: async () => {
+      const image = await client.images.retrieve({
+        image_id: 'imageID',
+      });
+    },
+  },
+
+  {
+    operation: 'update',
+    method: 'PATCH',
+    path: '/v1/images/{image_id}',
+    run: async () => {
+      const image = await client.images.update({
+        image_id: 'imageID',
+        name: '',
+      });
+    },
+  },
+
+  {
+    operation: 'delete',
+    method: 'DELETE',
+    path: '/v1/images/{image_id}',
+    run: async () => {
+      const image = await client.images.delete({
+        image_id: 'imageID',
+      });
+    },
+  },
+
+  {
+    operation: 'create',
+    method: 'POST',
+    path: '/v1/images/uploads',
+    run: async () => {
+      const reservation = await client.images.uploads.create({
+        platform: '',
+        sha256: '',
+        size_bytes: 0,
       });
     },
   },
