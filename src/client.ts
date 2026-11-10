@@ -4,7 +4,7 @@ import { APIPromise, type APIResponseProps } from './api-promise';
 import { PagePromise, type AbstractPage, type CursorPageParams, CursorPageResponse } from './core/pagination';
 import * as Pagination from './core/pagination';
 import * as Errors from './error';
-import { uuid4 } from './internal/utils/uuid';
+import { uuid7 } from './internal/utils/uuid7';
 import { validatePositiveInteger, isAbsoluteURL, safeJSON, isEmptyObj } from './internal/utils/values';
 import { sleep } from './internal/utils/sleep';
 import { castToError, isAbortError } from './internal/errors';
@@ -337,7 +337,7 @@ export class Dedalus {
   }
 
   protected defaultIdempotencyKey(): string {
-    return `scalar-node-retry-${uuid4()}`;
+    return uuid7().replace(/-/g, '');
   }
 
   protected makeStatusError(
