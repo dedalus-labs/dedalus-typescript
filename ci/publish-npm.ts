@@ -1,0 +1,68 @@
+import { workflow, unsafeShell } from '@dedalus-labs/hollywood';
+
+export const definition = workflow({
+  name: 'Publish NPM',
+  on: {
+    workflow_dispatch: {
+      inputs: {
+        tag: {
+          description: 'Existing stable release tag to publish',
+          required: true,
+          type: 'string',
+        },
+      },
+    },
+  },
+  permissions: {
+    contents: 'read',
+  },
+  jobs: {
+    publish: {
+      'runs-on': 'ubuntu-24.04',
+      environment: 'production',
+      permissions: {
+        contents: 'read',
+        'id-token': 'write',
+      },
+      steps: [
+        {
+          uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
+          with: {
+            ref: 'refs/tags/${{ inputs.tag }}',
+          },
+        },
+        {
+          uses: 'actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020',
+          with: {
+            'node-version': '24',
+            'registry-url': 'https://registry.npmjs.org',
+          },
+        },
+        {
+          uses: 'pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a',
+          with: {
+            version: '10.20.0',
+          },
+        },
+        {
+          run: unsafeShell('pnpm install --frozen-lockfile --ignore-scripts'),
+        },
+        {
+          run: unsafeShell('pnpm run build && pnpm run test:package'),
+        },
+        {
+          name: 'Verify stable version matches tag',
+          env: {
+            RELEASE_TAG: '${{ inputs.tag }}',
+          },
+          run: unsafeShell(
+            'node --input-type=module -e \'import fs from "node:fs"; const {version}=JSON.parse(fs.readFileSync("package.json","utf8")); if (!/^[0-9]+[.][0-9]+[.][0-9]+$/.test(version) || process.env.RELEASE_TAG !== "v"+version) throw new Error("tag/version mismatch");\'',
+          ),
+        },
+        {
+          run: unsafeShell('npm publish --provenance --access public'),
+        },
+      ],
+    },
+  },
+});
