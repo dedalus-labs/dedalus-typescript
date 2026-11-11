@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.8.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.7.0...v0.8.0) (2026-11-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** 4 breaking changes to the SDK surface.
+    - Property `policy.cpu` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `policy.memory` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `autoresizing_update.cpu` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `autoresizing_update.memory` type changed from `enum(on | off)` to `autoresizing_switch`.
+
+### Features
+
+* **api:** share autoresizing switch type ([21f2575](https://github.com/dedalus-labs/dedalus-typescript/commit/21f2575562281cefdff05195ad8b3575d4f240d2))
+* **api:** update property policy.cpu (+4 more changes) ([55b7452](https://github.com/dedalus-labs/dedalus-typescript/commit/55b7452825854b8f9fb061db253a77f3317adb6c))
+
+
+### Chores
+
+* **api:** update generated SDK content ([f92eb32](https://github.com/dedalus-labs/dedalus-typescript/commit/f92eb32ac021fbd472a09146c1c25ecba93bd818))
+* **api:** update generated SDK content ([4e4b87c](https://github.com/dedalus-labs/dedalus-typescript/commit/4e4b87cba9cd6b857834ac6f2dd4ad4db4acb0d8))
+
 ## [0.7.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.6.0...v0.7.0) (2026-11-06)
 
 
