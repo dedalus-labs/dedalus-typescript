@@ -32,12 +32,23 @@ Complete reference of every operation, grouped by resource. See [the README](./R
   - [`Machines Autoresizing`](#machines-autoresizing)
     - [Read this machine's autoresizing settings](#read-this-machines-autoresizing-settings)
     - [Set this machine's autoresizing settings](#set-this-machines-autoresizing-settings)
+  - [`Machines Ports`](#machines-ports)
+    - [List ports](#list-ports)
+    - [Create port](#create-port)
+    - [Get port](#get-port)
+    - [Update port](#update-port)
+    - [Delete port](#delete-port)
+    - [`Machines Ports AccessKeys`](#machines-ports-accesskeys)
+      - [List port access keys](#list-port-access-keys)
+      - [Mint port access key](#mint-port-access-key)
+      - [Revoke port access key](#revoke-port-access-key)
+      - [Rotate port access key](#rotate-port-access-key)
 - [`Organization`](#organization)
   - [`Organization Autoresizing`](#organization-autoresizing)
     - [Read organization autoresizing policy](#read-organization-autoresizing-policy)
     - [Set organization autoresizing policy](#set-organization-autoresizing-policy)
 - [`Images`](#images)
-  - [List image IDs owned by the authenticated organization](#list-image-ids-owned-by-the-authenticated-organization)
+  - [List images owned by the authenticated organization](#list-images-owned-by-the-authenticated-organization)
   - [Register an immutable OCI image for preparation](#register-an-immutable-oci-image-for-preparation)
   - [Read preparation status for an organization-owned image](#read-preparation-status-for-an-organization-owned-image)
   - [Rename an organization-owned image](#rename-an-organization-owned-image)
@@ -383,6 +394,142 @@ const policy = await client.machines.autoresizing.update({
 });
 ```
 
+### `Machines Ports`
+
+#### List ports
+
+| Direction | Type |
+| --- | --- |
+| Request | [`PortListParams`](./src/resources/machines/ports/ports.ts) |
+| Response | [`PortsCursorPage`](./src/resources/machines/ports/ports.ts) |
+
+```ts
+const page = await client.machines.ports.list({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+});
+```
+
+#### Create port
+
+| Direction | Type |
+| --- | --- |
+| Request | [`PortCreateParams`](./src/resources/machines/ports/ports.ts) |
+| Response | [`Port`](./src/resources/machines/ports/ports.ts) |
+
+```ts
+const port = await client.machines.ports.create({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port: 0,
+  protocol: 'http',
+  visibility: 'private',
+});
+```
+
+#### Get port
+
+| Direction | Type |
+| --- | --- |
+| Request | [`PortRetrieveParams`](./src/resources/machines/ports/ports.ts) |
+| Response | [`Port`](./src/resources/machines/ports/ports.ts) |
+
+```ts
+const port = await client.machines.ports.retrieve({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+});
+```
+
+#### Update port
+
+| Direction | Type |
+| --- | --- |
+| Request | [`PortUpdateParams`](./src/resources/machines/ports/ports.ts) |
+| Response | [`Port`](./src/resources/machines/ports/ports.ts) |
+
+```ts
+const port = await client.machines.ports.update({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+  visibility: 'public',
+});
+```
+
+#### Delete port
+
+| Direction | Type |
+| --- | --- |
+| Request | [`PortDeleteParams`](./src/resources/machines/ports/ports.ts) |
+| Response | [`Port`](./src/resources/machines/ports/ports.ts) |
+
+```ts
+const port = await client.machines.ports.delete({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+});
+```
+
+#### `Machines Ports AccessKeys`
+
+##### List port access keys
+
+| Direction | Type |
+| --- | --- |
+| Request | [`AccessKeyListParams`](./src/resources/machines/ports/access-keys.ts) |
+| Response | [`AccessKeyListResponse`](./src/resources/machines/ports/access-keys.ts) |
+
+```ts
+const accessKey = await client.machines.ports.accessKeys.list({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+});
+```
+
+##### Mint port access key
+
+| Direction | Type |
+| --- | --- |
+| Request | [`AccessKeyMintParams`](./src/resources/machines/ports/access-keys.ts) |
+| Response | [`AccessKeyMintResponse`](./src/resources/machines/ports/access-keys.ts) |
+
+```ts
+const accessKey = await client.machines.ports.accessKeys.mint({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+  expires_in: 1,
+});
+```
+
+##### Revoke port access key
+
+| Direction | Type |
+| --- | --- |
+| Request | [`AccessKeyRevokeParams`](./src/resources/machines/ports/access-keys.ts) |
+| Response | [`AccessKeyRevokeResponse`](./src/resources/machines/ports/access-keys.ts) |
+
+```ts
+const accessKey = await client.machines.ports.accessKeys.revoke({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+  access_key_id: 'accessKeyID',
+});
+```
+
+##### Rotate port access key
+
+| Direction | Type |
+| --- | --- |
+| Request | [`AccessKeyRotateParams`](./src/resources/machines/ports/access-keys.ts) |
+| Response | [`AccessKeyRotateResponse`](./src/resources/machines/ports/access-keys.ts) |
+
+```ts
+const accessKey = await client.machines.ports.accessKeys.rotate({
+  machine_id: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f',
+  port_id: 'portID',
+  access_key_id: 'accessKeyID',
+  expires_in: 1,
+});
+```
+
 ## `Organization`
 
 ### `Organization Autoresizing`
@@ -412,9 +559,9 @@ const policy = await client.organization.autoresizing.update({});
 
 ## `Images`
 
-### List image IDs owned by the authenticated organization
+### List images owned by the authenticated organization
 
-Pages through the organization's images in ID order. A deleted image is left out; it still reads by ID.
+Pages through the organization's images in ID order. Each item has the same shape as a single image read. A deleted image is left out; it still reads by ID.
 
 | Direction | Type |
 | --- | --- |
@@ -422,7 +569,7 @@ Pages through the organization's images in ID order. A deleted image is left out
 | Response | [`ImageList`](./src/resources/images/images.ts) |
 
 ```ts
-const imageList = await client.images.list({
+const images = await client.images.list({
   limit: 100,
 });
 ```
