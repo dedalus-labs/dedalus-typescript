@@ -2,12 +2,7 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "extra-files": [
-        "src/version.ts"
-      ],
-      "versioning": "prerelease",
-      "prerelease-type": "next",
-      "prerelease": true
+      "extra-files": ["src/version.ts"]
     }
   },
   "bump-minor-pre-major": true,
@@ -15,7 +10,7 @@
   "include-component-in-tag": false,
   "pull-request-title-pattern": "release: ${version}",
   "pull-request-header": "Automated Release PR",
-  "pull-request-footer": "The semver version number is based on included commit messages. To release a specific version,\nedit this pull request title to `release: 1.2.3` — Scalar re-creates this pull request at that\nversion, so wait for the `Release PR version` check to pass before merging.\n\nBrought to you by [Scalar](https://scalar.com)",
+  "pull-request-footer": "The semver version number is based on included commit messages. To release a specific version,\nedit this pull request title to `release: 1.2.3` \u2014 Scalar re-creates this pull request at that\nversion, so wait for the `Release PR version` check to pass before merging.\n\nBrought to you by [Scalar](https://scalar.com)",
   "changelog-sections": [
     {
       "type": "feat",

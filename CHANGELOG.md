@@ -1,5 +1,189 @@
 # Changelog
 
+## [0.7.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.6.0...v0.7.0) (2026-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** 30 breaking changes to the SDK surface.
+    - Removed body field `memory_mib` from `machines.update`.
+    - Removed body field `vcpu` from `machines.update`.
+    - Response of `machines.autoresizing.retrieve` changed from `settings` to `policy`.
+    - Operation `machines.autoresizing.update` route changed from `PUT /v1/machines/{machine_id}/autoresizing` to `PATCH /v1/machines/{machine_id}/autoresizing`.
+    - Removed body field `enabled` from `machines.autoresizing.update`.
+    - Response of `machines.autoresizing.update` changed from `settings` to `policy`.
+    - Operation `organization.autoresizing.update` route changed from `PUT /v1/organization/autoresizing` to `PATCH /v1/organization/autoresizing`.
+    - Removed body field `enabled` from `organization.autoresizing.update`.
+    - Removed operation `machines.executions.logs.reauthorize` (`POST /v1/machines/{machine_id}/executions/{execution_id}/logs/reauthorize`).
+    - Added required property `policy.cpu`.
+    - Added required property `policy.cpu_limit_source`.
+    - Added required property `policy.cpu_max_vcpu`.
+    - Added required property `policy.effective_cpu_max_vcpu`.
+    - Added required property `policy.effective_memory_max_mib`.
+    - Added required property `policy.memory`.
+    - Added required property `policy.memory_limit_source`.
+    - Added required property `policy.memory_max_mib`.
+    - Removed optional property `status.code`.
+    - Removed optional property `status.publication`.
+    - Added required property `lifecycle_status.autoresize`.
+    - Removed optional property `lifecycle_status.memory_assigned_mib`.
+    - Removed required property `lifecycle_status.memory_configured_mib`.
+    - Removed optional property `lifecycle_status.memory_last_autoresized_at`.
+    - Removed optional property `lifecycle_status.memory_resize_state`.
+    - Removed optional property `lifecycle_status.memory_target_mib`.
+    - Removed optional property `update_params.memory_mib`.
+    - Removed optional property `update_params.vcpu`.
+    - Removed schema `settings`.
+    - Removed schema `publication`.
+    - Removed schema `ReauthorizeResponseHeaders`.
+* **api:** 72 breaking changes to the SDK surface.
+    - Configuration of `bearer` auth scheme `BearerAuth` changed.
+    - Removed `bearer` auth scheme `Bearer`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.list`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.create`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.retrieve`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.update`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.delete`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.sleep`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.wake`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.ssh.list`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.ssh.create`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.ssh.retrieve`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.ssh.delete`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.list`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.create`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.retrieve`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.delete`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.output`.
+    - Removed header param `X-Dedalus-Org-Id` from `machines.executions.events`.
+    - Removed operation `machines.watch` (`GET /v1/machines/{machine_id}/status/stream`).
+    - Removed operation `machines.network.retrieve` (`GET /v1/machines/{machine_id}/network`).
+    - Removed operation `machines.artifacts.list` (`GET /v1/machines/{machine_id}/artifacts`).
+    - Removed operation `machines.artifacts.retrieve` (`GET /v1/machines/{machine_id}/artifacts/{artifact_id}`).
+    - Removed operation `machines.artifacts.delete` (`DELETE /v1/machines/{machine_id}/artifacts/{artifact_id}`).
+    - Removed operation `machines.ports.list` (`GET /v1/machines/{machine_id}/ports`).
+    - Removed operation `machines.ports.create` (`POST /v1/machines/{machine_id}/ports`).
+    - Removed operation `machines.ports.retrieve` (`GET /v1/machines/{machine_id}/ports/{port_id}`).
+    - Removed operation `machines.ports.delete` (`DELETE /v1/machines/{machine_id}/ports/{port_id}`).
+    - Removed operation `machines.terminals.list` (`GET /v1/machines/{machine_id}/terminals`).
+    - Removed operation `machines.terminals.create` (`POST /v1/machines/{machine_id}/terminals`).
+    - Removed operation `machines.terminals.retrieve` (`GET /v1/machines/{machine_id}/terminals/{terminal_id}`).
+    - Removed operation `machines.terminals.delete` (`DELETE /v1/machines/{machine_id}/terminals/{terminal_id}`).
+    - Removed operation `machines.terminals.connect` (`GET /v1/machines/{machine_id}/terminals/{terminal_id}/stream`).
+    - Removed operation `networks.retrieve` (`GET /v1/networks/{network_id}`).
+    - Removed operation `usage.retrieve` (`GET /v1/usage`).
+    - Removed operation `usage.machineCompute` (`GET /v1/usage/machines/compute`).
+    - Removed operation `usage.machineStorage` (`GET /v1/usage/machines/storage`).
+    - Added required property `execution.log_capture`.
+    - Property `execution.machine_id` type changed from `string` to `string<uuid>`.
+    - Property `machine.machine_id` type changed from `string` to `string<uuid>`.
+    - Added required property `lifecycle_status.memory_configured_mib`.
+    - Property `machine_detail_response.machine_id` type changed from `string` to `string<uuid>`.
+    - Schema `machine_id_path_segment` validation changed (`minLength` `4` → `36`, `maxLength` `253` → `39`, `pattern` `^dm-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$` → `^(dm-)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`).
+    - Property `machine_list_item.machine_id` type changed from `string` to `string<uuid>`.
+    - Property `ssh_session.machine_id` type changed from `string` to `string<uuid>`.
+    - Property `ssh_session.status` type changed from `enum(wake_in_progress | ready | closed | …)` to `enum(wake_in_progress | ssh_in_progress | ready | …)`.
+    - Removed optional property `CreateResponseHeaders.ETag`.
+    - Removed optional property `CreateResponseHeaders.X-Dedalus-Storage-Operation-Id`.
+    - Removed optional property `RetrieveResponseHeaders.ETag`.
+    - Removed schema `artifact_list`.
+    - Removed schema `artifact`.
+    - Removed schema `port_create_params`.
+    - Removed schema `terminal_create_params`.
+    - Removed schema `machine_compute_usage`.
+    - Removed schema `machine_compute_usage_row`.
+    - Removed schema `machine_network`.
+    - Removed schema `machine_storage_usage`.
+    - Removed schema `machine_storage_usage_row`.
+    - Removed schema `network_gateway`.
+    - Removed schema `network`.
+    - Removed schema `port_list`.
+    - Removed schema `port`.
+    - Removed schema `terminal_client_event`.
+    - Removed schema `terminal_closed_event`.
+    - Removed schema `terminal_error_event`.
+    - Removed schema `terminal_input_event`.
+    - Removed schema `terminal_list`.
+    - Removed schema `terminal_output_event`.
+    - Removed schema `terminal_resize_event`.
+    - Removed schema `terminal`.
+    - Removed schema `terminal_server_event`.
+    - Removed schema `org_usage`.
+
+### Features
+
+* **api:** integrate regenerated custom image contract ([10114b0](https://github.com/dedalus-labs/dedalus-typescript/commit/10114b01c2dae1c68d8e94ca0dd70143cc4301fd))
+* **api:** update auth scheme BearerAuth (+142 more changes) ([444c179](https://github.com/dedalus-labs/dedalus-typescript/commit/444c17921b71f2f60eaf8ca8708020024b87921c))
+* **api:** update SDK surface (76 changes) ([3a03458](https://github.com/dedalus-labs/dedalus-typescript/commit/3a034582d4d7ca55b23c7d91494acff4ed16439f))
+* **images:** add node import workflows ([7078db7](https://github.com/dedalus-labs/dedalus-typescript/commit/7078db7cb3ef52cc4be2396fa3bb172da2d738c2))
+* **images:** regenerate SDK with Node image workflows ([#29](https://github.com/dedalus-labs/dedalus-typescript/issues/29)) ([9f1c655](https://github.com/dedalus-labs/dedalus-typescript/commit/9f1c65538dc8c9f2c74710eabb19caabb79f5d73))
+
+
+### Chores
+
+* **api:** regenerate SDK ([a1e5997](https://github.com/dedalus-labs/dedalus-typescript/commit/a1e5997f999616cfad19ae7aa92ea7edb63ba6aa))
+* **api:** update generated SDK content ([b07c565](https://github.com/dedalus-labs/dedalus-typescript/commit/b07c5652c21e4e7e0e8031ad9254809d33edc96f))
+
+## [0.6.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.5.0...v0.6.0) (2026-09-24)
+
+
+### Bug Fixes
+
+* **ci:** use available hosted runners for package verification ([2e92fb1](https://github.com/dedalus-labs/dedalus-typescript/commit/2e92fb170149657839585ff33411ce566b118714))
+* **feedback:** generate valid automatic retry keys ([678e8a5](https://github.com/dedalus-labs/dedalus-typescript/commit/678e8a5146dbc5b2b4c93b5823c1f901ad834efc))
+* **sdk:** align current API and restore stable package publishing ([3148c1a](https://github.com/dedalus-labs/dedalus-typescript/commit/3148c1ae1307004fd2f48ea9d9ef55a8e4c02833))
+* **sdk:** install required websocket dependency ([03dd4c3](https://github.com/dedalus-labs/dedalus-typescript/commit/03dd4c336cffb05664e1427ac2c51874a42e4d08))
+* **sdk:** prepare current API and stable package publishing ([#25](https://github.com/dedalus-labs/dedalus-typescript/issues/25)) ([dade2ed](https://github.com/dedalus-labs/dedalus-typescript/commit/dade2edfa7bed1b1519fd248e36cb2dc34ffe4b0))
+
+
+### Chores
+
+* reconcile published release history ([e7a4878](https://github.com/dedalus-labs/dedalus-typescript/commit/e7a4878f4a8b3f4d4e9711d6ab715e444c8464d8))
+* release 0.6.0 ([b0802c7](https://github.com/dedalus-labs/dedalus-typescript/commit/b0802c7f3fa332ac5f11d06c6ae9a1e4f4be41a9))
+* release 0.6.0 ([cb5c094](https://github.com/dedalus-labs/dedalus-typescript/commit/cb5c0942ddfab8ff1c0d8432f89786320118d073))
+
+## 0.5.0 (2026-09-01)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.4.0...v0.5.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** regenerate SDKs from the current public DCS contract
+
+### Features
+
+* **api:** regenerate SDKs from the current public DCS contract ([cad738c](https://github.com/dedalus-labs/dedalus-typescript/commit/cad738ccba2b51713096ac9a3f76f055d043fd8d))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([f69771b](https://github.com/dedalus-labs/dedalus-typescript/commit/f69771b3e5f44fd05464e6227848ab13f249e238))
+
+
+### Bug Fixes
+
+* **ci:** bump @arethetypeswrong/cli to ^0.18.0 and run CI workflows on Node 24 ([7ddf1b0](https://github.com/dedalus-labs/dedalus-typescript/commit/7ddf1b02e728e489b00afd72fe5001ffb8128955))
+* **client:** send content-type header for requests with an omitted optional body ([aaa71fa](https://github.com/dedalus-labs/dedalus-typescript/commit/aaa71fa0a6d605ae2df82dcd214f48791f759e7a))
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([6e1859c](https://github.com/dedalus-labs/dedalus-typescript/commit/6e1859c8b2debbae5427c282744e706e8c02dd7b))
+
+
+### Chores
+
+* configure new SDK language ([6b68956](https://github.com/dedalus-labs/dedalus-typescript/commit/6b68956600107ed25ea17d5262d961d0164a9dd9))
+* configure new SDK language ([1d18b8d](https://github.com/dedalus-labs/dedalus-typescript/commit/1d18b8da20cc77e9bd527a3c3ea87a8a63d4470a))
+* configure new SDK language ([e3842ad](https://github.com/dedalus-labs/dedalus-typescript/commit/e3842adbbad581256df3849241e71ba57d8ec386))
+* configure new SDK language ([f89cb5d](https://github.com/dedalus-labs/dedalus-typescript/commit/f89cb5d8535b9ba6e650bdda0cd2a6d836d071b2))
+* configure new SDK language ([84cbe52](https://github.com/dedalus-labs/dedalus-typescript/commit/84cbe5246bf596d6ae65b8900bd71ea778d91f05))
+* **internal:** allow the mock server port to be set with STAINLESS_MOCK_PORT ([5db9357](https://github.com/dedalus-labs/dedalus-typescript/commit/5db93577ff1204f04120ecb5c78bc705d5a5e9c5))
+* **internal:** codegen related update ([3319c20](https://github.com/dedalus-labs/dedalus-typescript/commit/3319c2000dd8313171897186784c123a24ddbb98))
+* **tests:** remove redundant File import ([7226125](https://github.com/dedalus-labs/dedalus-typescript/commit/72261254409c99fbb91ac8ae19b0220f2aaffbff))
+* update SDK settings ([66989d7](https://github.com/dedalus-labs/dedalus-typescript/commit/66989d7653c0e287fc849986884fd4cd3f60ddf3))
+* update SDK settings ([b84a9d9](https://github.com/dedalus-labs/dedalus-typescript/commit/b84a9d911a60f81d25ee69f4dabb5c46f3ce45a3))
+* update SDK settings ([d8273e8](https://github.com/dedalus-labs/dedalus-typescript/commit/d8273e83c4494fbab6407584929adfa4c28b0cce))
+* update SDK settings ([57f24ae](https://github.com/dedalus-labs/dedalus-typescript/commit/57f24ae07c7acb0fb28b667dc267eb1c73aa205d))
+* update SDK settings ([6ce506a](https://github.com/dedalus-labs/dedalus-typescript/commit/6ce506a7697e83c99ab5f6baf82d648c8500bdec))
+
+
+### Documentation
+
+* **mcp:** document code execution modes and the local code runner ([d4bd14f](https://github.com/dedalus-labs/dedalus-typescript/commit/d4bd14f92b991e7e49c726c4dbaa9a1858c684e3))
+
 ## 0.4.0 (2026-05-12)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.3.0...v0.4.0)

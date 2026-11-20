@@ -10,6 +10,7 @@ The full API of this library can be found in [api.md](./api.md).
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Image import](#image-import-nodejs)
 - [API Reference](./api.md)
 - [Authentication](#authentication)
 - [Errors](#errors)
@@ -30,6 +31,42 @@ npm install dedalus
 ```
 
 <br />
+
+## Image import (Node.js)
+
+```ts
+import Dedalus from 'dedalus';
+import { importImage, pollImage } from 'dedalus/helpers/images';
+
+const client = new Dedalus({ apiKey: process.env.DEDALUS_API_KEY });
+const ready = await importImage(client, './my-app.tar', {
+  name: 'my-app',
+  platform: 'linux/amd64',
+  onProgress: image => console.error(image.image_id, image.state),
+});
+
+// Alternatively, return after upload and registration, then wait later.
+const accepted = await importImage(client, './my-app.tar', { wait: false });
+const image = await pollImage(client, accepted.image_id);
+```
+
+These Node.js helpers stream a `docker save` archive, register it, and wait for
+readiness by default. Use `wait: false` to return after registration.
+`timeoutMs` defaults to 3,600,000 for the entire import; `pollIntervalMs` defaults
+to 2,000. Pass an `AbortSignal` through `signal` to stop the client without cancelling
+server preparation. Timeout and terminal failure errors identify the image through
+`ImagePreparationError.image`; resume polling with its `image_id`.
+
+Use the same `idempotencyKey` when retrying an import with unchanged input. Archives
+must be regular, nonempty files of at most 5 GiB. Storage uploads use a separate
+fetch transport without API credentials. The helpers require the image API to be
+deployed and enabled for your organization; they do not change server access controls.
+
+Custom image imports currently require an Ubuntu 24.04 `linux/amd64` Docker-save
+archive. On Apple silicon, build or pull with `--platform linux/amd64` before
+saving the archive. The image provides the filesystem; container entrypoint,
+CMD, environment, working directory, and user settings are not applied. Start
+processes using Machine exec or SSH after the Machine reaches running.
 
 ## Usage
 
@@ -182,3 +219,22 @@ const page = await client.machines.list();
 - Node.js 20+, a modern browser, or any runtime with `fetch` support
 
 Powered by Scalar.
+
+## Verify a local package
+
+Run `pnpm install --frozen-lockfile --ignore-scripts`, `pnpm build`, and
+`pnpm test:package` to install a tarball in an isolated directory and check both
+ESM and CommonJS imports. The probe uses a public fixture URL and
+does not send an API request. It catches runtime dependencies that a source-tree
+build can hide.
+
+CI runs the same package check. Edit `ci/sdk-ci.ts` and run `pnpm ci:generate`
+to change its generated workflow.
+
+<!-- @custom start -->
+### Automatic retry identity
+
+Client-generated idempotency keys use the API's 32-character UUIDv7 format.
+Automatic retries reuse the original key. Independent submissions receive new
+keys, and callers can still supply an explicit key when retrying a saved request.
+<!-- @custom end -->
