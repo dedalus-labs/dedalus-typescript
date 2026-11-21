@@ -1,5 +1,62 @@
 # Changelog
 
+## [0.8.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.7.0...v0.8.0) (2026-11-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** 33 breaking changes to the SDK surface.
+    - `default` error response of `machines.list` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.create` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.update` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.delete` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.sleep` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.wake` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.reboot` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.ssh.list` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.ssh.create` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.ssh.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.ssh.delete` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.list` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.create` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.delete` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.output` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.events` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.logs.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.executions.logs.createToken` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.autoresizing.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `machines.autoresizing.update` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `organization.autoresizing.retrieve` changed from `error_model` to `application/problem+json`.
+    - `default` error response of `organization.autoresizing.update` changed from `error_model` to `application/problem+json`.
+    - Property `policy.cpu` type changed from `autoresizing_switch` to `enum(on | off)`.
+    - Property `policy.memory` type changed from `autoresizing_switch` to `enum(on | off)`.
+    - Property `autoresizing_update.cpu` type changed from `autoresizing_switch` to `enum(on | off)`.
+    - Property `autoresizing_update.memory` type changed from `autoresizing_switch` to `enum(on | off)`.
+    - Added required property `image_list.items`.
+    - Removed required property `image_list.image_ids`.
+    - Removed schema `error_detail`.
+    - Removed schema `error_model`.
+    - Removed schema `autoresizing_switch`.
+* **api:** 4 breaking changes to the SDK surface.
+    - Property `policy.cpu` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `policy.memory` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `autoresizing_update.cpu` type changed from `enum(on | off)` to `autoresizing_switch`.
+    - Property `autoresizing_update.memory` type changed from `enum(on | off)` to `autoresizing_switch`.
+
+### Features
+
+* **api:** share autoresizing switch type ([21f2575](https://github.com/dedalus-labs/dedalus-typescript/commit/21f2575562281cefdff05195ad8b3575d4f240d2))
+* **api:** update property policy.cpu (+4 more changes) ([55b7452](https://github.com/dedalus-labs/dedalus-typescript/commit/55b7452825854b8f9fb061db253a77f3317adb6c))
+* **api:** update SDK surface (51 changes) ([a571030](https://github.com/dedalus-labs/dedalus-typescript/commit/a5710309996387866690c165b51fc2c58b8514fd))
+
+
+### Chores
+
+* **api:** update generated SDK content ([f92eb32](https://github.com/dedalus-labs/dedalus-typescript/commit/f92eb32ac021fbd472a09146c1c25ecba93bd818))
+* **api:** update generated SDK content ([4e4b87c](https://github.com/dedalus-labs/dedalus-typescript/commit/4e4b87cba9cd6b857834ac6f2dd4ad4db4acb0d8))
+
 ## [0.7.0](https://github.com/dedalus-labs/dedalus-typescript/compare/v0.6.0...v0.7.0) (2026-11-06)
 
 
